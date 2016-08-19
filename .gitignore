@@ -70,3 +70,4 @@ CommunitySkillsSearch/dist/
 CommunitySkillsSearch/nbdist/
 CommunitySkillsSearch/nbactions.xml
 CommunitySkillsSearch/.nb-gradle/
+*.bak
