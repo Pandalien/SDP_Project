@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.EditRespondersTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="#{bundle.EditRespondersLabel_message}" for="message" />
+                    <h:inputText id="message" value="#{respondersController.selected.message}" title="#{bundle.EditRespondersTitle_message}" />
+                    <h:outputLabel value="#{bundle.EditRespondersLabel_time}" for="time" />
+                    <h:inputText id="time" value="#{respondersController.selected.time}" title="#{bundle.EditRespondersTitle_time}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.EditRespondersLabel_feedback}" for="feedback" />
+                    <h:inputText id="feedback" value="#{respondersController.selected.feedback}" title="#{bundle.EditRespondersTitle_feedback}" />
+                    <h:outputLabel value="#{bundle.EditRespondersLabel_rating}" for="rating" />
+                    <h:inputText id="rating" value="#{respondersController.selected.rating}" title="#{bundle.EditRespondersTitle_rating}" />
+                    <h:outputLabel value="#{bundle.EditRespondersLabel_status}" for="status" />
+                    <h:inputText id="status" value="#{respondersController.selected.status}" title="#{bundle.EditRespondersTitle_status}" />
+                    <h:outputLabel value="#{bundle.EditRespondersLabel_adverts}" for="adverts" />
+                    <h:selectOneMenu id="adverts" value="#{respondersController.selected.adverts}" title="#{bundle.EditRespondersTitle_adverts}" required="true" requiredMessage="#{bundle.EditRespondersRequiredMessage_adverts}">
+                        <f:selectItems value="#{advertsController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                    <h:outputLabel value="#{bundle.EditRespondersLabel_user}" for="user" />
+                    <h:selectOneMenu id="user" value="#{respondersController.selected.user}" title="#{bundle.EditRespondersTitle_user}" required="true" requiredMessage="#{bundle.EditRespondersRequiredMessage_user}">
+                        <f:selectItems value="#{userController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                </h:panelGrid>
+                <h:commandLink action="#{respondersController.update}" value="#{bundle.EditRespondersSaveLink}"/>
+                <br />
+                <br />
+                <h:link outcome="View" value="#{bundle.EditRespondersViewLink}"/>
+                <br />
+                <h:commandLink action="#{respondersController.prepareList}" value="#{bundle.EditRespondersShowAllLink}" immediate="true"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.EditRespondersIndexLink}" />
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>
