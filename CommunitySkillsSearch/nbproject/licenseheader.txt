@@ -1,0 +1,8 @@
+<#if licenseFirst??>
+${licenseFirst}
+</#if>
+${licensePrefix}Software Development Practice, Team 2
+${licensePrefix}Community Skills Search
+<#if licenseLast??>
+${licenseLast}
+</#if>
