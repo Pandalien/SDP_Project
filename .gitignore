@@ -71,3 +71,11 @@ CommunitySkillsSearch/nbdist/
 CommunitySkillsSearch/nbactions.xml
 CommunitySkillsSearch/.nb-gradle/
 *.bak
+
+CommunitySkillsSearch/nbproject/build-impl.xml
+
+CommunitySkillsSearch/nbproject/genfiles.properties
+
+CommunitySkillsSearch/nbproject/project.properties
+
+CommunitySkillsSearch/nbproject/project.xml
