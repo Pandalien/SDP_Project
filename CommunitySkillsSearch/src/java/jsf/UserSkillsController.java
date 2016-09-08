@@ -1,249 +1,289 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package jsf;
 
 import entities.UserSkills;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import javax.faces.FacesException;
+import javax.annotation.Resource;
+import javax.transaction.UserTransaction;
 import jsf.util.JsfUtil;
-import jsf.util.PaginationHelper;
-import sb.UserSkillsFacade;
-
-import java.io.Serializable;
-import java.util.ResourceBundle;
-import javax.ejb.EJB;
-import javax.inject.Named;
-import javax.enterprise.context.SessionScoped;
+import entities.UserSkillsPK;
+import java.util.List;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
-import javax.faces.convert.FacesConverter;
-import javax.faces.model.DataModel;
-import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
+import jsf.util.PagingInfo;
+import sb.UserSkillsFacade;
 
-@Named("userSkillsController")
-@SessionScoped
-public class UserSkillsController implements Serializable {
-
-    private UserSkills current;
-    private DataModel items = null;
-    @EJB
-    private sb.UserSkillsFacade ejbFacade;
-    private PaginationHelper pagination;
-    private int selectedItemIndex;
-
+/**
+ *
+ * @author andyc
+ */
+public class UserSkillsController {
+    boolean ERROR = false;
     public UserSkillsController() {
+        pagingInfo = new PagingInfo();
+        converter = new UserSkillsConverter();
     }
+    private UserSkills userSkills = null;
+    private List<UserSkills> userSkillsItems = null;
+    private UserSkillsFacade jpaController = null;
+    private UserSkillsConverter converter = null;
+    private PagingInfo pagingInfo = null;
+    @Resource
+    private UserTransaction utx = null;
+    @PersistenceUnit(unitName = "CommunitySkillsSearchPU")
+    private EntityManagerFactory emf = null;
 
-    public UserSkills getSelected() {
-        if (current == null) {
-            current = new UserSkills();
-            current.setUserSkillsPK(new entities.UserSkillsPK());
-            selectedItemIndex = -1;
+    public PagingInfo getPagingInfo() {
+        if (pagingInfo.getItemCount() == -1) {
+            pagingInfo.setItemCount(getJpaController().count());
         }
-        return current;
+        return pagingInfo;
     }
 
-    private UserSkillsFacade getFacade() {
-        return ejbFacade;
-    }
-
-    public PaginationHelper getPagination() {
-        if (pagination == null) {
-            pagination = new PaginationHelper(10) {
-
-                @Override
-                public int getItemsCount() {
-                    return getFacade().count();
-                }
-
-                @Override
-                public DataModel createPageDataModel() {
-                    return new ListDataModel(getFacade().findRange(new int[]{getPageFirstItem(), getPageFirstItem() + getPageSize()}));
-                }
-            };
+    public UserSkillsFacade getJpaController() {
+        if (jpaController == null) {
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            jpaController = (UserSkillsFacade) facesContext.getApplication().getELResolver().getValue(facesContext.getELContext(), null, "userSkillsJpa");
         }
-        return pagination;
+        return jpaController;
     }
 
-    public String prepareList() {
-        recreateModel();
-        return "List";
+    public SelectItem[] getUserSkillsItemsAvailableSelectMany() {
+        return JsfUtil.getSelectItems(getJpaController().findAll(), false);
     }
 
-    public String prepareView() {
-        current = (UserSkills) getItems().getRowData();
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
-        return "View";
+    public SelectItem[] getUserSkillsItemsAvailableSelectOne() {
+        return JsfUtil.getSelectItems(getJpaController().findAll(), true);
     }
 
-    public String prepareCreate() {
-        current = new UserSkills();
-        current.setUserSkillsPK(new entities.UserSkillsPK());
-        selectedItemIndex = -1;
-        return "Create";
+    public UserSkills getUserSkills() {
+        if (userSkills == null) {
+            userSkills = (UserSkills) JsfUtil.getObjectFromRequestParameter("jsfcrud.currentUserSkills", converter, null);
+        }
+        if (userSkills == null) {
+            userSkills = new UserSkills();
+        }
+        return userSkills;
+    }
+
+    public String listSetup() {
+        reset(true);
+        return "userSkills_list";
+    }
+
+    public String createSetup() {
+        reset(false);
+        userSkills = new UserSkills();
+        userSkills.setUserSkillsPK(new UserSkillsPK());
+        return "userSkills_create";
     }
 
     public String create() {
+        userSkills.getUserSkillsPK().setUserId(userSkills.getUser().getId());
+        userSkills.getUserSkillsPK().setSkillsId(userSkills.getSkills().getId());
         try {
-            current.getUserSkillsPK().setUserId(current.getUser().getId());
-            current.getUserSkillsPK().setSkillsId(current.getSkills().getId());
-            getFacade().create(current);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("UserSkillsCreated"));
-            return prepareCreate();
-        } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
-            return null;
+            utx.begin();
+        } catch (Exception ex) {
         }
-    }
-
-    public String prepareEdit() {
-        current = (UserSkills) getItems().getRowData();
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
-        return "Edit";
-    }
-
-    public String update() {
         try {
-            current.getUserSkillsPK().setUserId(current.getUser().getId());
-            current.getUserSkillsPK().setSkillsId(current.getSkills().getId());
-            getFacade().edit(current);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("UserSkillsUpdated"));
-            return "View";
-        } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
-            return null;
-        }
-    }
-
-    public String destroy() {
-        current = (UserSkills) getItems().getRowData();
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
-        performDestroy();
-        recreatePagination();
-        recreateModel();
-        return "List";
-    }
-
-    public String destroyAndView() {
-        performDestroy();
-        recreateModel();
-        updateCurrentItem();
-        if (selectedItemIndex >= 0) {
-            return "View";
-        } else {
-            // all items were removed - go back to list
-            recreateModel();
-            return "List";
-        }
-    }
-
-    private void performDestroy() {
-        try {
-            getFacade().remove(current);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("UserSkillsDeleted"));
-        } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
-        }
-    }
-
-    private void updateCurrentItem() {
-        int count = getFacade().count();
-        if (selectedItemIndex >= count) {
-            // selected index cannot be bigger than number of items:
-            selectedItemIndex = count - 1;
-            // go to previous page if last page disappeared:
-            if (pagination.getPageFirstItem() >= count) {
-                pagination.previousPage();
+            Exception transactionException = null;
+            getJpaController().create(userSkills);
+            try {
+                utx.commit();
+            } catch (javax.transaction.RollbackException ex) {
+                transactionException = ex;
+            } catch (Exception ex) {
             }
+            if (transactionException == null) {
+                JsfUtil.addSuccessMessage("UserSkills was successfully created.");
+            } else {
+                JsfUtil.ensureAddErrorMessage(transactionException, "A persistence error occurred.");
+            }
+        } catch (Exception e) {
+            try {
+                utx.rollback();
+            } catch (Exception ex) {
+            }
+            JsfUtil.ensureAddErrorMessage(e, "A persistence error occurred.");
+            return null;
         }
-        if (selectedItemIndex >= 0) {
-            current = getFacade().findRange(new int[]{selectedItemIndex, selectedItemIndex + 1}).get(0);
-        }
+        return listSetup();
     }
 
-    public DataModel getItems() {
-        if (items == null) {
-            items = getPagination().createPageDataModel();
+    public String detailSetup() {
+        return scalarSetup("userSkills_detail");
+    }
+
+    public String editSetup() {
+        return scalarSetup("userSkills_edit");
+    }
+
+    private String scalarSetup(String destination) {
+        reset(false);
+        userSkills = (UserSkills) JsfUtil.getObjectFromRequestParameter("jsfcrud.currentUserSkills", converter, null);
+        if (userSkills == null) {
+            String requestUserSkillsString = JsfUtil.getRequestParameter("jsfcrud.currentUserSkills");
+            JsfUtil.addErrorMessage("The userSkills with id " + requestUserSkillsString + " no longer exists.");
+            return relatedOrListOutcome();
         }
-        return items;
+        return destination;
     }
 
-    private void recreateModel() {
-        items = null;
+    public String edit() {
+        userSkills.getUserSkillsPK().setUserId(userSkills.getUser().getId());
+        userSkills.getUserSkillsPK().setSkillsId(userSkills.getSkills().getId());
+        String userSkillsString = converter.getAsString(FacesContext.getCurrentInstance(), null, userSkills);
+        String currentUserSkillsString = JsfUtil.getRequestParameter("jsfcrud.currentUserSkills");
+        if (userSkillsString == null || userSkillsString.length() == 0 || !userSkillsString.equals(currentUserSkillsString)) {
+            String outcome = editSetup();
+            if ("userSkills_edit".equals(outcome)) {
+                JsfUtil.addErrorMessage("Could not edit userSkills. Try again.");
+            }
+            return outcome;
+        }
+        try {
+            utx.begin();
+        } catch (Exception ex) {
+        }
+        try {
+            Exception transactionException = null;
+            getJpaController().edit(userSkills);
+            try {
+                utx.commit();
+            } catch (javax.transaction.RollbackException ex) {
+                transactionException = ex;
+            } catch (Exception ex) {
+            }
+            if (transactionException == null) {
+                JsfUtil.addSuccessMessage("UserSkills was successfully updated.");
+            } else {
+                JsfUtil.ensureAddErrorMessage(transactionException, "A persistence error occurred.");
+            }
+        } catch (Exception e) {
+            try {
+                utx.rollback();
+            } catch (Exception ex) {
+            }
+            JsfUtil.ensureAddErrorMessage(e, "A persistence error occurred.");
+            return null;
+        }
+        return detailSetup();
     }
 
-    private void recreatePagination() {
-        pagination = null;
+    public String remove() {
+        String idAsString = JsfUtil.getRequestParameter("jsfcrud.currentUserSkills");
+        UserSkillsPK id = converter.getId(idAsString);
+        try {
+            utx.begin();
+        } catch (Exception ex) {
+        }
+        try {
+            Exception transactionException = null;
+            getJpaController().remove(getJpaController().find(id));
+            try {
+                utx.commit();
+            } catch (javax.transaction.RollbackException ex) {
+                transactionException = ex;
+            } catch (Exception ex) {
+            }
+            if (transactionException == null) {
+                JsfUtil.addSuccessMessage("UserSkills was successfully deleted.");
+            } else {
+                JsfUtil.ensureAddErrorMessage(transactionException, "A persistence error occurred.");
+            }
+        } catch (Exception e) {
+            try {
+                utx.rollback();
+            } catch (Exception ex) {
+            }
+            JsfUtil.ensureAddErrorMessage(e, "A persistence error occurred.");
+            return null;
+        }
+        return relatedOrListOutcome();
+    }
+
+    private String relatedOrListOutcome() {
+        String relatedControllerOutcome = relatedControllerOutcome();
+        if ((ERROR)) {
+            return relatedControllerOutcome;
+        }
+        return listSetup();
+    }
+
+    public List<UserSkills> getUserSkillsItems() {
+        if (userSkillsItems == null) {
+            getPagingInfo();
+            userSkillsItems = getJpaController().findRange(new int[]{pagingInfo.getFirstItem(), pagingInfo.getFirstItem() + pagingInfo.getBatchSize()});
+        }
+        return userSkillsItems;
     }
 
     public String next() {
-        getPagination().nextPage();
-        recreateModel();
-        return "List";
+        reset(false);
+        getPagingInfo().nextPage();
+        return "userSkills_list";
     }
 
-    public String previous() {
-        getPagination().previousPage();
-        recreateModel();
-        return "List";
+    public String prev() {
+        reset(false);
+        getPagingInfo().previousPage();
+        return "userSkills_list";
     }
 
-    public SelectItem[] getItemsAvailableSelectMany() {
-        return JsfUtil.getSelectItems(ejbFacade.findAll(), false);
-    }
-
-    public SelectItem[] getItemsAvailableSelectOne() {
-        return JsfUtil.getSelectItems(ejbFacade.findAll(), true);
-    }
-
-    public UserSkills getUserSkills(entities.UserSkillsPK id) {
-        return ejbFacade.find(id);
-    }
-
-    @FacesConverter(forClass = UserSkills.class)
-    public static class UserSkillsControllerConverter implements Converter {
-
-        private static final String SEPARATOR = "#";
-        private static final String SEPARATOR_ESCAPED = "\\#";
-
-        @Override
-        public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
-            if (value == null || value.length() == 0) {
-                return null;
-            }
-            UserSkillsController controller = (UserSkillsController) facesContext.getApplication().getELResolver().
-                    getValue(facesContext.getELContext(), null, "userSkillsController");
-            return controller.getUserSkills(getKey(value));
-        }
-
-        entities.UserSkillsPK getKey(String value) {
-            entities.UserSkillsPK key;
-            String values[] = value.split(SEPARATOR_ESCAPED);
-            key = new entities.UserSkillsPK();
-            key.setUserId(Integer.parseInt(values[0]));
-            key.setSkillsId(Integer.parseInt(values[1]));
-            return key;
-        }
-
-        String getStringKey(entities.UserSkillsPK value) {
-            StringBuilder sb = new StringBuilder();
-            sb.append(value.getUserId());
-            sb.append(SEPARATOR);
-            sb.append(value.getSkillsId());
-            return sb.toString();
-        }
-
-        @Override
-        public String getAsString(FacesContext facesContext, UIComponent component, Object object) {
-            if (object == null) {
-                return null;
-            }
-            if (object instanceof UserSkills) {
-                UserSkills o = (UserSkills) object;
-                return getStringKey(o.getUserSkillsPK());
-            } else {
-                throw new IllegalArgumentException("object " + object + " is of type " + object.getClass().getName() + "; expected type: " + UserSkills.class.getName());
+    private String relatedControllerOutcome() {
+        String relatedControllerString = JsfUtil.getRequestParameter("jsfcrud.relatedController");
+        String relatedControllerTypeString = JsfUtil.getRequestParameter("jsfcrud.relatedControllerType");
+        if (relatedControllerString != null && relatedControllerTypeString != null) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            Object relatedController = context.getApplication().getELResolver().getValue(context.getELContext(), null, relatedControllerString);
+            try {
+                Class<?> relatedControllerType = Class.forName(relatedControllerTypeString);
+                Method detailSetupMethod = relatedControllerType.getMethod("detailSetup");
+                return (String) detailSetupMethod.invoke(relatedController);
+            } catch (ClassNotFoundException e) {
+                throw new FacesException(e);
+            } catch (NoSuchMethodException e) {
+                throw new FacesException(e);
+            } catch (IllegalAccessException e) {
+                throw new FacesException(e);
+            } catch (InvocationTargetException e) {
+                throw new FacesException(e);
             }
         }
-
+        return null;
     }
 
+    private void reset(boolean resetFirstItem) {
+        userSkills = null;
+        userSkillsItems = null;
+        pagingInfo.setItemCount(-1);
+        if (resetFirstItem) {
+            pagingInfo.setFirstItem(0);
+        }
+    }
+
+    public void validateCreate(FacesContext facesContext, UIComponent component, Object value) {
+        UserSkills newUserSkills = new UserSkills();
+        newUserSkills.setUserSkillsPK(new UserSkillsPK());
+        String newUserSkillsString = converter.getAsString(FacesContext.getCurrentInstance(), null, newUserSkills);
+        String userSkillsString = converter.getAsString(FacesContext.getCurrentInstance(), null, userSkills);
+        if (!newUserSkillsString.equals(userSkillsString)) {
+            createSetup();
+        }
+    }
+
+    public Converter getConverter() {
+        return converter;
+    }
+    
 }

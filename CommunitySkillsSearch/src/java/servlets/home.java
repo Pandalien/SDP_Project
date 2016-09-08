@@ -7,10 +7,12 @@ package servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import sb.SuburbFacade;
 
 /**
  *
@@ -18,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class home extends HttpServlet {
 
+    @EJB SuburbFacade suburbMgr;
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -39,6 +42,7 @@ public class home extends HttpServlet {
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet home at " + request.getContextPath() + "</h1>");
+            out.println(suburbMgr==null? "<h1>suburbMgr == null</h1>" : "<h1>suburbMgr != null</h1>");
             out.println("</body>");
             out.println("</html>");
         }

@@ -1,249 +1,289 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package jsf;
 
 import entities.Responders;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import javax.faces.FacesException;
+import javax.annotation.Resource;
+import javax.transaction.UserTransaction;
 import jsf.util.JsfUtil;
-import jsf.util.PaginationHelper;
-import sb.RespondersFacade;
-
-import java.io.Serializable;
-import java.util.ResourceBundle;
-import javax.ejb.EJB;
-import javax.inject.Named;
-import javax.enterprise.context.SessionScoped;
+import entities.RespondersPK;
+import java.util.List;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
-import javax.faces.convert.FacesConverter;
-import javax.faces.model.DataModel;
-import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
+import jsf.util.PagingInfo;
+import sb.RespondersFacade;
 
-@Named("respondersController")
-@SessionScoped
-public class RespondersController implements Serializable {
-
-    private Responders current;
-    private DataModel items = null;
-    @EJB
-    private sb.RespondersFacade ejbFacade;
-    private PaginationHelper pagination;
-    private int selectedItemIndex;
-
+/**
+ *
+ * @author andyc
+ */
+public class RespondersController {
+    boolean ERROR = false;
     public RespondersController() {
+        pagingInfo = new PagingInfo();
+        converter = new RespondersConverter();
     }
+    private Responders responders = null;
+    private List<Responders> respondersItems = null;
+    private RespondersFacade jpaController = null;
+    private RespondersConverter converter = null;
+    private PagingInfo pagingInfo = null;
+    @Resource
+    private UserTransaction utx = null;
+    @PersistenceUnit(unitName = "CommunitySkillsSearchPU")
+    private EntityManagerFactory emf = null;
 
-    public Responders getSelected() {
-        if (current == null) {
-            current = new Responders();
-            current.setRespondersPK(new entities.RespondersPK());
-            selectedItemIndex = -1;
+    public PagingInfo getPagingInfo() {
+        if (pagingInfo.getItemCount() == -1) {
+            pagingInfo.setItemCount(getJpaController().count());
         }
-        return current;
+        return pagingInfo;
     }
 
-    private RespondersFacade getFacade() {
-        return ejbFacade;
-    }
-
-    public PaginationHelper getPagination() {
-        if (pagination == null) {
-            pagination = new PaginationHelper(10) {
-
-                @Override
-                public int getItemsCount() {
-                    return getFacade().count();
-                }
-
-                @Override
-                public DataModel createPageDataModel() {
-                    return new ListDataModel(getFacade().findRange(new int[]{getPageFirstItem(), getPageFirstItem() + getPageSize()}));
-                }
-            };
+    public RespondersFacade getJpaController() {
+        if (jpaController == null) {
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            jpaController = (RespondersFacade) facesContext.getApplication().getELResolver().getValue(facesContext.getELContext(), null, "respondersJpa");
         }
-        return pagination;
+        return jpaController;
     }
 
-    public String prepareList() {
-        recreateModel();
-        return "List";
+    public SelectItem[] getRespondersItemsAvailableSelectMany() {
+        return JsfUtil.getSelectItems(getJpaController().findAll(), false);
     }
 
-    public String prepareView() {
-        current = (Responders) getItems().getRowData();
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
-        return "View";
+    public SelectItem[] getRespondersItemsAvailableSelectOne() {
+        return JsfUtil.getSelectItems(getJpaController().findAll(), true);
     }
 
-    public String prepareCreate() {
-        current = new Responders();
-        current.setRespondersPK(new entities.RespondersPK());
-        selectedItemIndex = -1;
-        return "Create";
+    public Responders getResponders() {
+        if (responders == null) {
+            responders = (Responders) JsfUtil.getObjectFromRequestParameter("jsfcrud.currentResponders", converter, null);
+        }
+        if (responders == null) {
+            responders = new Responders();
+        }
+        return responders;
+    }
+
+    public String listSetup() {
+        reset(true);
+        return "responders_list";
+    }
+
+    public String createSetup() {
+        reset(false);
+        responders = new Responders();
+        responders.setRespondersPK(new RespondersPK());
+        return "responders_create";
     }
 
     public String create() {
+        responders.getRespondersPK().setUserId(responders.getUser().getId());
+        responders.getRespondersPK().setAdvertsId(responders.getAdverts().getId());
         try {
-            current.getRespondersPK().setAdvertsId(current.getAdverts().getId());
-            current.getRespondersPK().setUserId(current.getUser().getId());
-            getFacade().create(current);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("RespondersCreated"));
-            return prepareCreate();
-        } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
-            return null;
+            utx.begin();
+        } catch (Exception ex) {
         }
-    }
-
-    public String prepareEdit() {
-        current = (Responders) getItems().getRowData();
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
-        return "Edit";
-    }
-
-    public String update() {
         try {
-            current.getRespondersPK().setAdvertsId(current.getAdverts().getId());
-            current.getRespondersPK().setUserId(current.getUser().getId());
-            getFacade().edit(current);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("RespondersUpdated"));
-            return "View";
-        } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
-            return null;
-        }
-    }
-
-    public String destroy() {
-        current = (Responders) getItems().getRowData();
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
-        performDestroy();
-        recreatePagination();
-        recreateModel();
-        return "List";
-    }
-
-    public String destroyAndView() {
-        performDestroy();
-        recreateModel();
-        updateCurrentItem();
-        if (selectedItemIndex >= 0) {
-            return "View";
-        } else {
-            // all items were removed - go back to list
-            recreateModel();
-            return "List";
-        }
-    }
-
-    private void performDestroy() {
-        try {
-            getFacade().remove(current);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("RespondersDeleted"));
-        } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
-        }
-    }
-
-    private void updateCurrentItem() {
-        int count = getFacade().count();
-        if (selectedItemIndex >= count) {
-            // selected index cannot be bigger than number of items:
-            selectedItemIndex = count - 1;
-            // go to previous page if last page disappeared:
-            if (pagination.getPageFirstItem() >= count) {
-                pagination.previousPage();
+            Exception transactionException = null;
+            getJpaController().create(responders);
+            try {
+                utx.commit();
+            } catch (javax.transaction.RollbackException ex) {
+                transactionException = ex;
+            } catch (Exception ex) {
             }
+            if (transactionException == null) {
+                JsfUtil.addSuccessMessage("Responders was successfully created.");
+            } else {
+                JsfUtil.ensureAddErrorMessage(transactionException, "A persistence error occurred.");
+            }
+        } catch (Exception e) {
+            try {
+                utx.rollback();
+            } catch (Exception ex) {
+            }
+            JsfUtil.ensureAddErrorMessage(e, "A persistence error occurred.");
+            return null;
         }
-        if (selectedItemIndex >= 0) {
-            current = getFacade().findRange(new int[]{selectedItemIndex, selectedItemIndex + 1}).get(0);
-        }
+        return listSetup();
     }
 
-    public DataModel getItems() {
-        if (items == null) {
-            items = getPagination().createPageDataModel();
+    public String detailSetup() {
+        return scalarSetup("responders_detail");
+    }
+
+    public String editSetup() {
+        return scalarSetup("responders_edit");
+    }
+
+    private String scalarSetup(String destination) {
+        reset(false);
+        responders = (Responders) JsfUtil.getObjectFromRequestParameter("jsfcrud.currentResponders", converter, null);
+        if (responders == null) {
+            String requestRespondersString = JsfUtil.getRequestParameter("jsfcrud.currentResponders");
+            JsfUtil.addErrorMessage("The responders with id " + requestRespondersString + " no longer exists.");
+            return relatedOrListOutcome();
         }
-        return items;
+        return destination;
     }
 
-    private void recreateModel() {
-        items = null;
+    public String edit() {
+        responders.getRespondersPK().setUserId(responders.getUser().getId());
+        responders.getRespondersPK().setAdvertsId(responders.getAdverts().getId());
+        String respondersString = converter.getAsString(FacesContext.getCurrentInstance(), null, responders);
+        String currentRespondersString = JsfUtil.getRequestParameter("jsfcrud.currentResponders");
+        if (respondersString == null || respondersString.length() == 0 || !respondersString.equals(currentRespondersString)) {
+            String outcome = editSetup();
+            if ("responders_edit".equals(outcome)) {
+                JsfUtil.addErrorMessage("Could not edit responders. Try again.");
+            }
+            return outcome;
+        }
+        try {
+            utx.begin();
+        } catch (Exception ex) {
+        }
+        try {
+            Exception transactionException = null;
+            getJpaController().edit(responders);
+            try {
+                utx.commit();
+            } catch (javax.transaction.RollbackException ex) {
+                transactionException = ex;
+            } catch (Exception ex) {
+            }
+            if (transactionException == null) {
+                JsfUtil.addSuccessMessage("Responders was successfully updated.");
+            } else {
+                JsfUtil.ensureAddErrorMessage(transactionException, "A persistence error occurred.");
+            }
+        } catch (Exception e) {
+            try {
+                utx.rollback();
+            } catch (Exception ex) {
+            }
+            JsfUtil.ensureAddErrorMessage(e, "A persistence error occurred.");
+            return null;
+        }
+        return detailSetup();
     }
 
-    private void recreatePagination() {
-        pagination = null;
+    public String remove() {
+        String idAsString = JsfUtil.getRequestParameter("jsfcrud.currentResponders");
+        RespondersPK id = converter.getId(idAsString);
+        try {
+            utx.begin();
+        } catch (Exception ex) {
+        }
+        try {
+            Exception transactionException = null;
+            getJpaController().remove(getJpaController().find(id));
+            try {
+                utx.commit();
+            } catch (javax.transaction.RollbackException ex) {
+                transactionException = ex;
+            } catch (Exception ex) {
+            }
+            if (transactionException == null) {
+                JsfUtil.addSuccessMessage("Responders was successfully deleted.");
+            } else {
+                JsfUtil.ensureAddErrorMessage(transactionException, "A persistence error occurred.");
+            }
+        } catch (Exception e) {
+            try {
+                utx.rollback();
+            } catch (Exception ex) {
+            }
+            JsfUtil.ensureAddErrorMessage(e, "A persistence error occurred.");
+            return null;
+        }
+        return relatedOrListOutcome();
+    }
+
+    private String relatedOrListOutcome() {
+        String relatedControllerOutcome = relatedControllerOutcome();
+        if ((ERROR)) {
+            return relatedControllerOutcome;
+        }
+        return listSetup();
+    }
+
+    public List<Responders> getRespondersItems() {
+        if (respondersItems == null) {
+            getPagingInfo();
+            respondersItems = getJpaController().findRange(new int[]{pagingInfo.getFirstItem(), pagingInfo.getFirstItem() + pagingInfo.getBatchSize()});
+        }
+        return respondersItems;
     }
 
     public String next() {
-        getPagination().nextPage();
-        recreateModel();
-        return "List";
+        reset(false);
+        getPagingInfo().nextPage();
+        return "responders_list";
     }
 
-    public String previous() {
-        getPagination().previousPage();
-        recreateModel();
-        return "List";
+    public String prev() {
+        reset(false);
+        getPagingInfo().previousPage();
+        return "responders_list";
     }
 
-    public SelectItem[] getItemsAvailableSelectMany() {
-        return JsfUtil.getSelectItems(ejbFacade.findAll(), false);
-    }
-
-    public SelectItem[] getItemsAvailableSelectOne() {
-        return JsfUtil.getSelectItems(ejbFacade.findAll(), true);
-    }
-
-    public Responders getResponders(entities.RespondersPK id) {
-        return ejbFacade.find(id);
-    }
-
-    @FacesConverter(forClass = Responders.class)
-    public static class RespondersControllerConverter implements Converter {
-
-        private static final String SEPARATOR = "#";
-        private static final String SEPARATOR_ESCAPED = "\\#";
-
-        @Override
-        public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
-            if (value == null || value.length() == 0) {
-                return null;
-            }
-            RespondersController controller = (RespondersController) facesContext.getApplication().getELResolver().
-                    getValue(facesContext.getELContext(), null, "respondersController");
-            return controller.getResponders(getKey(value));
-        }
-
-        entities.RespondersPK getKey(String value) {
-            entities.RespondersPK key;
-            String values[] = value.split(SEPARATOR_ESCAPED);
-            key = new entities.RespondersPK();
-            key.setUserId(Integer.parseInt(values[0]));
-            key.setAdvertsId(Integer.parseInt(values[1]));
-            return key;
-        }
-
-        String getStringKey(entities.RespondersPK value) {
-            StringBuilder sb = new StringBuilder();
-            sb.append(value.getUserId());
-            sb.append(SEPARATOR);
-            sb.append(value.getAdvertsId());
-            return sb.toString();
-        }
-
-        @Override
-        public String getAsString(FacesContext facesContext, UIComponent component, Object object) {
-            if (object == null) {
-                return null;
-            }
-            if (object instanceof Responders) {
-                Responders o = (Responders) object;
-                return getStringKey(o.getRespondersPK());
-            } else {
-                throw new IllegalArgumentException("object " + object + " is of type " + object.getClass().getName() + "; expected type: " + Responders.class.getName());
+    private String relatedControllerOutcome() {
+        String relatedControllerString = JsfUtil.getRequestParameter("jsfcrud.relatedController");
+        String relatedControllerTypeString = JsfUtil.getRequestParameter("jsfcrud.relatedControllerType");
+        if (relatedControllerString != null && relatedControllerTypeString != null) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            Object relatedController = context.getApplication().getELResolver().getValue(context.getELContext(), null, relatedControllerString);
+            try {
+                Class<?> relatedControllerType = Class.forName(relatedControllerTypeString);
+                Method detailSetupMethod = relatedControllerType.getMethod("detailSetup");
+                return (String) detailSetupMethod.invoke(relatedController);
+            } catch (ClassNotFoundException e) {
+                throw new FacesException(e);
+            } catch (NoSuchMethodException e) {
+                throw new FacesException(e);
+            } catch (IllegalAccessException e) {
+                throw new FacesException(e);
+            } catch (InvocationTargetException e) {
+                throw new FacesException(e);
             }
         }
-
+        return null;
     }
 
+    private void reset(boolean resetFirstItem) {
+        responders = null;
+        respondersItems = null;
+        pagingInfo.setItemCount(-1);
+        if (resetFirstItem) {
+            pagingInfo.setFirstItem(0);
+        }
+    }
+
+    public void validateCreate(FacesContext facesContext, UIComponent component, Object value) {
+        Responders newResponders = new Responders();
+        newResponders.setRespondersPK(new RespondersPK());
+        String newRespondersString = converter.getAsString(FacesContext.getCurrentInstance(), null, newResponders);
+        String respondersString = converter.getAsString(FacesContext.getCurrentInstance(), null, responders);
+        if (!newRespondersString.equals(respondersString)) {
+            createSetup();
+        }
+    }
+
+    public Converter getConverter() {
+        return converter;
+    }
+    
 }

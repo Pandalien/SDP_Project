@@ -1,235 +1,282 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package jsf;
 
 import entities.Adverts;
-import jsf.util.JsfUtil;
-import jsf.util.PaginationHelper;
-import sb.AdvertsFacade;
-
-import java.io.Serializable;
-import java.util.ResourceBundle;
-import javax.ejb.EJB;
-import javax.inject.Named;
-import javax.enterprise.context.SessionScoped;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.List;
+import javax.faces.FacesException;
+import javax.annotation.Resource;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
-import javax.faces.convert.FacesConverter;
-import javax.faces.model.DataModel;
-import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
+import javax.transaction.UserTransaction;
+import jsf.util.JsfUtil;
+import jsf.util.PagingInfo;
+import sb.AdvertsFacade;
 
-@Named("advertsController")
-@SessionScoped
-public class AdvertsController implements Serializable {
-
-    private Adverts current;
-    private DataModel items = null;
-    @EJB
-    private sb.AdvertsFacade ejbFacade;
-    private PaginationHelper pagination;
-    private int selectedItemIndex;
-
+/**
+ *
+ * @author andyc
+ */
+public class AdvertsController {
+    boolean ERROR = false;
     public AdvertsController() {
+        pagingInfo = new PagingInfo();
+        converter = new AdvertsConverter();
     }
+    private Adverts adverts = null;
+    private List<Adverts> advertsItems = null;
+    private AdvertsFacade jpaController = null;
+    private AdvertsConverter converter = null;
+    private PagingInfo pagingInfo = null;
+    @Resource
+    private UserTransaction utx = null;
+    @PersistenceUnit(unitName = "CommunitySkillsSearchPU")
+    private EntityManagerFactory emf = null;
 
-    public Adverts getSelected() {
-        if (current == null) {
-            current = new Adverts();
-            selectedItemIndex = -1;
+    public PagingInfo getPagingInfo() {
+        if (pagingInfo.getItemCount() == -1) {
+            pagingInfo.setItemCount(getJpaController().count());
         }
-        return current;
+        return pagingInfo;
     }
 
-    private AdvertsFacade getFacade() {
-        return ejbFacade;
-    }
-
-    public PaginationHelper getPagination() {
-        if (pagination == null) {
-            pagination = new PaginationHelper(10) {
-
-                @Override
-                public int getItemsCount() {
-                    return getFacade().count();
-                }
-
-                @Override
-                public DataModel createPageDataModel() {
-                    return new ListDataModel(getFacade().findRange(new int[]{getPageFirstItem(), getPageFirstItem() + getPageSize()}));
-                }
-            };
+    public AdvertsFacade getJpaController() {
+        if (jpaController == null) {
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            jpaController = (AdvertsFacade) facesContext.getApplication().getELResolver().getValue(facesContext.getELContext(), null, "advertsJpa");
         }
-        return pagination;
+        return jpaController;
     }
 
-    public String prepareList() {
-        recreateModel();
-        return "List";
+    public SelectItem[] getAdvertsItemsAvailableSelectMany() {
+        return JsfUtil.getSelectItems(getJpaController().findAll(), false);
     }
 
-    public String prepareView() {
-        current = (Adverts) getItems().getRowData();
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
-        return "View";
+    public SelectItem[] getAdvertsItemsAvailableSelectOne() {
+        return JsfUtil.getSelectItems(getJpaController().findAll(), true);
     }
 
-    public String prepareCreate() {
-        current = new Adverts();
-        selectedItemIndex = -1;
-        return "Create";
+    public Adverts getAdverts() {
+        if (adverts == null) {
+            adverts = (Adverts) JsfUtil.getObjectFromRequestParameter("jsfcrud.currentAdverts", converter, null);
+        }
+        if (adverts == null) {
+            adverts = new Adverts();
+        }
+        return adverts;
+    }
+
+    public String listSetup() {
+        reset(true);
+        return "adverts_list";
+    }
+
+    public String createSetup() {
+        reset(false);
+        adverts = new Adverts();
+        return "adverts_create";
     }
 
     public String create() {
         try {
-            getFacade().create(current);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("AdvertsCreated"));
-            return prepareCreate();
-        } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
-            return null;
+            utx.begin();
+        } catch (Exception ex) {
         }
-    }
-
-    public String prepareEdit() {
-        current = (Adverts) getItems().getRowData();
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
-        return "Edit";
-    }
-
-    public String update() {
         try {
-            getFacade().edit(current);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("AdvertsUpdated"));
-            return "View";
-        } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
-            return null;
-        }
-    }
-
-    public String destroy() {
-        current = (Adverts) getItems().getRowData();
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
-        performDestroy();
-        recreatePagination();
-        recreateModel();
-        return "List";
-    }
-
-    public String destroyAndView() {
-        performDestroy();
-        recreateModel();
-        updateCurrentItem();
-        if (selectedItemIndex >= 0) {
-            return "View";
-        } else {
-            // all items were removed - go back to list
-            recreateModel();
-            return "List";
-        }
-    }
-
-    private void performDestroy() {
-        try {
-            getFacade().remove(current);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("AdvertsDeleted"));
-        } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
-        }
-    }
-
-    private void updateCurrentItem() {
-        int count = getFacade().count();
-        if (selectedItemIndex >= count) {
-            // selected index cannot be bigger than number of items:
-            selectedItemIndex = count - 1;
-            // go to previous page if last page disappeared:
-            if (pagination.getPageFirstItem() >= count) {
-                pagination.previousPage();
+            Exception transactionException = null;
+            getJpaController().create(adverts);
+            try {
+                utx.commit();
+            } catch (javax.transaction.RollbackException ex) {
+                transactionException = ex;
+            } catch (Exception ex) {
             }
+            if (transactionException == null) {
+                JsfUtil.addSuccessMessage("Adverts was successfully created.");
+            } else {
+                JsfUtil.ensureAddErrorMessage(transactionException, "A persistence error occurred.");
+            }
+        } catch (Exception e) {
+            try {
+                utx.rollback();
+            } catch (Exception ex) {
+            }
+            JsfUtil.ensureAddErrorMessage(e, "A persistence error occurred.");
+            return null;
         }
-        if (selectedItemIndex >= 0) {
-            current = getFacade().findRange(new int[]{selectedItemIndex, selectedItemIndex + 1}).get(0);
-        }
+        return listSetup();
     }
 
-    public DataModel getItems() {
-        if (items == null) {
-            items = getPagination().createPageDataModel();
+    public String detailSetup() {
+        return scalarSetup("adverts_detail");
+    }
+
+    public String editSetup() {
+        return scalarSetup("adverts_edit");
+    }
+
+    private String scalarSetup(String destination) {
+        reset(false);
+        adverts = (Adverts) JsfUtil.getObjectFromRequestParameter("jsfcrud.currentAdverts", converter, null);
+        if (adverts == null) {
+            String requestAdvertsString = JsfUtil.getRequestParameter("jsfcrud.currentAdverts");
+            JsfUtil.addErrorMessage("The adverts with id " + requestAdvertsString + " no longer exists.");
+            return relatedOrListOutcome();
         }
-        return items;
+        return destination;
     }
 
-    private void recreateModel() {
-        items = null;
+    public String edit() {
+        String advertsString = converter.getAsString(FacesContext.getCurrentInstance(), null, adverts);
+        String currentAdvertsString = JsfUtil.getRequestParameter("jsfcrud.currentAdverts");
+        if (advertsString == null || advertsString.length() == 0 || !advertsString.equals(currentAdvertsString)) {
+            String outcome = editSetup();
+            if ("adverts_edit".equals(outcome)) {
+                JsfUtil.addErrorMessage("Could not edit adverts. Try again.");
+            }
+            return outcome;
+        }
+        try {
+            utx.begin();
+        } catch (Exception ex) {
+        }
+        try {
+            Exception transactionException = null;
+            getJpaController().edit(adverts);
+            try {
+                utx.commit();
+            } catch (javax.transaction.RollbackException ex) {
+                transactionException = ex;
+            } catch (Exception ex) {
+            }
+            if (transactionException == null) {
+                JsfUtil.addSuccessMessage("Adverts was successfully updated.");
+            } else {
+                JsfUtil.ensureAddErrorMessage(transactionException, "A persistence error occurred.");
+            }
+        } catch (Exception e) {
+            try {
+                utx.rollback();
+            } catch (Exception ex) {
+            }
+            JsfUtil.ensureAddErrorMessage(e, "A persistence error occurred.");
+            return null;
+        }
+        return detailSetup();
     }
 
-    private void recreatePagination() {
-        pagination = null;
+    public String remove() {
+        String idAsString = JsfUtil.getRequestParameter("jsfcrud.currentAdverts");
+        Integer id = new Integer(idAsString);
+        try {
+            utx.begin();
+        } catch (Exception ex) {
+        }
+        try {
+            Exception transactionException = null;
+            getJpaController().remove(getJpaController().find(id));
+            try {
+                utx.commit();
+            } catch (javax.transaction.RollbackException ex) {
+                transactionException = ex;
+            } catch (Exception ex) {
+            }
+            if (transactionException == null) {
+                JsfUtil.addSuccessMessage("Adverts was successfully deleted.");
+            } else {
+                JsfUtil.ensureAddErrorMessage(transactionException, "A persistence error occurred.");
+            }
+        } catch (Exception e) {
+            try {
+                utx.rollback();
+            } catch (Exception ex) {
+            }
+            JsfUtil.ensureAddErrorMessage(e, "A persistence error occurred.");
+            return null;
+        }
+        return relatedOrListOutcome();
+    }
+
+    private String relatedOrListOutcome() {
+        String relatedControllerOutcome = relatedControllerOutcome();
+        if ((ERROR)) {
+            return relatedControllerOutcome;
+        }
+        return listSetup();
+    }
+
+    public List<Adverts> getAdvertsItems() {
+        if (advertsItems == null) {
+            getPagingInfo();
+            advertsItems = getJpaController().findRange(new int[]{pagingInfo.getFirstItem(), pagingInfo.getFirstItem() + pagingInfo.getBatchSize()});
+        }
+        return advertsItems;
     }
 
     public String next() {
-        getPagination().nextPage();
-        recreateModel();
-        return "List";
+        reset(false);
+        getPagingInfo().nextPage();
+        return "adverts_list";
     }
 
-    public String previous() {
-        getPagination().previousPage();
-        recreateModel();
-        return "List";
+    public String prev() {
+        reset(false);
+        getPagingInfo().previousPage();
+        return "adverts_list";
     }
 
-    public SelectItem[] getItemsAvailableSelectMany() {
-        return JsfUtil.getSelectItems(ejbFacade.findAll(), false);
-    }
-
-    public SelectItem[] getItemsAvailableSelectOne() {
-        return JsfUtil.getSelectItems(ejbFacade.findAll(), true);
-    }
-
-    public Adverts getAdverts(java.lang.Integer id) {
-        return ejbFacade.find(id);
-    }
-
-    @FacesConverter(forClass = Adverts.class)
-    public static class AdvertsControllerConverter implements Converter {
-
-        @Override
-        public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
-            if (value == null || value.length() == 0) {
-                return null;
-            }
-            AdvertsController controller = (AdvertsController) facesContext.getApplication().getELResolver().
-                    getValue(facesContext.getELContext(), null, "advertsController");
-            return controller.getAdverts(getKey(value));
-        }
-
-        java.lang.Integer getKey(String value) {
-            java.lang.Integer key;
-            key = Integer.valueOf(value);
-            return key;
-        }
-
-        String getStringKey(java.lang.Integer value) {
-            StringBuilder sb = new StringBuilder();
-            sb.append(value);
-            return sb.toString();
-        }
-
-        @Override
-        public String getAsString(FacesContext facesContext, UIComponent component, Object object) {
-            if (object == null) {
-                return null;
-            }
-            if (object instanceof Adverts) {
-                Adverts o = (Adverts) object;
-                return getStringKey(o.getId());
-            } else {
-                throw new IllegalArgumentException("object " + object + " is of type " + object.getClass().getName() + "; expected type: " + Adverts.class.getName());
+    private String relatedControllerOutcome() {
+        String relatedControllerString = JsfUtil.getRequestParameter("jsfcrud.relatedController");
+        String relatedControllerTypeString = JsfUtil.getRequestParameter("jsfcrud.relatedControllerType");
+        if (relatedControllerString != null && relatedControllerTypeString != null) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            Object relatedController = context.getApplication().getELResolver().getValue(context.getELContext(), null, relatedControllerString);
+            try {
+                Class<?> relatedControllerType = Class.forName(relatedControllerTypeString);
+                Method detailSetupMethod = relatedControllerType.getMethod("detailSetup");
+                return (String) detailSetupMethod.invoke(relatedController);
+            } catch (ClassNotFoundException e) {
+                throw new FacesException(e);
+            } catch (NoSuchMethodException e) {
+                throw new FacesException(e);
+            } catch (IllegalAccessException e) {
+                throw new FacesException(e);
+            } catch (InvocationTargetException e) {
+                throw new FacesException(e);
             }
         }
-
+        return null;
     }
 
+    private void reset(boolean resetFirstItem) {
+        adverts = null;
+        advertsItems = null;
+        pagingInfo.setItemCount(-1);
+        if (resetFirstItem) {
+            pagingInfo.setFirstItem(0);
+        }
+    }
+
+    public void validateCreate(FacesContext facesContext, UIComponent component, Object value) {
+        Adverts newAdverts = new Adverts();
+        String newAdvertsString = converter.getAsString(FacesContext.getCurrentInstance(), null, newAdverts);
+        String advertsString = converter.getAsString(FacesContext.getCurrentInstance(), null, adverts);
+        if (!newAdvertsString.equals(advertsString)) {
+            createSetup();
+        }
+    }
+
+    public Converter getConverter() {
+        return converter;
+    }
+    
 }

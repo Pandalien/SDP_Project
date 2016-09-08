@@ -1,235 +1,282 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package jsf;
 
 import entities.Skills;
-import jsf.util.JsfUtil;
-import jsf.util.PaginationHelper;
-import sb.SkillsFacade;
-
-import java.io.Serializable;
-import java.util.ResourceBundle;
-import javax.ejb.EJB;
-import javax.inject.Named;
-import javax.enterprise.context.SessionScoped;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.List;
+import javax.faces.FacesException;
+import javax.annotation.Resource;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
-import javax.faces.convert.FacesConverter;
-import javax.faces.model.DataModel;
-import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
+import javax.transaction.UserTransaction;
+import jsf.util.JsfUtil;
+import jsf.util.PagingInfo;
+import sb.SkillsFacade;
 
-@Named("skillsController")
-@SessionScoped
-public class SkillsController implements Serializable {
-
-    private Skills current;
-    private DataModel items = null;
-    @EJB
-    private sb.SkillsFacade ejbFacade;
-    private PaginationHelper pagination;
-    private int selectedItemIndex;
-
+/**
+ *
+ * @author andyc
+ */
+public class SkillsController {
+    boolean ERROR = false;
     public SkillsController() {
+        pagingInfo = new PagingInfo();
+        converter = new SkillsConverter();
     }
+    private Skills skills = null;
+    private List<Skills> skillsItems = null;
+    private SkillsFacade jpaController = null;
+    private SkillsConverter converter = null;
+    private PagingInfo pagingInfo = null;
+    @Resource
+    private UserTransaction utx = null;
+    @PersistenceUnit(unitName = "CommunitySkillsSearchPU")
+    private EntityManagerFactory emf = null;
 
-    public Skills getSelected() {
-        if (current == null) {
-            current = new Skills();
-            selectedItemIndex = -1;
+    public PagingInfo getPagingInfo() {
+        if (pagingInfo.getItemCount() == -1) {
+            pagingInfo.setItemCount(getJpaController().count());
         }
-        return current;
+        return pagingInfo;
     }
 
-    private SkillsFacade getFacade() {
-        return ejbFacade;
-    }
-
-    public PaginationHelper getPagination() {
-        if (pagination == null) {
-            pagination = new PaginationHelper(10) {
-
-                @Override
-                public int getItemsCount() {
-                    return getFacade().count();
-                }
-
-                @Override
-                public DataModel createPageDataModel() {
-                    return new ListDataModel(getFacade().findRange(new int[]{getPageFirstItem(), getPageFirstItem() + getPageSize()}));
-                }
-            };
+    public SkillsFacade getJpaController() {
+        if (jpaController == null) {
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            jpaController = (SkillsFacade) facesContext.getApplication().getELResolver().getValue(facesContext.getELContext(), null, "skillsJpa");
         }
-        return pagination;
+        return jpaController;
     }
 
-    public String prepareList() {
-        recreateModel();
-        return "List";
+    public SelectItem[] getSkillsItemsAvailableSelectMany() {
+        return JsfUtil.getSelectItems(getJpaController().findAll(), false);
     }
 
-    public String prepareView() {
-        current = (Skills) getItems().getRowData();
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
-        return "View";
+    public SelectItem[] getSkillsItemsAvailableSelectOne() {
+        return JsfUtil.getSelectItems(getJpaController().findAll(), true);
     }
 
-    public String prepareCreate() {
-        current = new Skills();
-        selectedItemIndex = -1;
-        return "Create";
+    public Skills getSkills() {
+        if (skills == null) {
+            skills = (Skills) JsfUtil.getObjectFromRequestParameter("jsfcrud.currentSkills", converter, null);
+        }
+        if (skills == null) {
+            skills = new Skills();
+        }
+        return skills;
+    }
+
+    public String listSetup() {
+        reset(true);
+        return "skills_list";
+    }
+
+    public String createSetup() {
+        reset(false);
+        skills = new Skills();
+        return "skills_create";
     }
 
     public String create() {
         try {
-            getFacade().create(current);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("SkillsCreated"));
-            return prepareCreate();
-        } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
-            return null;
+            utx.begin();
+        } catch (Exception ex) {
         }
-    }
-
-    public String prepareEdit() {
-        current = (Skills) getItems().getRowData();
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
-        return "Edit";
-    }
-
-    public String update() {
         try {
-            getFacade().edit(current);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("SkillsUpdated"));
-            return "View";
-        } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
-            return null;
-        }
-    }
-
-    public String destroy() {
-        current = (Skills) getItems().getRowData();
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
-        performDestroy();
-        recreatePagination();
-        recreateModel();
-        return "List";
-    }
-
-    public String destroyAndView() {
-        performDestroy();
-        recreateModel();
-        updateCurrentItem();
-        if (selectedItemIndex >= 0) {
-            return "View";
-        } else {
-            // all items were removed - go back to list
-            recreateModel();
-            return "List";
-        }
-    }
-
-    private void performDestroy() {
-        try {
-            getFacade().remove(current);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("SkillsDeleted"));
-        } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
-        }
-    }
-
-    private void updateCurrentItem() {
-        int count = getFacade().count();
-        if (selectedItemIndex >= count) {
-            // selected index cannot be bigger than number of items:
-            selectedItemIndex = count - 1;
-            // go to previous page if last page disappeared:
-            if (pagination.getPageFirstItem() >= count) {
-                pagination.previousPage();
+            Exception transactionException = null;
+            getJpaController().create(skills);
+            try {
+                utx.commit();
+            } catch (javax.transaction.RollbackException ex) {
+                transactionException = ex;
+            } catch (Exception ex) {
             }
+            if (transactionException == null) {
+                JsfUtil.addSuccessMessage("Skills was successfully created.");
+            } else {
+                JsfUtil.ensureAddErrorMessage(transactionException, "A persistence error occurred.");
+            }
+        } catch (Exception e) {
+            try {
+                utx.rollback();
+            } catch (Exception ex) {
+            }
+            JsfUtil.ensureAddErrorMessage(e, "A persistence error occurred.");
+            return null;
         }
-        if (selectedItemIndex >= 0) {
-            current = getFacade().findRange(new int[]{selectedItemIndex, selectedItemIndex + 1}).get(0);
-        }
+        return listSetup();
     }
 
-    public DataModel getItems() {
-        if (items == null) {
-            items = getPagination().createPageDataModel();
+    public String detailSetup() {
+        return scalarSetup("skills_detail");
+    }
+
+    public String editSetup() {
+        return scalarSetup("skills_edit");
+    }
+
+    private String scalarSetup(String destination) {
+        reset(false);
+        skills = (Skills) JsfUtil.getObjectFromRequestParameter("jsfcrud.currentSkills", converter, null);
+        if (skills == null) {
+            String requestSkillsString = JsfUtil.getRequestParameter("jsfcrud.currentSkills");
+            JsfUtil.addErrorMessage("The skills with id " + requestSkillsString + " no longer exists.");
+            return relatedOrListOutcome();
         }
-        return items;
+        return destination;
     }
 
-    private void recreateModel() {
-        items = null;
+    public String edit() {
+        String skillsString = converter.getAsString(FacesContext.getCurrentInstance(), null, skills);
+        String currentSkillsString = JsfUtil.getRequestParameter("jsfcrud.currentSkills");
+        if (skillsString == null || skillsString.length() == 0 || !skillsString.equals(currentSkillsString)) {
+            String outcome = editSetup();
+            if ("skills_edit".equals(outcome)) {
+                JsfUtil.addErrorMessage("Could not edit skills. Try again.");
+            }
+            return outcome;
+        }
+        try {
+            utx.begin();
+        } catch (Exception ex) {
+        }
+        try {
+            Exception transactionException = null;
+            getJpaController().edit(skills);
+            try {
+                utx.commit();
+            } catch (javax.transaction.RollbackException ex) {
+                transactionException = ex;
+            } catch (Exception ex) {
+            }
+            if (transactionException == null) {
+                JsfUtil.addSuccessMessage("Skills was successfully updated.");
+            } else {
+                JsfUtil.ensureAddErrorMessage(transactionException, "A persistence error occurred.");
+            }
+        } catch (Exception e) {
+            try {
+                utx.rollback();
+            } catch (Exception ex) {
+            }
+            JsfUtil.ensureAddErrorMessage(e, "A persistence error occurred.");
+            return null;
+        }
+        return detailSetup();
     }
 
-    private void recreatePagination() {
-        pagination = null;
+    public String remove() {
+        String idAsString = JsfUtil.getRequestParameter("jsfcrud.currentSkills");
+        Integer id = new Integer(idAsString);
+        try {
+            utx.begin();
+        } catch (Exception ex) {
+        }
+        try {
+            Exception transactionException = null;
+            getJpaController().remove(getJpaController().find(id));
+            try {
+                utx.commit();
+            } catch (javax.transaction.RollbackException ex) {
+                transactionException = ex;
+            } catch (Exception ex) {
+            }
+            if (transactionException == null) {
+                JsfUtil.addSuccessMessage("Skills was successfully deleted.");
+            } else {
+                JsfUtil.ensureAddErrorMessage(transactionException, "A persistence error occurred.");
+            }
+        } catch (Exception e) {
+            try {
+                utx.rollback();
+            } catch (Exception ex) {
+            }
+            JsfUtil.ensureAddErrorMessage(e, "A persistence error occurred.");
+            return null;
+        }
+        return relatedOrListOutcome();
+    }
+
+    private String relatedOrListOutcome() {
+        String relatedControllerOutcome = relatedControllerOutcome();
+        if ((ERROR)) {
+            return relatedControllerOutcome;
+        }
+        return listSetup();
+    }
+
+    public List<Skills> getSkillsItems() {
+        if (skillsItems == null) {
+            getPagingInfo();
+            skillsItems = getJpaController().findRange(new int[]{pagingInfo.getFirstItem(), pagingInfo.getFirstItem() + pagingInfo.getBatchSize()});
+        }
+        return skillsItems;
     }
 
     public String next() {
-        getPagination().nextPage();
-        recreateModel();
-        return "List";
+        reset(false);
+        getPagingInfo().nextPage();
+        return "skills_list";
     }
 
-    public String previous() {
-        getPagination().previousPage();
-        recreateModel();
-        return "List";
+    public String prev() {
+        reset(false);
+        getPagingInfo().previousPage();
+        return "skills_list";
     }
 
-    public SelectItem[] getItemsAvailableSelectMany() {
-        return JsfUtil.getSelectItems(ejbFacade.findAll(), false);
-    }
-
-    public SelectItem[] getItemsAvailableSelectOne() {
-        return JsfUtil.getSelectItems(ejbFacade.findAll(), true);
-    }
-
-    public Skills getSkills(java.lang.Integer id) {
-        return ejbFacade.find(id);
-    }
-
-    @FacesConverter(forClass = Skills.class)
-    public static class SkillsControllerConverter implements Converter {
-
-        @Override
-        public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
-            if (value == null || value.length() == 0) {
-                return null;
-            }
-            SkillsController controller = (SkillsController) facesContext.getApplication().getELResolver().
-                    getValue(facesContext.getELContext(), null, "skillsController");
-            return controller.getSkills(getKey(value));
-        }
-
-        java.lang.Integer getKey(String value) {
-            java.lang.Integer key;
-            key = Integer.valueOf(value);
-            return key;
-        }
-
-        String getStringKey(java.lang.Integer value) {
-            StringBuilder sb = new StringBuilder();
-            sb.append(value);
-            return sb.toString();
-        }
-
-        @Override
-        public String getAsString(FacesContext facesContext, UIComponent component, Object object) {
-            if (object == null) {
-                return null;
-            }
-            if (object instanceof Skills) {
-                Skills o = (Skills) object;
-                return getStringKey(o.getId());
-            } else {
-                throw new IllegalArgumentException("object " + object + " is of type " + object.getClass().getName() + "; expected type: " + Skills.class.getName());
+    private String relatedControllerOutcome() {
+        String relatedControllerString = JsfUtil.getRequestParameter("jsfcrud.relatedController");
+        String relatedControllerTypeString = JsfUtil.getRequestParameter("jsfcrud.relatedControllerType");
+        if (relatedControllerString != null && relatedControllerTypeString != null) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            Object relatedController = context.getApplication().getELResolver().getValue(context.getELContext(), null, relatedControllerString);
+            try {
+                Class<?> relatedControllerType = Class.forName(relatedControllerTypeString);
+                Method detailSetupMethod = relatedControllerType.getMethod("detailSetup");
+                return (String) detailSetupMethod.invoke(relatedController);
+            } catch (ClassNotFoundException e) {
+                throw new FacesException(e);
+            } catch (NoSuchMethodException e) {
+                throw new FacesException(e);
+            } catch (IllegalAccessException e) {
+                throw new FacesException(e);
+            } catch (InvocationTargetException e) {
+                throw new FacesException(e);
             }
         }
-
+        return null;
     }
 
+    private void reset(boolean resetFirstItem) {
+        skills = null;
+        skillsItems = null;
+        pagingInfo.setItemCount(-1);
+        if (resetFirstItem) {
+            pagingInfo.setFirstItem(0);
+        }
+    }
+
+    public void validateCreate(FacesContext facesContext, UIComponent component, Object value) {
+        Skills newSkills = new Skills();
+        String newSkillsString = converter.getAsString(FacesContext.getCurrentInstance(), null, newSkills);
+        String skillsString = converter.getAsString(FacesContext.getCurrentInstance(), null, skills);
+        if (!newSkillsString.equals(skillsString)) {
+            createSetup();
+        }
+    }
+
+    public Converter getConverter() {
+        return converter;
+    }
+    
 }

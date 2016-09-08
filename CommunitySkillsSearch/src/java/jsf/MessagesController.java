@@ -1,252 +1,295 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package jsf;
 
 import entities.Messages;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import javax.faces.FacesException;
+import javax.annotation.Resource;
+import javax.transaction.UserTransaction;
 import jsf.util.JsfUtil;
-import jsf.util.PaginationHelper;
-import sb.MessagesFacade;
-
-import java.io.Serializable;
-import java.util.ResourceBundle;
-import javax.ejb.EJB;
-import javax.inject.Named;
-import javax.enterprise.context.SessionScoped;
+import entities.MessagesPK;
+import java.util.List;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
-import javax.faces.convert.FacesConverter;
-import javax.faces.model.DataModel;
-import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
+import jsf.util.PagingInfo;
+import sb.MessagesFacade;
 
-@Named("messagesController")
-@SessionScoped
-public class MessagesController implements Serializable {
-
-    private Messages current;
-    private DataModel items = null;
-    @EJB
-    private sb.MessagesFacade ejbFacade;
-    private PaginationHelper pagination;
-    private int selectedItemIndex;
-
+/**
+ *
+ * @author andyc
+ */
+public class MessagesController {
+    boolean ERROR = false;
     public MessagesController() {
+        pagingInfo = new PagingInfo();
+        converter = new MessagesConverter();
     }
+    private Messages messages = null;
+    private List<Messages> messagesItems = null;
+    private MessagesFacade jpaController = null;
+    private MessagesConverter converter = null;
+    private PagingInfo pagingInfo = null;
+    @Resource
+    private UserTransaction utx = null;
+    @PersistenceUnit(unitName = "CommunitySkillsSearchPU")
+    private EntityManagerFactory emf = null;
 
-    public Messages getSelected() {
-        if (current == null) {
-            current = new Messages();
-            current.setMessagesPK(new entities.MessagesPK());
-            selectedItemIndex = -1;
+    public PagingInfo getPagingInfo() {
+        if (pagingInfo.getItemCount() == -1) {
+            pagingInfo.setItemCount(getJpaController().count());
         }
-        return current;
+        return pagingInfo;
     }
 
-    private MessagesFacade getFacade() {
-        return ejbFacade;
-    }
-
-    public PaginationHelper getPagination() {
-        if (pagination == null) {
-            pagination = new PaginationHelper(10) {
-
-                @Override
-                public int getItemsCount() {
-                    return getFacade().count();
-                }
-
-                @Override
-                public DataModel createPageDataModel() {
-                    return new ListDataModel(getFacade().findRange(new int[]{getPageFirstItem(), getPageFirstItem() + getPageSize()}));
-                }
-            };
+    public MessagesFacade getJpaController() {
+        if (jpaController == null) {
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            jpaController = (MessagesFacade) facesContext.getApplication().getELResolver().getValue(facesContext.getELContext(), null, "messagesJpa");
         }
-        return pagination;
+        return jpaController;
     }
 
-    public String prepareList() {
-        recreateModel();
-        return "List";
+    public SelectItem[] getMessagesItemsAvailableSelectMany() {
+        return JsfUtil.getSelectItems(getJpaController().findAll(), false);
     }
 
-    public String prepareView() {
-        current = (Messages) getItems().getRowData();
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
-        return "View";
+    public SelectItem[] getMessagesItemsAvailableSelectOne() {
+        return JsfUtil.getSelectItems(getJpaController().findAll(), true);
     }
 
-    public String prepareCreate() {
-        current = new Messages();
-        current.setMessagesPK(new entities.MessagesPK());
-        selectedItemIndex = -1;
-        return "Create";
+    public Messages getMessages() {
+        if (messages == null) {
+            messages = (Messages) JsfUtil.getObjectFromRequestParameter("jsfcrud.currentMessages", converter, null);
+        }
+        if (messages == null) {
+            messages = new Messages();
+        }
+        return messages;
+    }
+
+    public String listSetup() {
+        reset(true);
+        return "messages_list";
+    }
+
+    public String createSetup() {
+        reset(false);
+        messages = new Messages();
+        messages.setMessagesPK(new MessagesPK());
+        return "messages_create";
     }
 
     public String create() {
+        messages.getMessagesPK().setReceiverId(messages.getUser1().getId());
+        messages.getMessagesPK().setSenderId(messages.getUser().getId());
+        // TODO: no setter methods were found in your primary key class
+        //    entities.MessagesPK
+        // and therefore initialization code need manual adjustments.
         try {
-            current.getMessagesPK().setSenderId(current.getUser().getId());
-            current.getMessagesPK().setReceiverId(current.getUser1().getId());
-            getFacade().create(current);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("MessagesCreated"));
-            return prepareCreate();
-        } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
-            return null;
+            utx.begin();
+        } catch (Exception ex) {
         }
-    }
-
-    public String prepareEdit() {
-        current = (Messages) getItems().getRowData();
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
-        return "Edit";
-    }
-
-    public String update() {
         try {
-            current.getMessagesPK().setSenderId(current.getUser().getId());
-            current.getMessagesPK().setReceiverId(current.getUser1().getId());
-            getFacade().edit(current);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("MessagesUpdated"));
-            return "View";
-        } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
-            return null;
-        }
-    }
-
-    public String destroy() {
-        current = (Messages) getItems().getRowData();
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
-        performDestroy();
-        recreatePagination();
-        recreateModel();
-        return "List";
-    }
-
-    public String destroyAndView() {
-        performDestroy();
-        recreateModel();
-        updateCurrentItem();
-        if (selectedItemIndex >= 0) {
-            return "View";
-        } else {
-            // all items were removed - go back to list
-            recreateModel();
-            return "List";
-        }
-    }
-
-    private void performDestroy() {
-        try {
-            getFacade().remove(current);
-            JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("MessagesDeleted"));
-        } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
-        }
-    }
-
-    private void updateCurrentItem() {
-        int count = getFacade().count();
-        if (selectedItemIndex >= count) {
-            // selected index cannot be bigger than number of items:
-            selectedItemIndex = count - 1;
-            // go to previous page if last page disappeared:
-            if (pagination.getPageFirstItem() >= count) {
-                pagination.previousPage();
+            Exception transactionException = null;
+            getJpaController().create(messages);
+            try {
+                utx.commit();
+            } catch (javax.transaction.RollbackException ex) {
+                transactionException = ex;
+            } catch (Exception ex) {
             }
+            if (transactionException == null) {
+                JsfUtil.addSuccessMessage("Messages was successfully created.");
+            } else {
+                JsfUtil.ensureAddErrorMessage(transactionException, "A persistence error occurred.");
+            }
+        } catch (Exception e) {
+            try {
+                utx.rollback();
+            } catch (Exception ex) {
+            }
+            JsfUtil.ensureAddErrorMessage(e, "A persistence error occurred.");
+            return null;
         }
-        if (selectedItemIndex >= 0) {
-            current = getFacade().findRange(new int[]{selectedItemIndex, selectedItemIndex + 1}).get(0);
-        }
+        return listSetup();
     }
 
-    public DataModel getItems() {
-        if (items == null) {
-            items = getPagination().createPageDataModel();
+    public String detailSetup() {
+        return scalarSetup("messages_detail");
+    }
+
+    public String editSetup() {
+        return scalarSetup("messages_edit");
+    }
+
+    private String scalarSetup(String destination) {
+        reset(false);
+        messages = (Messages) JsfUtil.getObjectFromRequestParameter("jsfcrud.currentMessages", converter, null);
+        if (messages == null) {
+            String requestMessagesString = JsfUtil.getRequestParameter("jsfcrud.currentMessages");
+            JsfUtil.addErrorMessage("The messages with id " + requestMessagesString + " no longer exists.");
+            return relatedOrListOutcome();
         }
-        return items;
+        return destination;
     }
 
-    private void recreateModel() {
-        items = null;
+    public String edit() {
+        messages.getMessagesPK().setReceiverId(messages.getUser1().getId());
+        messages.getMessagesPK().setSenderId(messages.getUser().getId());
+        // TODO: no setter methods were found in your primary key class
+        //    entities.MessagesPK
+        // and therefore initialization code need manual adjustments.
+        String messagesString = converter.getAsString(FacesContext.getCurrentInstance(), null, messages);
+        String currentMessagesString = JsfUtil.getRequestParameter("jsfcrud.currentMessages");
+        if (messagesString == null || messagesString.length() == 0 || !messagesString.equals(currentMessagesString)) {
+            String outcome = editSetup();
+            if ("messages_edit".equals(outcome)) {
+                JsfUtil.addErrorMessage("Could not edit messages. Try again.");
+            }
+            return outcome;
+        }
+        try {
+            utx.begin();
+        } catch (Exception ex) {
+        }
+        try {
+            Exception transactionException = null;
+            getJpaController().edit(messages);
+            try {
+                utx.commit();
+            } catch (javax.transaction.RollbackException ex) {
+                transactionException = ex;
+            } catch (Exception ex) {
+            }
+            if (transactionException == null) {
+                JsfUtil.addSuccessMessage("Messages was successfully updated.");
+            } else {
+                JsfUtil.ensureAddErrorMessage(transactionException, "A persistence error occurred.");
+            }
+        } catch (Exception e) {
+            try {
+                utx.rollback();
+            } catch (Exception ex) {
+            }
+            JsfUtil.ensureAddErrorMessage(e, "A persistence error occurred.");
+            return null;
+        }
+        return detailSetup();
     }
 
-    private void recreatePagination() {
-        pagination = null;
+    public String remove() {
+        String idAsString = JsfUtil.getRequestParameter("jsfcrud.currentMessages");
+        MessagesPK id = converter.getId(idAsString);
+        try {
+            utx.begin();
+        } catch (Exception ex) {
+        }
+        try {
+            Exception transactionException = null;
+            getJpaController().remove(getJpaController().find(id));
+            try {
+                utx.commit();
+            } catch (javax.transaction.RollbackException ex) {
+                transactionException = ex;
+            } catch (Exception ex) {
+            }
+            if (transactionException == null) {
+                JsfUtil.addSuccessMessage("Messages was successfully deleted.");
+            } else {
+                JsfUtil.ensureAddErrorMessage(transactionException, "A persistence error occurred.");
+            }
+        } catch (Exception e) {
+            try {
+                utx.rollback();
+            } catch (Exception ex) {
+            }
+            JsfUtil.ensureAddErrorMessage(e, "A persistence error occurred.");
+            return null;
+        }
+        return relatedOrListOutcome();
+    }
+
+    private String relatedOrListOutcome() {
+        String relatedControllerOutcome = relatedControllerOutcome();
+        if ((ERROR)) {
+            return relatedControllerOutcome;
+        }
+        return listSetup();
+    }
+
+    public List<Messages> getMessagesItems() {
+        if (messagesItems == null) {
+            getPagingInfo();
+            messagesItems = getJpaController().findRange(new int[]{pagingInfo.getFirstItem(), pagingInfo.getFirstItem() + pagingInfo.getBatchSize()});
+        }
+        return messagesItems;
     }
 
     public String next() {
-        getPagination().nextPage();
-        recreateModel();
-        return "List";
+        reset(false);
+        getPagingInfo().nextPage();
+        return "messages_list";
     }
 
-    public String previous() {
-        getPagination().previousPage();
-        recreateModel();
-        return "List";
+    public String prev() {
+        reset(false);
+        getPagingInfo().previousPage();
+        return "messages_list";
     }
 
-    public SelectItem[] getItemsAvailableSelectMany() {
-        return JsfUtil.getSelectItems(ejbFacade.findAll(), false);
-    }
-
-    public SelectItem[] getItemsAvailableSelectOne() {
-        return JsfUtil.getSelectItems(ejbFacade.findAll(), true);
-    }
-
-    public Messages getMessages(entities.MessagesPK id) {
-        return ejbFacade.find(id);
-    }
-
-    @FacesConverter(forClass = Messages.class)
-    public static class MessagesControllerConverter implements Converter {
-
-        private static final String SEPARATOR = "#";
-        private static final String SEPARATOR_ESCAPED = "\\#";
-
-        @Override
-        public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
-            if (value == null || value.length() == 0) {
-                return null;
-            }
-            MessagesController controller = (MessagesController) facesContext.getApplication().getELResolver().
-                    getValue(facesContext.getELContext(), null, "messagesController");
-            return controller.getMessages(getKey(value));
-        }
-
-        entities.MessagesPK getKey(String value) {
-            entities.MessagesPK key;
-            String values[] = value.split(SEPARATOR_ESCAPED);
-            key = new entities.MessagesPK();
-            key.setId(Integer.parseInt(values[0]));
-            key.setSenderId(Integer.parseInt(values[1]));
-            key.setReceiverId(Integer.parseInt(values[2]));
-            return key;
-        }
-
-        String getStringKey(entities.MessagesPK value) {
-            StringBuilder sb = new StringBuilder();
-            sb.append(value.getId());
-            sb.append(SEPARATOR);
-            sb.append(value.getSenderId());
-            sb.append(SEPARATOR);
-            sb.append(value.getReceiverId());
-            return sb.toString();
-        }
-
-        @Override
-        public String getAsString(FacesContext facesContext, UIComponent component, Object object) {
-            if (object == null) {
-                return null;
-            }
-            if (object instanceof Messages) {
-                Messages o = (Messages) object;
-                return getStringKey(o.getMessagesPK());
-            } else {
-                throw new IllegalArgumentException("object " + object + " is of type " + object.getClass().getName() + "; expected type: " + Messages.class.getName());
+    private String relatedControllerOutcome() {
+        String relatedControllerString = JsfUtil.getRequestParameter("jsfcrud.relatedController");
+        String relatedControllerTypeString = JsfUtil.getRequestParameter("jsfcrud.relatedControllerType");
+        if (relatedControllerString != null && relatedControllerTypeString != null) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            Object relatedController = context.getApplication().getELResolver().getValue(context.getELContext(), null, relatedControllerString);
+            try {
+                Class<?> relatedControllerType = Class.forName(relatedControllerTypeString);
+                Method detailSetupMethod = relatedControllerType.getMethod("detailSetup");
+                return (String) detailSetupMethod.invoke(relatedController);
+            } catch (ClassNotFoundException e) {
+                throw new FacesException(e);
+            } catch (NoSuchMethodException e) {
+                throw new FacesException(e);
+            } catch (IllegalAccessException e) {
+                throw new FacesException(e);
+            } catch (InvocationTargetException e) {
+                throw new FacesException(e);
             }
         }
-
+        return null;
     }
 
+    private void reset(boolean resetFirstItem) {
+        messages = null;
+        messagesItems = null;
+        pagingInfo.setItemCount(-1);
+        if (resetFirstItem) {
+            pagingInfo.setFirstItem(0);
+        }
+    }
+
+    public void validateCreate(FacesContext facesContext, UIComponent component, Object value) {
+        Messages newMessages = new Messages();
+        newMessages.setMessagesPK(new MessagesPK());
+        String newMessagesString = converter.getAsString(FacesContext.getCurrentInstance(), null, newMessages);
+        String messagesString = converter.getAsString(FacesContext.getCurrentInstance(), null, messages);
+        if (!newMessagesString.equals(messagesString)) {
+            createSetup();
+        }
+    }
+
+    public Converter getConverter() {
+        return converter;
+    }
+    
 }

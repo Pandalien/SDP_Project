@@ -14,13 +14,13 @@
         <servlet-class>servlets.home</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>Faces Servlet</servlet-name>
-        <url-pattern>/faces/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>home</servlet-name>
         <url-pattern>/home</url-pattern>
-    </servlet-mapping>   
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Faces Servlet</servlet-name>
+        <url-pattern>/test/*</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>
             30
