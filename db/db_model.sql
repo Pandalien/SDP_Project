@@ -20,7 +20,7 @@ USE `CSS_DB` ;
 DROP TABLE IF EXISTS `CSS_DB`.`suburb` ;
 
 CREATE TABLE IF NOT EXISTS `CSS_DB`.`suburb` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `suburb` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `suburb_UNIQUE` (`suburb` ASC))
@@ -62,7 +62,7 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `CSS_DB`.`classification` ;
 
 CREATE TABLE IF NOT EXISTS `CSS_DB`.`classification` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `name_UNIQUE` (`name` ASC))
