@@ -6,9 +6,12 @@
 package sb;
 
 import entities.Suburb;
+import entities.User;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -29,4 +32,16 @@ public class SuburbFacade extends AbstractFacade<Suburb> {
         super(Suburb.class);
     }
     
+    public Suburb findById(int id) {
+        Query q = em.createNamedQuery("Suburb.findById");
+        q.setParameter("id", id);
+
+        List<Suburb> Suburb = q.getResultList();
+
+        if (Suburb != null && Suburb.size() > 0) {
+            return Suburb.get(0);
+        } else {
+            return null;
+        }
+    }
 }

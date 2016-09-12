@@ -1,0 +1,65 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Apr 25, 2016, 8:13:00 PM
+    Author     : Administrator
+*/
+body {
+    margin:10px;
+    margin-top: 60px;
+}
+
+ul.navbar {
+    list-style-type: none;
+    width: 100%;
+    position: fixed;
+    overflow: hidden;
+    top: 0;
+    margin: 0;
+    padding: 0;
+    background-color: #007ACC;
+}
+ul.navbar li {
+    float: left; 
+}
+ul.navbar li.nb-right {
+    float: right; 
+}
+
+ul.navbar li a{
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    -webkit-transition: background-color 0.3s; /* Safari */
+    transition: background-color 0.3s;
+}
+
+ul.navbar li a img{
+    vertical-align: middle;
+}
+
+ul.navbar li a.active {
+    background-color: #68217A;
+    color: white;
+}
+
+ul.navbar li a:hover:not(.active) {
+    background-color: #68217A;
+    color: white;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}

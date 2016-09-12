@@ -1,6 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scene Scope="Project" version="2">
     <Scope Scope="Faces Configuration Only"/>
-    <Scope Scope="Project"/>
+    <Scope Scope="Project">
+        <Node id="user/logout.jsp" x="150" y="450" zoom="true"/>
+        <Node id="sample/suburb/List.jsp" x="900" y="150" zoom="true"/>
+        <Node id="sample/adverts/Edit.jsp" x="1400" y="600" zoom="true"/>
+        <Node id="sample/classification/Edit.jsp" x="900" y="300" zoom="true"/>
+        <Node id="help.jsp" x="900" y="600" zoom="true"/>
+        <Node id="sample/messages/Detail.jsp" x="900" y="450" zoom="true"/>
+        <Node id="shared/message.jsp" x="1650" y="150" zoom="true"/>
+        <Node id="sample/skills/New.jsp" x="650" y="300" zoom="true"/>
+        <Node id="sample/suburb/Detail.jsp" x="650" y="750" zoom="true"/>
+        <Node id="sample/userSkills/Detail.jsp" x="1650" y="450" zoom="true"/>
+        <Node id="layout.jsp" x="1900" y="300" zoom="true"/>
+        <Node id="sample/welcomePrimefaces.xhtml" x="650" y="900" zoom="true"/>
+        <Node id="welcomeJSF.jsp" x="400" y="450" zoom="true"/>
+        <Node id="sample/classification/Detail.jsp" x="900" y="900" zoom="true"/>
+        <Node id="sample/messages/List.jsp" x="150" y="1350" zoom="true"/>
+        <Node id="sample/responders/Edit.jsp" x="650" y="600" zoom="true"/>
+        <Node id="sample/responders/Detail.jsp" x="650" y="450" zoom="true"/>
+        <Node id="sample/skills/List.jsp" x="150" y="750" zoom="true"/>
+        <Node id="sample/classification/New.jsp" x="150" y="150" zoom="true"/>
+        <Node id="sample/responders/New.jsp" x="1150" y="150" zoom="true"/>
+        <Node id="sample/adverts/Detail.jsp" x="1900" y="150" zoom="true"/>
+        <Node id="sample/skills/Detail.jsp" x="400" y="300" zoom="true"/>
+        <Node id="sample/user/List.jsp" x="400" y="150" zoom="true"/>
+        <Node id="sample/user/Edit.jsp" x="1400" y="300" zoom="true"/>
+        <Node id="sample/welcomeJSF.jsp" x="1400" y="450" zoom="true"/>
+        <Node id="sample/skills/Edit.jsp" x="150" y="1050" zoom="true"/>
+        <Node id="sample/messages/Edit.jsp" x="1150" y="450" zoom="true"/>
+        <Node id="sample/classification/List.jsp" x="650" y="1050" zoom="true"/>
+        <Node id="sample/suburb/New.jsp" x="400" y="1050" zoom="true"/>
+        <Node id="sample/userSkills/List.jsp" x="900" y="750" zoom="true"/>
+        <Node id="user/create.jsp" x="2150" y="150" zoom="true"/>
+        <Node id="index.jsp" x="1650" y="300" zoom="true"/>
+        <Node id="sample/user/Detail.jsp" x="150" y="1200" zoom="true"/>
+        <Node id="user/login.jsp" x="1150" y="600" zoom="true"/>
+        <Node id="*" x="150" y="300" zoom="true"/>
+        <Node id="sample/messages/New.jsp" x="650" y="150" zoom="true"/>
+        <Node id="sample/suburb/Edit.jsp" x="400" y="600" zoom="true"/>
+        <Node id="user/details.jsp" x="150" y="600" zoom="true"/>
+        <Node id="sample/adverts/New.jsp" x="400" y="1200" zoom="true"/>
+        <Node id="user/browse.jsp" x="400" y="900" zoom="true"/>
+        <Node id="sample/user/New.jsp" x="150" y="900" zoom="true"/>
+        <Node id="sample/responders/List.jsp" x="400" y="750" zoom="true"/>
+        <Node id="sample/userSkills/New.jsp" x="1150" y="750" zoom="true"/>
+        <Node id="sample/userSkills/Edit.jsp" x="1150" y="300" zoom="true"/>
+        <Node id="user/edit.jsp" x="1400" y="150" zoom="true"/>
+        <Node id="sample/adverts/List.jsp" x="2400" y="150" zoom="true"/>
+    </Scope>
     <Scope Scope="All Faces Configurations"/>
 </Scene>

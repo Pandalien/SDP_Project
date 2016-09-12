@@ -33,10 +33,10 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `CSS_DB`.`user` ;
 
 CREATE TABLE IF NOT EXISTS `CSS_DB`.`user` (
-  `id` INT NOT NULL AUTO_INCREMENT,
+  `id` INT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
   `password` VARCHAR(45) NOT NULL,
-  `joined_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `joined_date` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `gender` INT NULL,
   `visible` TINYINT(1) NULL DEFAULT 0,
   `introduction` VARCHAR(500) NULL,
@@ -48,6 +48,7 @@ CREATE TABLE IF NOT EXISTS `CSS_DB`.`user` (
   PRIMARY KEY (`id`),
   UNIQUE INDEX `email_UNIQUE` (`email` ASC),
   INDEX `fk_user_suburb1_idx` (`suburb_id` ASC),
+  UNIQUE INDEX `name_UNIQUE` (`name` ASC),
   CONSTRAINT `fk_user_suburb1`
     FOREIGN KEY (`suburb_id`)
     REFERENCES `CSS_DB`.`suburb` (`id`)
