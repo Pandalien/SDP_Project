@@ -41,7 +41,6 @@ public class UserServlet extends AbstractServlet {
                 request.getParameter("username"),
                 request.getParameter("password"),
                 request.getParameter("email"),
-                new Integer(request.getParameter("gender")),
                 suburbFacade.findById(Integer.parseInt(request.getParameter("suburb")))
         );
 
@@ -71,6 +70,8 @@ public class UserServlet extends AbstractServlet {
     }
     
     public void login(HttpServletRequest request, HttpServletResponse response) {
+        List<Suburb> suburbs = suburbFacade.findAll();
+        request.setAttribute("suburbs", suburbs);
         getView(request, response, "user/login.jsp");
     }
     

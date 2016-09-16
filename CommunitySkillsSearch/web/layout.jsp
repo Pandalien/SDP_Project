@@ -12,6 +12,9 @@
     <head>
         <title>${title}</title>
         <link rel="stylesheet" href="res/css/site.css"/>
+        <link rel="stylesheet" href="css/login.css" type="text/css"/>
+        <script type="text/javascript" src="js/jquery-3.1.0.js"></script>
+        <script src="js/login.js"></script>
     </head>
     <body>
         <header>

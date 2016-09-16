@@ -123,12 +123,11 @@ public class User implements Serializable {
         this.email = email;
     }
 
-    public User(String name, String password, String email, Integer gender, Suburb suburbId) {
+    public User(String name, String password, String email, Suburb suburbId) {
         this.id = 0;
         this.name = name;
         this.password = password;
         this.email = email;
-        this.gender = gender;
         this.suburbId = suburbId;
     }
     

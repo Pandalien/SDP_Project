@@ -3,22 +3,44 @@
     Created on : Apr 17, 2016, 4:31:18 PM
     Author     : Andy Chen
 --%>
-
+<%@page import="java.util.List"%>
+<%@page import="sb.SuburbFacade"%>
+<%@page import="entities.Suburb"%>
 <%@page import="entities.User"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%
+    List<Suburb> suburbs = (List<Suburb>) request.getAttribute("suburbs");
+%>
 <%
     User user = (User) session.getAttribute("current_user");
     if (user == null) {
 %>
-<h1>Log in</h1>
-<form action="user?action=login" method="post">
-    <table>
-        <tr><td>User Name:</td><td><input type="text" name="username"/></td></tr>
-        <tr><td>Password:</td><td><input type="password" name="password"/></tr>
-    </table>
-    <input type="submit" value="Log in"/>
-</form>
-<a href="user?action=create">Sign up</a>
+<h1>COMMUNITY SKILLS SEARCH</h1>
+<div class="main">
+    <div class="form">
+        <form class="login" action="user?action=login" method="post">
+            <input type="text" name="username" placeholder="user name"/>
+            <input type="password" name="password" placeholder="password"/>
+            <p id="forgotpw"><a href="#">Forgot password?</a></p>
+            <button>login</button>
+            <p class="text">Not registered? <a href="#" class="togglelink">Create an account</a></p>
+        </form>
+        <form class="register" action="user?action=create" method="post">
+            <input type="text" name="username" pattern=".{4,}" title="Four or more characters" placeholder="user name" required/>
+            <input type="text" placeholder="email address" name="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" required/>
+            <input type="password" placeholder="password" name="password"  pattern=".{4,}" title="Four or more characters" required/>
+            <input type="password" placeholder="confirm password"/>
+            <select name='suburb'>
+                <%for (Suburb s : suburbs) {%>
+                <option value='<%=s.getId()%>'><%=s.getSuburb()%></option>
+                <%}%>
+            </select>
+            <button>Register</button>
+            <p class="text">Already registered? <a href="#" class="togglelink">Sign In</a></p>
+        </form>
+    </div>
+</div>
+                    
 <%
 } else {
 %>
