@@ -140,6 +140,48 @@
         </navigation-case>
     </navigation-rule>
     <managed-bean>
+        <managed-bean-name>requirements</managed-bean-name>
+        <managed-bean-class>jsf.RequirementsController</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>requirementsJpa</managed-bean-name>
+        <managed-bean-class>sb.RequirementsFacade</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
+    <converter>
+        <converter-for-class>entities.Requirements</converter-for-class>
+        <converter-class>jsf.RequirementsConverter</converter-class>
+    </converter>
+    <navigation-rule>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>requirements_create</from-outcome>
+            <to-view-id>/sample/requirements/New.jsp</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>requirements_list</from-outcome>
+            <to-view-id>/sample/requirements/List.jsp</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>requirements_edit</from-outcome>
+            <to-view-id>/sample/requirements/Edit.jsp</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>requirements_detail</from-outcome>
+            <to-view-id>/sample/requirements/Detail.jsp</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    <managed-bean>
         <managed-bean-name>responders</managed-bean-name>
         <managed-bean-class>jsf.RespondersController</managed-bean-class>
         <managed-bean-scope>session</managed-bean-scope>

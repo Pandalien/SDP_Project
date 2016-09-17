@@ -4,11 +4,12 @@
     Author     : Andy Chen
 --%>
 
+<%@page import="util.Contract"%>
 <%@page import="java.util.List"%>
 <%@page import="entities.User"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
-    List<User> list = (List<User>) request.getAttribute("users");
+    List<User> list = (List<User>) request.getAttribute(Contract.USERS);
 %>
 <%
     if (list != null) {

@@ -1,11 +1,14 @@
 package servlets;
 
+import entities.Skills;
+import entities.Suburb;
 import entities.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -15,15 +18,22 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import sb.SkillsFacade;
+import sb.SuburbFacade;
 import sb.UserFacade;
+import util.Contract;
 
 
 public class AbstractServlet extends HttpServlet {
-
     @EJB
     protected UserFacade userFacade;  
-    final String CurrentUserAttributeName = "current_user";
-   
+    
+    @EJB
+    protected SuburbFacade suburbFacade;
+    
+    @EJB
+    private SkillsFacade skillsFacade;
+    
     protected String parametersGet(HttpServletRequest req){
         StringBuilder sb = new StringBuilder();
         boolean first;
@@ -75,7 +85,7 @@ public class AbstractServlet extends HttpServlet {
     }
 
     protected User getCurrentUser(HttpServletRequest request){
-        return (User)request.getSession().getAttribute(CurrentUserAttributeName);
+        return (User)request.getSession().getAttribute(Contract.CURRENT_USER);
     }
     
     protected void getView(HttpServletRequest request, HttpServletResponse response, String serverPage){
@@ -130,5 +140,20 @@ public class AbstractServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         invokeMethod(req, resp, false);
+    }
+    
+    public void login(HttpServletRequest request, HttpServletResponse response) {
+        setCollectionSuburbs(request);
+        getView(request, response, "user/login.jsp");
+    }
+    
+    protected void setCollectionSkills(HttpServletRequest request){
+        List<Skills> skills = skillsFacade.findAll();
+        request.setAttribute(Contract.SKILLS, skills);
+    }
+    
+    protected void setCollectionSuburbs(HttpServletRequest request){
+        List<Suburb> suburbs = suburbFacade.findAll();
+        request.setAttribute(Contract.SUBURBS, suburbs);
     }
 }

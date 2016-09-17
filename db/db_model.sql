@@ -125,7 +125,6 @@ CREATE TABLE IF NOT EXISTS `CSS_DB`.`adverts` (
   `user_id` INT NOT NULL,
   `title` VARCHAR(45) NOT NULL,
   `content` VARCHAR(500) NOT NULL,
-  `advertscol` VARCHAR(45) NULL,
   `closed` TINYINT(1) NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_adverts_user1_idx` (`user_id` ASC),
@@ -173,6 +172,7 @@ DROP TABLE IF EXISTS `CSS_DB`.`requirements` ;
 CREATE TABLE IF NOT EXISTS `CSS_DB`.`requirements` (
   `adverts_id` INT NOT NULL,
   `skills_id` INT NOT NULL,
+  `level` INT NULL,
   PRIMARY KEY (`adverts_id`, `skills_id`),
   INDEX `fk_requirements_skills1_idx` (`skills_id` ASC),
   CONSTRAINT `fk_requirements_adverts1`

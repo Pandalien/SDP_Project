@@ -8,7 +8,9 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
-    <h1>Welcome.</h1>
-        
-    Who's here? <a href="user?action=browse">Browse Users</a>
+<h1>Welcome.</h1>
 
+Who's here? <a href="user?action=browse">Browse Users</a>
+
+<br/>
+<a href="jobs?action=create">Create a new job</a>

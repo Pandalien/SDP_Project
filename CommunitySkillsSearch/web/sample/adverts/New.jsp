@@ -21,8 +21,6 @@
                     <h:inputText id="title" value="#{adverts.adverts.title}" title="Title" required="true" requiredMessage="The title field is required." />
                     <h:outputText value="Content:"/>
                     <h:inputText id="content" value="#{adverts.adverts.content}" title="Content" required="true" requiredMessage="The content field is required." />
-                    <h:outputText value="Advertscol:"/>
-                    <h:inputText id="advertscol" value="#{adverts.adverts.advertscol}" title="Advertscol" />
                     <h:outputText value="Closed:"/>
                     <h:inputText id="closed" value="#{adverts.adverts.closed}" title="Closed" />
                     <h:outputText value="SkillsCollection:"/>

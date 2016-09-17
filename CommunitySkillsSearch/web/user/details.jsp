@@ -4,13 +4,14 @@
     Author     : Andy Chen
 --%>
 
+<%@page import="util.Contract"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.Objects"%>
 <%@page import="entities.User"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
-    User user = (User) request.getAttribute("user");
-    User loggedInUser = (User) session.getAttribute("current_user");
+    User user = (User) request.getAttribute(Contract.OTHER_USER);
+    User loggedInUser = (User) session.getAttribute(Contract.CURRENT_USER);
     if (user != null) {
 %>
 <h1><a href="#"><%= user.getName()%></a></h1>

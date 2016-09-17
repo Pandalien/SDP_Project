@@ -3,16 +3,17 @@
     Created on : Apr 17, 2016, 4:31:18 PM
     Author     : Andy Chen
 --%>
+<%@page import="util.Contract"%>
 <%@page import="java.util.List"%>
 <%@page import="sb.SuburbFacade"%>
 <%@page import="entities.Suburb"%>
 <%@page import="entities.User"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
-    List<Suburb> suburbs = (List<Suburb>) request.getAttribute("suburbs");
+    List<Suburb> suburbs = (List<Suburb>) request.getAttribute(Contract.SUBURBS);
 %>
 <%
-    User user = (User) session.getAttribute("current_user");
+    User user = (User) session.getAttribute(Contract.CURRENT_USER);
     if (user == null) {
 %>
 <h1>COMMUNITY SKILLS SEARCH</h1>

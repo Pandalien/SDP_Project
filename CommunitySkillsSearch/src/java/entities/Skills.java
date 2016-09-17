@@ -39,6 +39,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Skills.findByDescription", query = "SELECT s FROM Skills s WHERE s.description = :description")})
 public class Skills implements Serializable {
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "skills")
+    private Collection<Requirements> requirementsCollection;
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -139,6 +142,15 @@ public class Skills implements Serializable {
     @Override
     public String toString() {
         return "entities.Skills[ id=" + id + " ]";
+    }
+
+    @XmlTransient
+    public Collection<Requirements> getRequirementsCollection() {
+        return requirementsCollection;
+    }
+
+    public void setRequirementsCollection(Collection<Requirements> requirementsCollection) {
+        this.requirementsCollection = requirementsCollection;
     }
     
 }

@@ -4,12 +4,13 @@
     Author     : Andy Chen
 --%>
 
+<%@page import="util.Contract"%>
 <%@page import="java.util.List"%>
 <%@page import="sb.SuburbFacade"%>
 <%@page import="entities.Suburb"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
-    List<Suburb> suburbs = (List<Suburb>) request.getAttribute("suburbs");
+    List<Suburb> suburbs = (List<Suburb>) request.getAttribute(Contract.SUBURBS);
 %>
 
 <h1>Join us!</h1>

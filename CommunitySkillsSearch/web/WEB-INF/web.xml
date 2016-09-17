@@ -17,6 +17,10 @@
         <servlet-name>User</servlet-name>
         <servlet-class>servlets.UserServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>JobsServlet</servlet-name>
+        <servlet-class>servlets.JobsServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>/test/*</url-pattern>
@@ -28,6 +32,10 @@
     <servlet-mapping>
         <servlet-name>User</servlet-name>
         <url-pattern>/user</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>JobsServlet</servlet-name>
+        <url-pattern>/jobs</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

@@ -39,9 +39,11 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Adverts.findById", query = "SELECT a FROM Adverts a WHERE a.id = :id"),
     @NamedQuery(name = "Adverts.findByTitle", query = "SELECT a FROM Adverts a WHERE a.title = :title"),
     @NamedQuery(name = "Adverts.findByContent", query = "SELECT a FROM Adverts a WHERE a.content = :content"),
-    @NamedQuery(name = "Adverts.findByAdvertscol", query = "SELECT a FROM Adverts a WHERE a.advertscol = :advertscol"),
     @NamedQuery(name = "Adverts.findByClosed", query = "SELECT a FROM Adverts a WHERE a.closed = :closed")})
 public class Adverts implements Serializable {
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "adverts")
+    private Collection<Requirements> requirementsCollection;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -59,9 +61,6 @@ public class Adverts implements Serializable {
     @Size(min = 1, max = 500)
     @Column(name = "content")
     private String content;
-    @Size(max = 45)
-    @Column(name = "advertscol")
-    private String advertscol;
     @Column(name = "closed")
     private Boolean closed;
     @JoinTable(name = "requirements", joinColumns = {
@@ -110,14 +109,6 @@ public class Adverts implements Serializable {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public String getAdvertscol() {
-        return advertscol;
-    }
-
-    public void setAdvertscol(String advertscol) {
-        this.advertscol = advertscol;
     }
 
     public Boolean getClosed() {
@@ -178,5 +169,13 @@ public class Adverts implements Serializable {
     public String toString() {
         return "entities.Adverts[ id=" + id + " ]";
     }
-    
+
+    @XmlTransient
+    public Collection<Requirements> getRequirementsCollection() {
+        return requirementsCollection;
+    }
+
+    public void setRequirementsCollection(Collection<Requirements> requirementsCollection) {
+        this.requirementsCollection = requirementsCollection;
+    }
 }

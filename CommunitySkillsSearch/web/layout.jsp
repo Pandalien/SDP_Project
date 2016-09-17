@@ -3,6 +3,7 @@
     Created on : Apr 19, 2016, 6:42:13 PM
     Author     : Administrator
 --%>
+<%@page import="util.Contract"%>
 <%@page import="entities.User"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
@@ -23,7 +24,7 @@
                 <li><a href="listing?action=browse"><img src="res/images/ic_list_white_24px.svg" alt="Browse"/>Browse</a></li>
                 <li><a href="home?action=help"><img src="res/images/ic_help_outline_white_24px.svg" alt="Help"/>Help</a></li>
                 <%
-                    User user = (User) session.getAttribute("current_user");
+                    User user = (User) session.getAttribute(Contract.CURRENT_USER);
                     if (user == null) {%>
                 <li class="nb-right"><a href="user?action=login"><img src="res/images/ic_perm_identity_white_24px.svg" alt="Log in"/>Log in</a></li>
                 <%} else {%>
