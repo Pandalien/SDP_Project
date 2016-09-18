@@ -126,11 +126,26 @@ CREATE TABLE IF NOT EXISTS `CSS_DB`.`adverts` (
   `title` VARCHAR(45) NOT NULL,
   `content` VARCHAR(500) NOT NULL,
   `closed` TINYINT(1) NULL,
+  `suburb_id` INT NOT NULL,
+  `classification_id` INT NOT NULL,
+  `expiry_date` TIMESTAMP NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_adverts_user1_idx` (`user_id` ASC),
+  INDEX `fk_adverts_suburb1_idx` (`suburb_id` ASC),
+  INDEX `fk_adverts_classification1_idx` (`classification_id` ASC),
   CONSTRAINT `fk_adverts_user1`
     FOREIGN KEY (`user_id`)
     REFERENCES `CSS_DB`.`user` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_adverts_suburb1`
+    FOREIGN KEY (`suburb_id`)
+    REFERENCES `CSS_DB`.`suburb` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_adverts_classification1`
+    FOREIGN KEY (`classification_id`)
+    REFERENCES `CSS_DB`.`classification` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;

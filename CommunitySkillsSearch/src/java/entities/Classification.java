@@ -34,6 +34,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Classification.findByName", query = "SELECT c FROM Classification c WHERE c.name = :name")})
 public class Classification implements Serializable {
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "classificationId")
+    private Collection<Adverts> advertsCollection;
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -101,6 +104,15 @@ public class Classification implements Serializable {
     @Override
     public String toString() {
         return "entities.Classification[ id=" + id + " ]";
+    }
+
+    @XmlTransient
+    public Collection<Adverts> getAdvertsCollection() {
+        return advertsCollection;
+    }
+
+    public void setAdvertsCollection(Collection<Adverts> advertsCollection) {
+        this.advertsCollection = advertsCollection;
     }
     
 }

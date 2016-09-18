@@ -34,6 +34,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Suburb.findBySuburb", query = "SELECT s FROM Suburb s WHERE s.suburb = :suburb")})
 public class Suburb implements Serializable {
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "suburbId")
+    private Collection<Adverts> advertsCollection;
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -108,6 +111,15 @@ public class Suburb implements Serializable {
     @Override
     public String toString() {
         return "entities.Suburb[ id=" + id + " ]";
+    }
+
+    @XmlTransient
+    public Collection<Adverts> getAdvertsCollection() {
+        return advertsCollection;
+    }
+
+    public void setAdvertsCollection(Collection<Adverts> advertsCollection) {
+        this.advertsCollection = advertsCollection;
     }
     
 }

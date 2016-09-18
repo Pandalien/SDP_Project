@@ -1,5 +1,6 @@
 package servlets;
 
+import entities.Classification;
 import entities.Skills;
 import entities.Suburb;
 import entities.User;
@@ -18,6 +19,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import sb.ClassificationFacade;
 import sb.SkillsFacade;
 import sb.SuburbFacade;
 import sb.UserFacade;
@@ -25,6 +27,9 @@ import util.Contract;
 
 
 public class AbstractServlet extends HttpServlet {
+
+    @EJB
+    private ClassificationFacade classificationFacade;
     @EJB
     protected UserFacade userFacade;  
     
@@ -111,15 +116,10 @@ public class AbstractServlet extends HttpServlet {
             }
             Method m = this.getClass().getMethod(action, new Class[]{HttpServletRequest.class, HttpServletResponse.class});
             Object ret = m.invoke(this, new Object[]{req, resp});
-        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-            String msg = "Page not found.";
-            if (ex.getCause()!=null) {
-                if (ex.getCause().getLocalizedMessage() != null) {
-                    msg = ex.getCause().getLocalizedMessage();
-                }
-            }
-            
-            sendMessage(req, resp, msg);
+        } catch (NoSuchMethodException ex) {
+            sendMessage(req, resp, "Page not found.");
+        } catch(SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex){
+            sendMessage(req, resp, ex.toString());
         }
     }
 
@@ -155,5 +155,10 @@ public class AbstractServlet extends HttpServlet {
     protected void setCollectionSuburbs(HttpServletRequest request){
         List<Suburb> suburbs = suburbFacade.findAll();
         request.setAttribute(Contract.SUBURBS, suburbs);
+    }
+    
+    protected void setCollectionClassifications(HttpServletRequest request){
+        List<Classification> clz = classificationFacade.findAll();
+        request.setAttribute(Contract.CLASSIFICATIONS, clz);
     }
 }

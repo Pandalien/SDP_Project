@@ -7,6 +7,7 @@ package entities;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -22,6 +23,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -41,6 +44,16 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Adverts.findByContent", query = "SELECT a FROM Adverts a WHERE a.content = :content"),
     @NamedQuery(name = "Adverts.findByClosed", query = "SELECT a FROM Adverts a WHERE a.closed = :closed")})
 public class Adverts implements Serializable {
+
+    @Column(name = "expiry_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date expiryDate;
+    @JoinColumn(name = "classification_id", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private Classification classificationId;
+    @JoinColumn(name = "suburb_id", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private Suburb suburbId;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "adverts")
     private Collection<Requirements> requirementsCollection;
@@ -177,5 +190,29 @@ public class Adverts implements Serializable {
 
     public void setRequirementsCollection(Collection<Requirements> requirementsCollection) {
         this.requirementsCollection = requirementsCollection;
+    }
+
+    public Date getExpiryDate() {
+        return expiryDate;
+    }
+
+    public void setExpiryDate(Date expiryDate) {
+        this.expiryDate = expiryDate;
+    }
+
+    public Classification getClassificationId() {
+        return classificationId;
+    }
+
+    public void setClassificationId(Classification classificationId) {
+        this.classificationId = classificationId;
+    }
+
+    public Suburb getSuburbId() {
+        return suburbId;
+    }
+
+    public void setSuburbId(Suburb suburbId) {
+        this.suburbId = suburbId;
     }
 }
