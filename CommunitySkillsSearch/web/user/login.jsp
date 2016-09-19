@@ -26,11 +26,11 @@
             <button>login</button>
             <p class="text">Not registered? <a href="#" class="togglelink">Create an account</a></p>
         </form>
-        <form class="register" action="user?action=create" method="post">
+        <form class="register" action="user?action=create" onsubmit="return isPasswordsMatch()" method="post">
             <input type="text" name="username" pattern=".{4,}" title="Four or more characters" placeholder="user name" required/>
             <input type="text" placeholder="email address" name="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" required/>
-            <input type="password" placeholder="password" name="password"  pattern=".{4,}" title="Four or more characters" required/>
-            <input type="password" placeholder="confirm password"/>
+            <input type="password" id="pass1" placeholder="password" name="password"  pattern=".{4,}" title="Four or more characters" required/>
+            <input type="password" id="pass2" placeholder="confirm password" name="password_match"/>
             <select name='suburb'>
                 <%for (Suburb s : suburbs) {%>
                 <option value='<%=s.getId()%>'><%=s.getSuburb()%></option>

@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import sb.SuburbFacade;
 import util.Contract;
+import util.Login;
 
 
 public class UserServlet extends AbstractServlet {  
@@ -34,10 +35,31 @@ public class UserServlet extends AbstractServlet {
     }
     
     public void createPost(HttpServletRequest request, HttpServletResponse response) {
+        String pass1 = request.getParameter("password");
+        String pass2 = request.getParameter("password_match");
+        if (pass1 == null ? pass2 != null : !pass1.equals(pass2)) {
+            sendMessage(request, response, "The passwords you input do not match.");
+            return;
+        }
+        
+        String email = request.getParameter("email");
+        String name = request.getParameter("pass1");
+
+        Login checker = new Login();
+        if (checker.validatePassword(pass1)) {
+            sendMessage(request, response, "Please input an valid password.");
+            return;
+        }
+        
+        if (!checker.validateEmail(email)) {
+            sendMessage(request, response, "Please input an valid email address.");
+            return;
+        }
+        
         User user = new User(
-                request.getParameter("username"),
-                request.getParameter("password"),
-                request.getParameter("email"),
+                name,
+                pass1,
+                email,
                 suburbFacade.findById(Integer.parseInt(request.getParameter("suburb")))
         );
 
