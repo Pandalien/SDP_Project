@@ -43,11 +43,12 @@ public class UserServlet extends AbstractServlet {
         }
         
         String email = request.getParameter("email");
-        String name = request.getParameter("pass1");
+        String name = request.getParameter("username");
 
         Login checker = new Login();
-        if (checker.validatePassword(pass1)) {
-            sendMessage(request, response, "Please input an valid password.");
+        if (!checker.validatePassword(pass1)) {
+            sendMessage(request, response, "Please input an valid password. "
+                    + "Four characters minimum, must include an uppercase, lowercase, and numeric character. No spaces.");
             return;
         }
         
