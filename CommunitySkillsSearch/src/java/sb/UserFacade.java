@@ -20,6 +20,7 @@ import javax.persistence.Query;
 public class UserFacade extends AbstractFacade<User> {
     @PersistenceContext(unitName = "CommunitySkillsSearchPU")
     private EntityManager em;
+    
     @Override
     protected EntityManager getEntityManager() {
         return em;
@@ -43,4 +44,18 @@ public class UserFacade extends AbstractFacade<User> {
             return null;
         }
     }
+    
+    //find user by username
+    public List<User> findByName(Object username){
+        Query q = em.createNamedQuery("User.findByName");
+        q.setParameter("name", username); 
+        return q.getResultList();
+    }
+    
+    //find user by email
+    public List<User> findByEmail(Object username){
+        Query q = em.createNamedQuery("User.findByEmail");
+        q.setParameter("name", username); 
+        return q.getResultList();
+    } 
 }

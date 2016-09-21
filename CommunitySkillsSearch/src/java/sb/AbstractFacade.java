@@ -5,8 +5,15 @@
  */
 package sb;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import utils.StringUtils;
 
 /**
  *
@@ -14,6 +21,9 @@ import javax.persistence.EntityManager;
  */
 public abstract class AbstractFacade<T> {
 
+    @PersistenceContext(unitName = "CommunitySkillsSearchPU")
+    private EntityManager em;
+    
     private Class<T> entityClass;
 
     public AbstractFacade(Class<T> entityClass) {
@@ -61,4 +71,21 @@ public abstract class AbstractFacade<T> {
         return ((Long) q.getSingleResult()).intValue();
     }
     
+    //find by any column name e.g email name suburb, column name is case-insensitive
+    public List<T> findByXxx(String colName, String value){
+        String col = colName.toLowerCase();
+        String Col = StringUtils.capitalize(colName);
+        
+        Query q = em.createNamedQuery(entityClass.getSimpleName() + ".findBy" + Col);
+        q.setParameter(col, value); 
+        
+        return q.getResultList();
+    }
+    
+    //check if one db entry is exist
+    public boolean isExist(String colName, String value){
+        
+        List<T> items = findByXxx(colName, value);
+        return items != null && !items.isEmpty();
+    }
 }
