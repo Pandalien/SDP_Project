@@ -23,7 +23,7 @@ import sb.ClassificationFacade;
 import sb.SkillsFacade;
 import sb.SuburbFacade;
 import sb.UserFacade;
-import util.Contract;
+import utils.Contract;
 
 
 public class AbstractServlet extends HttpServlet {

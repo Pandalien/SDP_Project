@@ -5,16 +5,14 @@
  */
 package servlets;
 
-import entities.Suburb;
 import entities.User;
 import java.util.List;
-import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import sb.SuburbFacade;
-import util.Contract;
-import util.Login;
+import utils.Contract;
+import utils.Login;
+import utils.StringUtils;
 
 
 public class UserServlet extends AbstractServlet {  
@@ -35,28 +33,45 @@ public class UserServlet extends AbstractServlet {
     }
     
     public void createPost(HttpServletRequest request, HttpServletResponse response) {
-        String pass1 = request.getParameter("password");
-        String pass2 = request.getParameter("password_match");
-        if (pass1 == null ? pass2 != null : !pass1.equals(pass2)) {
-            sendMessage(request, response, "The passwords you input do not match.");
-            return;
-        }
-        
         String email = request.getParameter("email");
         String name = request.getParameter("username");
-
+        String pass1 = request.getParameter("password");
+        String pass2 = request.getParameter("password_match");
         Login checker = new Login();
+        
+        try{
+            //check user name
+            if (StringUtils.isBlank(name)) {
+                sendMessage(request, response, "User name cannot be empty.");
+                return;
+            } else if (userFacade.isExist("name", name)) {
+                sendMessage(request, response, "User name " + name + " already exist.");
+                return;
+            }
+
+            //check email
+            if (!checker.validateEmail(email)) {
+                sendMessage(request, response, "Please input an valid email address.");
+                return;
+            } else if (userFacade.isExist("email", email)) {
+                sendMessage(request, response, "Email " +email+ " already exist.");
+                return;
+            }
+        }catch(Exception ex){
+            
+        }
+        
+        //check password
         if (!checker.validatePassword(pass1)) {
             sendMessage(request, response, "Please input an valid password. "
                     + "Four characters minimum, must include an uppercase, lowercase, and numeric character. No spaces.");
             return;
-        }
-        
-        if (!checker.validateEmail(email)) {
-            sendMessage(request, response, "Please input an valid email address.");
+        }else if (pass1 == null ? pass2 != null : !pass1.equals(pass2)) {
+            sendMessage(request, response, "The passwords you input do not match.");
             return;
         }
         
+        //create user
         User user = new User(
                 name,
                 pass1,

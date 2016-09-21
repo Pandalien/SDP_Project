@@ -18,10 +18,8 @@ import javax.persistence.Query;
  */
 @Stateless
 public class UserFacade extends AbstractFacade<User> {
-
     @PersistenceContext(unitName = "CommunitySkillsSearchPU")
     private EntityManager em;
-
     @Override
     protected EntityManager getEntityManager() {
         return em;
