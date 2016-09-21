@@ -86,7 +86,19 @@ public class UserServlet extends AbstractServlet {
     }
     
     public void edit(HttpServletRequest request, HttpServletResponse response) {
+        setCollectionSuburbs(request);
         getView(request, response, "user/edit.jsp");
+    }
+    
+    public void editPost(HttpServletRequest request, HttpServletResponse response) {
+        User user = getCurrentUser(request);
+        
+        user.setSuburbId(suburbFacade.findById(Integer.parseInt(request.getParameter("suburb_id"))));
+        user.setEmail(request.getParameter("email"));
+        
+        userFacade.edit(user);
+        
+        edit(request, response);
     }
     
     public void loginPost(HttpServletRequest request, HttpServletResponse response) {

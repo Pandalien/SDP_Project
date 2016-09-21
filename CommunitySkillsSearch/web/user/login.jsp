@@ -19,14 +19,14 @@
 <h1>COMMUNITY SKILLS SEARCH</h1>
 <div class="main">
     <div class="form">
-        <form class="login" action="user?action=login" method="post">
+        <form id="login_login" class="login" action="user?action=login" method="post">
             <input type="text" name="username" placeholder="user name"/>
             <input type="password" name="password" placeholder="password"/>
             <p id="forgotpw"><a href="#">Forgot password?</a></p>
             <button>login</button>
             <p class="text">Not registered? <a href="#" class="togglelink">Create an account</a></p>
         </form>
-        <form class="register" action="user?action=create" onsubmit="return isPasswordsMatch()" method="post">
+        <form id="login_create" class="register" action="user?action=create" onsubmit="return isPasswordsMatch()" method="post">
             <input type="text" name="username" pattern=".{4,}" title="Four or more characters" placeholder="user name" required/>
             <input type="text" placeholder="email address" name="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" required/>
             <input type="password" id="pass1" placeholder="password" name="password"  pattern=".{4,}" title="Four or more characters" required/>

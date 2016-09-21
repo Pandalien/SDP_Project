@@ -1,7 +1,8 @@
 
 var main = function(){
     $('.togglelink').click(function(){
-       $('form').toggle();
+       $('#login_login').toggle();
+       $('#login_create').toggle();
     });
 };
 

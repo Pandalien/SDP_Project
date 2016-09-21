@@ -6,38 +6,89 @@
 <%@page import="util.Contract"%>
 <%@page import="entities.User"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%User user = (User) session.getAttribute(Contract.CURRENT_USER);%>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
     "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <title>${title}</title>
-        <link rel="stylesheet" href="res/css/site.css"/>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/navbar-fixed-top.css" rel="stylesheet">
         <link rel="stylesheet" href="css/login.css" type="text/css"/>
         <script type="text/javascript" src="js/jquery-3.1.0.js"></script>
         <script src="js/login.js"></script>
+        <title>Community Skills Search</title>
     </head>
     <body>
-        <header>
-            <ul class="navbar">
-                <li><a href="home"><img src="res/images/ic_home_white_24px.svg" alt="Home"/>Home</a></li>
-                <li><a href="listing?action=browse"><img src="res/images/ic_list_white_24px.svg" alt="Browse"/>Browse</a></li>
-                <li><a href="home?action=help"><img src="res/images/ic_help_outline_white_24px.svg" alt="Help"/>Help</a></li>
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
                 <%
-                    User user = (User) session.getAttribute(Contract.CURRENT_USER);
-                    if (user == null) {%>
-                <li class="nb-right"><a href="user?action=login"><img src="res/images/ic_perm_identity_white_24px.svg" alt="Log in"/>Log in</a></li>
-                <%} else {%>
-                <li class="nb-right"><a href="user?action=logout"><img src="res/images/ic_perm_identity_white_24px.svg" alt="Log out"/>Log out</a></li>
-                <li class="nb-right"><a href="user?action=details&member=<%= user.getId()%>"><img src="res/images/ic_face_white_24px.svg" alt="Welcome"/>Welcome, <%= user.getName()%></a></li>
+                        if (user != null) {
+                    %>
+                    <div class="navbar-brand">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" id="menu"> MENU <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">My Applications</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="#">My Advertisements</a></li>
+                            <li><a href="#">Received Applications</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="user?action=edit">Edit Account</a></li>
+                            <li><a href="#">Change Password</a></li>
+                            <li><a href="#">Delete Account</a></li>
+                        </ul>
+                    </div>
                 <%}%>
-            </ul>
-        </header>
-        <div id="body">
-            <jsp:include page="${content}"/>
+                
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <%
+                        if (user != null) {
+                    %>
+                    <div class="navbar-brand">
+                        <ul class="nav navbar-nav">
+                            <li><a href="home"><i class="material-icons">home</i></a></li>
+                            <li><a href="jobs?action=create"><i class="material-icons">note_add</i></a></li>
+                        </ul>
+                    </div>
+                    <%}%>
+                    
+                    <form class="navbar-form navbar-left">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Search" id="searchbar">
+                        </div>
+                        <button type="submit" class="btn btn-default">Submit</button>
+                    </form>
+                    
+                    <ul class="nav navbar-nav navbar-right">
+                        <%
+                            if (user == null) {
+                        %>
+                        <li class="nb-right"><a href="user?action=login"><img src="res/images/ic_perm_identity_white_24px.svg" alt="Log in"/>Log in</a></li>
+                            <%} else {%>
+                        <li><a href="user?action=edit"><i class="material-icons">account_box</i><%= user.getName()%></a></li>
+                        <li><a href="#"><i class="material-icons">assignment</i></a></li>
+                        <li><a href="#"><i class="material-icons">email</i></a></li>
+                        <li><a href="user?action=logout"><i class="material-icons">exit_to_app</i></a></li>
+                        <%}%>
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
+
+        <div class="content">
+            <div class="container">
+                <jsp:include page="${content}"/>
+            </div>
+            <hr>
         </div>
-        <footer>
-            <small>Copy right 2016.</small>
-        </footer>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
     </body>
 </html>
