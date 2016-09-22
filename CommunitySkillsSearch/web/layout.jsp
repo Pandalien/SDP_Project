@@ -3,7 +3,7 @@
     Created on : Apr 19, 2016, 6:42:13 PM
     Author     : Administrator
 --%>
-<%@page import="util.Contract"%>
+<%@page import="utils.Contract"%>
 <%@page import="entities.User"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%User user = (User) session.getAttribute(Contract.CURRENT_USER);%>

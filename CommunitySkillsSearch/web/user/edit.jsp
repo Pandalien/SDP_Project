@@ -10,7 +10,7 @@
 <%@page import="entities.Suburb"%>
 <%@page import="entities.Skills"%>"
 <%@page import="java.util.List"%>
-<%@page import="util.Contract"%>
+<%@page import="utils.Contract"%>
 <%@page import="entities.User"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%

@@ -4,7 +4,7 @@
     Author     : Andy Chen
 --%>
 
-<%@page import="util.Contract"%>
+<%@page import="utils.Contract"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.Objects"%>
 <%@page import="entities.User"%>

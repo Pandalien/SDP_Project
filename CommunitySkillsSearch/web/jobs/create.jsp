@@ -5,7 +5,7 @@
 --%>
 <%@page import="entities.Classification"%>
 <%@page import="entities.Suburb"%>
-<%@page import="util.Contract"%>
+<%@page import="utils.Contract"%>
 <%@page import="entities.Skills"%>
 <%@page import="java.util.List"%>
 <%

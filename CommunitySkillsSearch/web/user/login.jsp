@@ -3,7 +3,7 @@
     Created on : Apr 17, 2016, 4:31:18 PM
     Author     : Andy Chen
 --%>
-<%@page import="util.Contract"%>
+<%@page import="utils.Contract"%>
 <%@page import="java.util.List"%>
 <%@page import="sb.SuburbFacade"%>
 <%@page import="entities.Suburb"%>
