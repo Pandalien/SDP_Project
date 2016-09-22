@@ -4,13 +4,18 @@
     Author     : Andy Chen
 --%>
 
+<%@page import="java.util.Iterator"%>
+<%@page import="java.util.Collection"%>
+<%@page import="entities.UserSkills"%>
 <%@page import="entities.Suburb"%>
+<%@page import="entities.Skills"%>"
 <%@page import="java.util.List"%>
 <%@page import="util.Contract"%>
 <%@page import="entities.User"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
     List<Suburb> suburbs = (List<Suburb>) request.getAttribute(Contract.SUBURBS);
+    List<Skills> skills = (List<Skills>) request.getAttribute(Contract.SKILLS);
     User user = (User) session.getAttribute(Contract.CURRENT_USER);
 %>
 
@@ -31,15 +36,9 @@
         <br>
         <form class="form-horizontal" role="form" action="user?action=edit" method="post">
             <div class="form-group">
-                <label class="col-lg-3 control-label">First name:</label>
+                <label class="col-lg-3 control-label">Name:</label>
                 <div class="col-lg-8">
-                    <input class="form-control" type="text" placeholder="">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-lg-3 control-label">Last name:</label>
-                <div class="col-lg-8">
-                    <input class="form-control" type="text" placeholder="">
+                    <input name="name" class="form-control" type="text" placeholder="" value='<%=user.getName()%>'>
                 </div>
             </div>
             <div class="form-group">
@@ -54,7 +53,7 @@
                     <div class="ui-select">
                         <select name="suburb_id" id="user_time_zone" class="form-control" value=''>
                             <%for (Suburb s : suburbs) {%>
-                            <option value='<%=s.getId()%>' <%=s.getId()==user.getSuburbId().getId()? "selected" : ""%> ><%=s.getSuburb()%></option>
+                            <option value='<%=s.getId()%>' <%=s.getId()==user.getSuburbId().getId() ? "selected" : ""%> ><%=s.getSuburb()%></option>
                             <%}%>
                         </select>
                     </div>
@@ -63,19 +62,43 @@
             <div class="form-group">
                 <label class="col-md-3 control-label">Skills:</label>
                 <div class="col-md-8">
-                    <input class="form-control" type="text" value="">
+                    <div class="input-group">
+                        <%
+                            Collection<UserSkills> userSkills = user.getUserSkillsCollection();
+                            Iterator<UserSkills> skillsIterator = userSkills.iterator();
+                            String skillsList = "";
+                            while (skillsIterator.hasNext()) {
+                                Skills skill = skillsIterator.next().getSkills();
+                                skillsList += skill.getName();
+                                if (skillsIterator.hasNext())
+                                    skillsList += ",";
+                            }
+                        %>
+                        <input name="current_skill" type="text" data-role="tagsinput" value="<%=skillsList%>"/>
+                        <span class="input-group-btn">
+                          <button class="btn btn-danger" type="button">-</button>
+                        </span>
+                        <select name="skills" class="form-control" value=''>
+                            <%for (Skills s : skills) {%>
+                            <option value='<%=s.getId()%>'><%=s.getName()%></option>
+                            <%}%>
+                        </select>
+                        <span class="input-group-btn">
+                          <button class="btn btn-success" type="button">+</button>
+                        </span>
+                    </div>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-md-3 control-label">Join Date:</label>
                 <div class="col-md-8">
-                    <input class="form-control" type="date" value="">
+                    <input name="joined_date" class="form-control" type="date" value='<%=user.getJoinedDate()%>' readonly>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-md-3 control-label">Visible in search?</label>
                 <div class="col-md-8">
-                    <input type="checkbox" value=""> 
+                    <input name="visible" class="form-control" type="checkbox" <%=user.getVisible() ? "checked" : ""%>> 
                 </div>
             </div>
             <div class="form-group">
