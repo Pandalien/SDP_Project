@@ -61,8 +61,8 @@ public class UserSkillsFacadeREST extends AbstractFacade<UserSkills> {
     @POST
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void create(UserSkills entity) {
-        super.create(entity);
+    public UserSkills create(UserSkills entity) {
+        return super.create(entity);
     }
 
     @PUT

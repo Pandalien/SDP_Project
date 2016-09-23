@@ -38,8 +38,8 @@ public class SuburbFacadeREST extends AbstractFacade<Suburb> {
     @POST
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void create(Suburb entity) {
-        super.create(entity);
+    public Suburb create(Suburb entity) {
+        return super.create(entity);
     }
 
     @PUT

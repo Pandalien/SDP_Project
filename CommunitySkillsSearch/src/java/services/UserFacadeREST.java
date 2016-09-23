@@ -38,8 +38,8 @@ public class UserFacadeREST extends AbstractFacade<User> {
     @POST
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void create(User entity) {
-        super.create(entity);
+    public User create(User entity) {
+        return super.create(entity);
     }
 
     @PUT

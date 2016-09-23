@@ -61,8 +61,8 @@ public class RequirementsFacadeREST extends AbstractFacade<Requirements> {
     @POST
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void create(Requirements entity) {
-        super.create(entity);
+    public Requirements create(Requirements entity) {
+        return super.create(entity);
     }
 
     @PUT

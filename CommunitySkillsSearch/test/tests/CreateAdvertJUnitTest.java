@@ -21,7 +21,7 @@ import utils.AdvertCtrl;
  *
  * @author andyc
  */
-public class EditAdvertJUnitTest {
+public class CreateAdvertJUnitTest {
 
     AdvertCtrl adController;
     int createdAdId = 0;
@@ -31,7 +31,7 @@ public class EditAdvertJUnitTest {
     String content;
     String newTitle;
 
-    public EditAdvertJUnitTest() {
+    public CreateAdvertJUnitTest() {
     }
 
     @BeforeClass
@@ -48,8 +48,6 @@ public class EditAdvertJUnitTest {
 
         title = "Dog walker wanted!";
         content = "Requirements: bla bla, yada yada.";
-
-        newTitle = "Cat walker wanted!";
     }
 
     @After
@@ -84,30 +82,5 @@ public class EditAdvertJUnitTest {
         //check values are the same
         assertEquals(title, createdAd.getTitle());
         assertEquals(content, createdAd.getContent());
-    }
-
-    @Test
-    public void testUpdate() {
-        //test case: user should be able to update an advert
-        createdAd.setTitle(newTitle);
-        adController.update(createdAd);
-
-        Adverts updatedAd = adController.findById(createdAdId);
-
-        //if null then failed to receive
-        assertNotNull(updatedAd);
-
-        assertEquals(newTitle, updatedAd.getTitle());
-        createdAd = updatedAd;
-    }
-
-    @Test
-    public void testDelete() {
-        //test case: user should be able to delete advert
-        adController.delete(createdAd);
-        createdAd = adController.findById(createdAdId);
-
-        //if not null then failed to delete
-        assertNull(createdAd);
     }
 }

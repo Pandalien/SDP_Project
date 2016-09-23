@@ -38,8 +38,8 @@ public class ClassificationFacadeREST extends AbstractFacade<Classification> {
     @POST
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void create(Classification entity) {
-        super.create(entity);
+    public Classification create(Classification entity) {
+        return super.create(entity);
     }
 
     @PUT
