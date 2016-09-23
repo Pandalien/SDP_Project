@@ -14,7 +14,6 @@
     List<Skills> skills = (List<Skills>) request.getAttribute(Contract.SKILLS);
     List<Suburb> suburbs = (List<Suburb>) request.getAttribute(Contract.SUBURBS);
     List<Classification> classifications = (List<Classification>) request.getAttribute(Contract.CLASSIFICATIONS);
-    List<Adverts> adverts = (List<Adverts>) request.getAttribute(Contract.ADVERTS);
 %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -45,26 +44,29 @@
             <radio type="radio" name="For Worker"/> For Worker
             <radio type="radio" name="For Jobs"/> For Jobs
             <br/>
-            <!-- search results -->
-            <%
-                if (adverts != null) {
-            %>
-            <table>
-                <tr><th>Title</th><th>Content</th><th>?</th><th>?</th>
-                    <%for (Adverts advert : adverts) {%>
-                <tr>
-                    <td><%= advert.getTitle() %></td>
-                    <td><%= advert.getContent() %></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                    <%}%>
-            </table>
-
-            <%}%>
-        <form/>    
+        <form/>   
     <div/>
 <div/>
+<!-- search results -->
+<%
+    List<Adverts> list = (List<Adverts>) request.getAttribute(Contract.ADVERTS);
+%>
+<%
+    if (list != null) {
+%>
 
+<table>
+    <tr><th>Title</th><th>Content</th><th>?</th><th>?</th>
+        <%for (Adverts advert : list) {%>
+    <tr>
+        <td><%= advert.getTitle() %></td>
+        <td><%= advert.getContent() %></td>
+        <td></td>
+        <td></td>
+    </tr>
+        <%}%>
+</table>
+
+<%}%>
     
     
