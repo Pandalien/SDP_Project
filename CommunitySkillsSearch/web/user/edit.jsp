@@ -63,18 +63,15 @@
                 <label class="col-md-3 control-label">Skills:</label>
                 <div class="col-md-8">
                     <div class="input-group">
+                        <select multiple name="current_skill" data-role="tagsinput">
                         <%
                             Collection<UserSkills> userSkills = user.getUserSkillsCollection();
                             Iterator<UserSkills> skillsIterator = userSkills.iterator();
-                            String skillsList = "";
                             while (skillsIterator.hasNext()) {
-                                Skills skill = skillsIterator.next().getSkills();
-                                skillsList += skill.getName();
-                                if (skillsIterator.hasNext())
-                                    skillsList += ",";
-                            }
-                        %>
-                        <input name="current_skill" type="text" data-role="tagsinput" value='<%=skillsList%>'/>
+                                Skills skill = skillsIterator.next().getSkills();%>
+                                <option value='<%=skill.getName()%>'></option>
+                        <%}%>
+                        </select>
                         <span class="input-group-btn">
                           <button class="btn btn-danger" type="button">-</button>
                         </span>
