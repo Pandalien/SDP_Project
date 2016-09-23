@@ -108,7 +108,7 @@ public class UserServlet extends AbstractServlet {
     
     public void editPost(HttpServletRequest request, HttpServletResponse response) {
         User user = getCurrentUser(request);
-        
+        // -------- need to add method
         user.setSuburbId(suburbFacade.findById(Integer.parseInt(request.getParameter("suburb_id"))));
         user.setEmail(request.getParameter("email"));
         

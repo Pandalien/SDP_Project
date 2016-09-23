@@ -36,19 +36,19 @@
         <br>
         <form class="form-horizontal" role="form" action="user?action=edit" method="post">
             <div class="form-group">
-                <label class="col-lg-3 control-label">Name:</label>
+                <label class="col-lg-3 control-label">User Name</label>
                 <div class="col-lg-8">
-                    <input name="name" class="form-control" type="text" placeholder="" value='<%=user.getName()%>'>
+                    <input name="name" class="form-control" type="text" placeholder="" value='<%=user.getName()%>' readonly>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-lg-3 control-label">Email:</label>
+                <label class="col-lg-3 control-label">Email</label>
                 <div class="col-lg-8">
-                    <input name="email" class="form-control" type="email" placeholder="" value='<%=user.getEmail()%>'>
+                    <input name="email" class="form-control" type="email" placeholder="" value='<%=user.getEmail()%>' readonly>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-lg-3 control-label">Suburb:</label>
+                <label class="col-lg-3 control-label">Suburb</label>
                 <div class="col-lg-8">
                     <div class="ui-select">
                         <select name="suburb_id" id="user_time_zone" class="form-control" value=''>
@@ -60,7 +60,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-md-3 control-label">Skills:</label>
+                <label class="col-md-3 control-label">Skills</label>
                 <div class="col-md-8">
                     <div class="input-group">
                         <select multiple name="current_skill" data-role="tagsinput">
@@ -72,9 +72,9 @@
                                 <option value='<%=skill.getName()%>'></option>
                         <%}%>
                         </select>
-                        <span class="input-group-btn">
-                          <button class="btn btn-danger" type="button">-</button>
-                        </span>
+                    </div>
+                    <br>
+                    <div class="input-group">
                         <select name="skills" class="form-control" value=''>
                             <%for (Skills s : skills) {%>
                             <option value='<%=s.getId()%>'><%=s.getName()%></option>
@@ -87,7 +87,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-md-3 control-label">Join Date:</label>
+                <label class="col-md-3 control-label">Join Date</label>
                 <div class="col-md-8">
                     <input name="joined_date" class="form-control" type="date" value='<%=user.getJoinedDate()%>' readonly>
                 </div>
