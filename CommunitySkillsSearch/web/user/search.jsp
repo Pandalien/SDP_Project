@@ -39,10 +39,10 @@
             </select>
             <br/>
             <input type="text" name="Keywords"/>
-            <button type="button" name="Search"/>
-            <button type="button" name="Reset"/>
-            <radio type="radio" name="For Worker"/> For Worker
-            <radio type="radio" name="For Jobs"/> For Jobs
+            <input type="submit" name="Search"/>
+            <input type="reset" name="Reset"/>
+            <input type="radio" name="type" value="workers"/> For Worker
+            <input type="radio" name="type" value="jobs"/> For Jobs
             <br/>
         <form/>   
     <div/>
