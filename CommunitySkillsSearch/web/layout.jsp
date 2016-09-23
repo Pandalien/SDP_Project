@@ -19,8 +19,8 @@
         <link href="css/bootstrap.min.css" rel="stylesheet">
         <link href="css/navbar-fixed-top.css" rel="stylesheet">
         <link rel="stylesheet" href="css/login.css" type="text/css"/>
-        <script type="text/javascript" src="js/jquery-3.1.0.js"></script>
-        <script src="js/login.js"></script>
+        <link rel="stylesheet" href="css/bootstrap-tagsinput.css" type="text/css"/>
+
         <title>Community Skills Search</title>
     </head>
     <body>
@@ -89,6 +89,10 @@
         </div>
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-        <script src="js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="js/jquery-3.1.0.js"></script>
+        <script type="text/javascript" src="js/login.js"></script>
+        <script type="text/javascript" src="js/bootstrap-tagsinput.js"></script>
+        <script type="text/javascript" src="js/bootstrap-tagsinput-angular.js"></script>
     </body>
 </html>
