@@ -18,4 +18,6 @@ public class Contract {
     final public static String CLASSIFICATIONS = "session_classifications";
     final public static String SUBURBS = "session_suburbs";
     final public static String SKILLS = "session_skills";
+    
+    final public static String USER_ADVERTS = "current_user_adverts";
 }
