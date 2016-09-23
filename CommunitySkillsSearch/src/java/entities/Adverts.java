@@ -42,7 +42,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Adverts.findById", query = "SELECT a FROM Adverts a WHERE a.id = :id"),
     @NamedQuery(name = "Adverts.findByTitle", query = "SELECT a FROM Adverts a WHERE a.title = :title"),
     @NamedQuery(name = "Adverts.findByContent", query = "SELECT a FROM Adverts a WHERE a.content = :content"),
-    @NamedQuery(name = "Adverts.findByClosed", query = "SELECT a FROM Adverts a WHERE a.closed = :closed")})
+    @NamedQuery(name = "Adverts.findByClosed", query = "SELECT a FROM Adverts a WHERE a.closed = :closed"),
+    @NamedQuery(name = "Adverts.findByVarious", query = "SELECT a FROM Adverts a WHERE a.suburbId = :suburbId AND a.classificationId = :classificationId")
+})
 public class Adverts implements Serializable {
 
     @Column(name = "expiry_date")
