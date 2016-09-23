@@ -101,13 +101,13 @@
             <div class="form-group">
                 <label class="col-md-3 control-label">Join Date</label>
                 <div class="col-md-8">
-                    <input name="joined_date" class="form-control" type="date" value='<%=user.getJoinedDate()%>' readonly>
+                    <input name="joined_date" class="form-control" type="text" value='<%=user.getJoinedDate()%>' readonly='true'/>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-md-3 control-label">Visible in Search?</label>
                 <div class="col-md-8">
-                    <input name="visible" id="edit_visible" type="checkbox" <%=user.getVisible() ? "checked" : ""%> data-toggle="toggle" data-onstyle="success" data-offstyle="danger">
+                    <input name="visible" id="edit_visible" type="checkbox" <%=user.getVisible() ? "checked" : ""%> data-toggle="toggle" data-onstyle="success" data-offstyle="danger"/>
                 </div>
             </div>
             <div class="form-group">

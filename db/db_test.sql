@@ -2,3 +2,4 @@ insert into adverts (title, content, user_id, suburb_id, classification_id) valu
 select * from adverts;
 select * from skills;
 select * from requirements;
+select * from user;
