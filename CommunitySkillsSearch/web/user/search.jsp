@@ -21,24 +21,24 @@
 <div class="main">
     <div class="form">
         <form action="user?action=search" method="post">
-            <select name='suburb'> Location
+            Location <select name='suburb'> 
                 <%for (Suburb sub : suburbs) {%>
                 <option value='<%=sub.getId()%>'><%=sub.getSuburb()%></option>
                 <%}%>
             </select>
-            <select name='classification'> Category
+            Category <select name='classification'> 
                 <%for (Classification cls : classifications) {%>
                 <option value='<%=cls.getId()%>'><%=cls.getName()%></option>
                 <%}%>
             </select>
             <br/>
-            <select name='skills' multiple="true"> Skills
+            Skills <select name='skills' multiple="true"> 
                 <%for (Skills s : skills) {%>
                 <option value='<%=s.getId()%>'><%=s.getName()%></option>
                 <%}%>
             </select>
             <br/>
-            <input type="text" name="Keywords"/>
+            Keywords <input type="text" name="Keywords"/>
             <input type="submit" name="Search"/>
             <input type="reset" name="Reset"/>
             <input type="radio" name="type" value="workers"/> For Worker
