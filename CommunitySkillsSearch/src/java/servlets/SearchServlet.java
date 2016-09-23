@@ -34,7 +34,7 @@ public class SearchServlet extends AbstractServlet {
       setCollectionSuburbs(request);
       setCollectionClassifications(request);
       
-      getView(request, response, "search.jsp");        
+      getView(request, response, "user/search.jsp");        
     }
     
     public void searchFor(HttpServletRequest request, HttpServletResponse response) {
@@ -58,7 +58,7 @@ public class SearchServlet extends AbstractServlet {
       setCollectionSuburbs(request);
       setCollectionClassifications(request);
       
-      getView(request, response, "search.jsp");              
+      getView(request, response, "user/search.jsp");              
     }
   
 }
