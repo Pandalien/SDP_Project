@@ -16,9 +16,9 @@
     User user = (User) session.getAttribute(Contract.CURRENT_USER);
     if (user == null) {
 %>
-<h1>COMMUNITY SKILLS SEARCH</h1>
+<br><br><br><h1>COMMUNITY SKILLS SEARCH</h1>
 <div class="main">
-    <div class="form">
+    <div class="login_form">
         <form id="login_login" class="login" action="user?action=login" method="post">
             <input type="text" name="username" placeholder="user name"/>
             <input type="password" name="password" placeholder="password"/>

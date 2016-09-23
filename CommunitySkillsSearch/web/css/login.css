@@ -17,7 +17,7 @@ body {
 
 h1 {
     font-size: 300%;
-    padding-top: 10%;
+    font-weight: bold;
     text-align: center;
     font-family: Lucida Grande, sans-serif, Arial;
     color: #FFFFFF;
@@ -29,7 +29,7 @@ h1 {
     margin: auto;
 }
 
-.form {
+.login_form {
     position: relative;
     z-index: 1;
     background: #FFFFFF;
@@ -40,7 +40,7 @@ h1 {
     box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
 }
 
-.form input {
+.login_form input {
     font-family: Lucida Grande, sans-serif, Arial;
     outline: 0;
     background: #f2f2f2;
@@ -52,7 +52,7 @@ h1 {
     font-size: 16px;
 }
 
-.form select {
+.login_form select {
     font-family: Lucida Grande, sans-serif, Arial;  
     background: #f2f2f2;
     width: 100%;
@@ -63,7 +63,7 @@ h1 {
     font-size: 16px;
 }
 
-.form button {
+.login_form button {
     color: #FFFFFF;
     font-size: 16px;
     font-family: Lucida Grande, sans-serif, Arial;
@@ -79,7 +79,7 @@ h1 {
     cursor: pointer;
 }
 
-.form button:hover, .form button:active, .form button:focus {
+.login_form button:hover, .login_form button:active, .login_form button:focus {
     background: #FF7419;
 }
 
@@ -87,7 +87,7 @@ h1 {
     display: none;
 }
 
-p {
+login_form > p {
     color: #878787;
     font-size: 12px;
 }

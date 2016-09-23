@@ -102,6 +102,7 @@ public class UserServlet extends AbstractServlet {
     
     public void edit(HttpServletRequest request, HttpServletResponse response) {
         setCollectionSuburbs(request);
+        setCollectionSkills(request);
         getView(request, response, "user/edit.jsp");
     }
     

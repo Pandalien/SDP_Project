@@ -8,7 +8,7 @@
 <%@page import="java.util.Collection"%>
 <%@page import="entities.UserSkills"%>
 <%@page import="entities.Suburb"%>
-<%@page import="entities.Skills"%>"
+<%@page import="entities.Skills"%>
 <%@page import="java.util.List"%>
 <%@page import="utils.Contract"%>
 <%@page import="entities.User"%>
@@ -74,7 +74,7 @@
                                     skillsList += ",";
                             }
                         %>
-                        <input name="current_skill" type="text" data-role="tagsinput" value="<%=skillsList%>"/>
+                        <input name="current_skill" type="text" data-role="tagsinput" value='<%=skillsList%>'/>
                         <span class="input-group-btn">
                           <button class="btn btn-danger" type="button">-</button>
                         </span>
