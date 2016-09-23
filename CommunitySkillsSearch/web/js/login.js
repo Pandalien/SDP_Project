@@ -3,6 +3,7 @@ var main = function(){
     $('.togglelink').click(function(){
        $('#login_login').toggle();
        $('#login_create').toggle();
+       $('#edit_visible').bootstrapToggle();
     });
 };
 

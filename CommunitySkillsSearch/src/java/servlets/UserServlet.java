@@ -108,12 +108,13 @@ public class UserServlet extends AbstractServlet {
     
     public void editPost(HttpServletRequest request, HttpServletResponse response) {
         User user = getCurrentUser(request);
-        // -------- need to add method
+        user.setPhone(request.getParameter("phone"));
         user.setSuburbId(suburbFacade.findById(Integer.parseInt(request.getParameter("suburb_id"))));
-        user.setEmail(request.getParameter("email"));
+        user.setVisible((request.getParameter("visible")==null? false : true));
+        user.setIntroduction(request.getParameter("intro"));
+        //user.setEmail(request.getParameter("email"));
         
         userFacade.edit(user);
-        
         edit(request, response);
     }
     

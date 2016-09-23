@@ -19,7 +19,7 @@
     User user = (User) session.getAttribute(Contract.CURRENT_USER);
 %>
 
-<h1>Edit Account</h1>
+<h2>EDIT ACCOUNT</h2>
 <hr>
 <div class="row">
     <!-- left column -->
@@ -34,24 +34,30 @@
     <div class="col-md-9 personal-info">
         <h3>Personal info</h3>
         <br>
-        <form class="form-horizontal" role="form" action="user?action=edit" method="post">
+        <form class="form-horizontal" name="user_form_edit" role="form" action="user?action=edit" method="post">
             <div class="form-group">
-                <label class="col-lg-3 control-label">User Name</label>
-                <div class="col-lg-8">
-                    <input name="name" class="form-control" type="text" placeholder="" value='<%=user.getName()%>' readonly>
+                <label class="col-md-3 control-label">User Name</label>
+                <div class="col-md-8">
+                    <input name="name" class="form-control" type="text" value='<%=user.getName()%>' readonly>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-lg-3 control-label">Email</label>
-                <div class="col-lg-8">
-                    <input name="email" class="form-control" type="email" placeholder="" value='<%=user.getEmail()%>' readonly>
+                <label class="col-md-3 control-label">Email</label>
+                <div class="col-md-8">
+                    <input name="email" class="form-control" type="email" value='<%=user.getEmail()%>' readonly>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-lg-3 control-label">Suburb</label>
-                <div class="col-lg-8">
+                <label class="col-md-3 control-label">Contact</label>
+                <div class="col-md-8">
+                    <input name="phone" class="form-control" type="tel" value='<%=user.getPhone()%>'>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 control-label">Suburb</label>
+                <div class="col-md-8">
                     <div class="ui-select">
-                        <select name="suburb_id" id="user_time_zone" class="form-control" value=''>
+                        <select name="suburb_id" class="form-control" value=''>
                             <%for (Suburb s : suburbs) {%>
                             <option value='<%=s.getId()%>' <%=s.getId()==user.getSuburbId().getId() ? "selected" : ""%> ><%=s.getSuburb()%></option>
                             <%}%>
@@ -63,7 +69,7 @@
                 <label class="col-md-3 control-label">Skills</label>
                 <div class="col-md-8">
                     <div class="input-group">
-                        <select multiple name="current_skill" data-role="tagsinput">
+                        <select id="skillsinput" multiple name="current_skill" data-role="tagsinput">
                         <%
                             Collection<UserSkills> userSkills = user.getUserSkillsCollection();
                             Iterator<UserSkills> skillsIterator = userSkills.iterator();
@@ -87,15 +93,21 @@
                 </div>
             </div>
             <div class="form-group">
+                <label class="col-md-3 control-label">Introduction</label>
+                <div class="col-md-8">
+                    <textarea name="intro" class="form-control" value=''><%=user.getIntroduction()%></textarea>
+                </div>
+            </div>      
+            <div class="form-group">
                 <label class="col-md-3 control-label">Join Date</label>
                 <div class="col-md-8">
                     <input name="joined_date" class="form-control" type="date" value='<%=user.getJoinedDate()%>' readonly>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-md-3 control-label">Visible in search?</label>
+                <label class="col-md-3 control-label">Visible in Search?</label>
                 <div class="col-md-8">
-                    <input name="visible" class="form-control" type="checkbox" <%=user.getVisible() ? "checked" : ""%>> 
+                    <input name="visible" id="edit_visible" type="checkbox" <%=user.getVisible() ? "checked" : ""%> data-toggle="toggle" data-onstyle="success" data-offstyle="danger">
                 </div>
             </div>
             <div class="form-group">

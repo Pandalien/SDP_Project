@@ -15,12 +15,12 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-        <link href="css/bootstrap.min.css" rel="stylesheet">
-        <link href="css/navbar-fixed-top.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css"/>
+        <link rel="stylesheet" href="css/navbar-fixed-top.css" type="text/css"/>
         <link rel="stylesheet" href="css/login.css" type="text/css"/>
         <link rel="stylesheet" href="css/bootstrap-tagsinput.css" type="text/css"/>
-
+        <link rel="stylesheet" href="css/bootstrap-toggle.min.css" type="text/css"/>
         <title>Community Skills Search</title>
     </head>
     <body>
@@ -94,5 +94,6 @@
         <script type="text/javascript" src="js/login.js"></script>
         <script type="text/javascript" src="js/bootstrap-tagsinput.js"></script>
         <script type="text/javascript" src="js/bootstrap-tagsinput-angular.js"></script>
+        <script type="text/javascript" src="js/bootstrap-toggle.min.js"></script>
     </body>
 </html>
