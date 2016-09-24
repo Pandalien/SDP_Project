@@ -57,9 +57,9 @@
                 <label class="col-md-3 control-label">Suburb</label>
                 <div class="col-md-8">
                     <div class="ui-select">
-                        <select name="suburb_id" class="form-control" value=''>
+                        <select name="suburb_id" class="form-control" value="">
                             <%for (Suburb s : suburbs) {%>
-                            <option value='<%=s.getId()%>' <%=s.getId()==user.getSuburbId().getId() ? "selected" : ""%> ><%=s.getSuburb()%></option>
+                            <option value="<%=s.getId()%>"<%=s.getId()==user.getSuburbId().getId() ? " selected" : ""%>><%=s.getSuburb()%></option>
                             <%}%>
                         </select>
                     </div>
@@ -74,22 +74,24 @@
                             Collection<UserSkills> userSkills = user.getUserSkillsCollection();
                             Iterator<UserSkills> skillsIterator = userSkills.iterator();
                             while (skillsIterator.hasNext()) {
-                                Skills skill = skillsIterator.next().getSkills();%>
-                                <option value='<%=skill.getName()%>'></option>
-                        <%}%>
+                                Skills skill = skillsIterator.next().getSkills();
+                                %><option value="<%=skill.getName()%>"></option>
+                          <%}
+                        %>
                         </select>
                     </div>
                     <br>
                     <div class="input-group">
-                        <select name="skills" class="form-control" value=''>
+                        <select name="skills" class="form-control" value="">
                             <%for (Skills s : skills) {%>
-                            <option value='<%=s.getId()%>'><%=s.getName()%></option>
+                            <option value="<%=s.getId()%>"><%=s.getName()%></option>
                             <%}%>
                         </select>
                         <span class="input-group-btn">
                           <button class="btn btn-success" type="button">+</button>
                         </span>
                     </div>
+
                 </div>
             </div>
             <div class="form-group">
@@ -107,7 +109,10 @@
             <div class="form-group">
                 <label class="col-md-3 control-label">Visible in Search?</label>
                 <div class="col-md-8">
-                    <input name="visible" id="edit_visible" type="checkbox" <%=user.getVisible() ? "checked" : ""%> data-toggle="toggle" data-onstyle="success" data-offstyle="danger"/>
+                    <input name="visible" id="edit_visible" type="checkbox"
+                           data-toggle="toggle" data-onstyle="success" data-offstyle="danger"
+                           <%=user.getVisible() != null && user.getVisible().booleanValue() ? " checked" : ""%>
+                           />
                 </div>
             </div>
             <div class="form-group">
