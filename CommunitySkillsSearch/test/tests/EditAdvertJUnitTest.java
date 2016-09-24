@@ -66,9 +66,13 @@ public class EditAdvertJUnitTest {
         //if null then failed to create
         assertNotNull(createdAd);
         createdAdId = createdAd.getId();
+        
+        testQuery();
+        testUpdate();
+        testDelete();
     }
 
-    @Test
+    //@Test
     public void testQuery() {
         //test case: user should be able to receive an advert
         createdAd = adController.findById(createdAdId);
@@ -81,7 +85,7 @@ public class EditAdvertJUnitTest {
         assertEquals(content, createdAd.getContent());
     }
 
-    @Test
+    //@Test
     public void testUpdate() {
         //test case: user should be able to update an advert
         createdAd.setTitle(newTitle);
@@ -96,7 +100,7 @@ public class EditAdvertJUnitTest {
         createdAd = updatedAd;
     }
 
-    @Test
+    //@Test
     public void testDelete() {
         //test case: user should be able to delete advert
         adController.delete(createdAd);

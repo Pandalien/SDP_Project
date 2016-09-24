@@ -77,15 +77,15 @@ public class AdvertContentJUnitTest {
         assertFalse(adController.verifyTitle(""));
 
         //empty conten length (too long)
-        assertTrue(adController.verifyTitle(StringUtils.repeat("a", 500)));
-        assertFalse(adController.verifyTitle(StringUtils.repeat("a", 501)));
+        assertTrue(adController.verifyContent(StringUtils.repeat("a", 500)));
+        assertFalse(adController.verifyContent(StringUtils.repeat("a", 501)));
 
     }
 
     @Test
     public void testExpiryDateValidation() {
         //test case: user input Expiry date should be verified
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, -1);
@@ -96,7 +96,7 @@ public class AdvertContentJUnitTest {
 
         Calendar cal2 = Calendar.getInstance();
         cal2.add(Calendar.DATE, 1);
-        String date2 = dateFormat.format(cal.getTime());
+        String date2 = dateFormat.format(cal2.getTime());
 
         //can set to tomorrow
         assertTrue(adController.verifyExpiryDate(date2));

@@ -45,6 +45,16 @@ public class CreateUserJUnitTest {
         password = "scretStuff";
     }
 
+    private User createTestUser(){
+        User user = new User();
+        user.setName(name);
+        user.setEmail(email);
+        user.setPassword(password);
+        user.setSuburbId(new Suburb(1));
+        
+        return user;
+    }
+    
     @After
     public void tearDown() {
     }
@@ -52,20 +62,32 @@ public class CreateUserJUnitTest {
     @Test
     public void testCreate() {
         //test case: user should be able to create an advert
-        User user = new User();
-        user.setName(name);
-        user.setEmail(email);
-        user.setPassword(password);
-        user.setSuburbId(new Suburb(1));
-
-        createdUser = userController.create(user);
+        User user = createTestUser();
+        
+        //to avoid existent same user names
+        for (int i = 0; i < 20; i++) {
+            createdUser = userController.create(user);
+            if (createdUser != null) {
+                break;
+            }else{
+                user.setName(i + name);
+                user.setEmail(i + email);
+            }
+        }
+        
+        name = user.getName();
+        email = user.getEmail();
 
         //if null then failed to create
         assertNotNull(createdUser);
         createdUserId = createdUser.getId();
+        
+        testQuery();
+        testUpdate();
+        testDelete();
     }
 
-    @Test
+    //@Test
     public void testQuery() {
         //test case: user should be able to receive an advert
         createdUser = userController.findById(createdUserId);
@@ -78,7 +100,7 @@ public class CreateUserJUnitTest {
         assertEquals(email, createdUser.getEmail());
     }
 
-    @Test
+    //@Test
     public void testUpdate() {
         //test case: user should be able to update an advert
         createdUser.setPassword(password);
@@ -93,7 +115,7 @@ public class CreateUserJUnitTest {
         createdUser = updatedUser;
     }
 
-    @Test
+    //@Test
     public void testDelete() {
         //test case: user should be able to delete advert
         userController.delete(createdUser);

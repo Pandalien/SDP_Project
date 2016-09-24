@@ -6,35 +6,50 @@
 package utils;
 
 import entities.User;
+import services.clients.UserClient;
 
 /**
  *
  * @author andyc
  */
 public class UserCtrl {
-    public boolean verifyUserName(String title){
-        return false;
+    Login loginValidator;
+    UserClient userClient;
+    
+    public UserCtrl(){
+        loginValidator = new Login();
+        userClient = new UserClient();
     }
     
-    public boolean verifyEmail(String title){
-        return false;
+    public boolean verifyUserName(String name){
+        if (StringUtils.isBlank(name)) {
+            return false;
+        }
+        
+        return name.length() <= 45;
     }
     
-    public boolean verifyPassword(String title){
-        return false;
+    public boolean verifyEmail(String email){
+        return loginValidator.validateEmail(email);
     }
     
-    public User create(User ad){
-        return null;
+    public boolean verifyPassword(String password){
+        return loginValidator.validatePassword(password);
+    }
+    
+    public User create(User user){
+        return userClient.create_XML(user, User.class);
     }
     
     public User findById(int id){
-        return null;
+        return userClient.find_XML(User.class, String.format("%d", id));
     }
     
-    public void update(User ad){
+    public void update(User user){
+        userClient.edit_XML(user, String.format("%d", user.getId()));
     }
     
-    public void delete(User ad){
+    public void delete(User user){
+        userClient.remove(String.format("%d", user.getId()));
     }
 }
