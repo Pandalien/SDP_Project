@@ -9,12 +9,12 @@ import entities.Adverts;
 import entities.Classification;
 import entities.Suburb;
 import entities.User;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+import javax.persistence.*;
+import utils.SearchParams;
 
 /**
  *
@@ -41,10 +41,37 @@ public class AdvertsFacade extends AbstractFacade<Adverts> {
     }
     
     
-    public List<Adverts> findByVarious(int suburb_id, int classification_id) { //, List<String> keywords) {
+    public List<Adverts> findByVarious(int suburb_id, int classification_id) {
         Query q = em.createNamedQuery("Adverts.findByVarious");
         q.setParameter("suburbId", new Suburb(suburb_id)); 
         q.setParameter("classificationId", new Classification(classification_id));         
+        return q.getResultList();
+    }
+    
+    
+    public List<Adverts> findByVarious(int suburb_id, int classification_id, List<String> keywords) {
+
+        // default find all
+        String qs = "select * from Adverts";
+        
+        ArrayList<String> where = new ArrayList();
+        
+        if (SearchParams.validateSuburbID(suburb_id))
+          where.add("suburb_id=" + suburb_id);
+        
+        if (SearchParams.validateClassificationID(classification_id))
+          where.add("classification_id=" + classification_id);
+        
+        if (keywords != null)
+          for (String s: keywords) 
+            where.add("(content like '%"+s+"%' or title like '%"+s+"%')");
+        
+        // combine into one query string
+        if (where.size() > 0) 
+          qs += " where " + String.join(" and ", where);
+
+        // native SQL query returns Adverts objects
+        Query q = em.createNativeQuery(qs, Adverts.class);        
         return q.getResultList();
     }
     

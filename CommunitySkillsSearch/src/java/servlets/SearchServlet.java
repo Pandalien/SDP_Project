@@ -6,16 +6,13 @@
 package servlets;
 
 import entities.Adverts;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.*;
 import javax.ejb.EJB;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import sb.AdvertsFacade;
 import utils.Contract;
+import utils.SearchParams;
 
 /**
  *
@@ -39,20 +36,25 @@ public class SearchServlet extends AbstractServlet {
     
     public void searchFor(HttpServletRequest request, HttpServletResponse response) {
       
-      // Potentially this does may not require being logged in? 
-      // However links in the search results to contact or apply etc will (and 
-      // should be handled by the jsp page).
+      String suburb_id_param = request.getParameter("suburb_id");
+      String classification_id_param = request.getParameter("classification_id");
+      String skills_id_param = request.getParameter("skills_id");
+      String keywords_param = request.getParameter("keywords");
+      String type_param = request.getParameter("type");
       
-      String suburb_id = request.getParameter("suburb_id");
-      String classification_id = request.getParameter("classification_id");
-      String skills_id = request.getParameter("skills_id");
-      String keywords = request.getParameter("keywords");
-      String type = request.getParameter("type");
+      // parse search inputs:
+      // -1 for any int means "all"
+      int suburb_id = SearchParams.parseId(suburb_id_param);      
+      int classification_id = SearchParams.parseId(classification_id_param);
+      List<String> keywords = SearchParams.parseKeywords(keywords_param);
+      int type = SearchParams.parseType(type_param);
 
+      // methods possible:
+      // make several NameQueries on each field, and append to the list (OR)
+      // else make one large method, but some way to build up the query dynamically.
       
-      List<Adverts> adverts = advertsFacade.findByVarious(Integer.parseInt(suburb_id), Integer.parseInt(classification_id));
+      List<Adverts> adverts = advertsFacade.findByVarious(suburb_id, classification_id, keywords);
       request.setAttribute(Contract.ADVERTS, adverts);
-     
       
       setCollectionSkills(request);
       setCollectionSuburbs(request);
