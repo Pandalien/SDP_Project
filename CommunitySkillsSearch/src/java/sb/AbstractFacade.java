@@ -71,8 +71,8 @@ public abstract class AbstractFacade<T> {
         return ((Long) q.getSingleResult()).intValue();
     }
     
-    //find by any column name e.g email name suburb, column name is case-insensitive
-    public List<T> findByXxx(String colName, String value){
+    //find by any column name e.g email name suburb, column name is case-sensitive
+    public List<T> findByXxx(String colName, Object value){
         String col = colName.toLowerCase();
         String Col = StringUtils.capitalize(colName);
         

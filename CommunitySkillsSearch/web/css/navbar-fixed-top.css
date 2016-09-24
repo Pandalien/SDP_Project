@@ -1,7 +1,11 @@
-body {
+/*body {
   padding-top: 70px;
-}
+}*/
 
 #searchbar {
     background:white url( ) left center no-repeat;
+}
+
+#main_conainer{
+    padding-top: 70px;
 }

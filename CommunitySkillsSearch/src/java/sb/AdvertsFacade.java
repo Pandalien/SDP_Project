@@ -8,6 +8,7 @@ package sb;
 import entities.Adverts;
 import entities.Classification;
 import entities.Suburb;
+import entities.User;
 import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -47,6 +48,12 @@ public class AdvertsFacade extends AbstractFacade<Adverts> {
         return q.getResultList();
     }
     
+    //find advert by user object (not Id)
+    public List<Adverts> findByUser(User object){
+        Query q = em.createNamedQuery("Adverts.findByUserId");
+        q.setParameter("user", object); 
+        return q.getResultList();
+    }
     
 /*    
     @PermitAll

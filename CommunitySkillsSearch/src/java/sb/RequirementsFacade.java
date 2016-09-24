@@ -5,10 +5,14 @@
  */
 package sb;
 
+import entities.Adverts;
 import entities.Requirements;
+import entities.User;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -29,4 +33,10 @@ public class RequirementsFacade extends AbstractFacade<Requirements> {
         super(Requirements.class);
     }
     
+    //find Requirements by ad id
+    public List<Requirements> findByAdvertsId(int id) {
+        Query q = em.createNamedQuery("Requirements.findByAdvertsId");
+        q.setParameter("advertsId", id);
+        return q.getResultList();
+    }
 }

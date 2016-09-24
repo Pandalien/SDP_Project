@@ -5,17 +5,25 @@
  */
 package servlets;
 
+import entities.Adverts;
 import entities.User;
+import java.util.ArrayList;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import sb.AdvertsFacade;
 import utils.Contract;
 import utils.Login;
 import utils.StringUtils;
 
 
-public class UserServlet extends AbstractServlet {  
+public class UserServlet extends AbstractServlet {
+
+    @EJB
+    private AdvertsFacade advertsFacade;
+    
     @Override
     public void init() {
     }
@@ -137,5 +145,17 @@ public class UserServlet extends AbstractServlet {
     protected void sessionStart(HttpServletRequest request, User user) {
         HttpSession session = request.getSession();
         session.setAttribute(Contract.CURRENT_USER, user);
+    }
+    
+    public void openings(HttpServletRequest request, HttpServletResponse response) {
+        User user = getCurrentUser(request);
+        if (user == null) {
+            login(request, response);
+            return;
+        }
+        
+        List<Adverts> ads = advertsFacade.findByUser(user);
+        request.setAttribute(Contract.USER_ADVERTS, ads);
+        getView(request, response, "user/openings.jsp");
     }
 }

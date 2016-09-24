@@ -15,7 +15,7 @@
     if (list != null) {
 %>
 
-<table>
+<table class="table table-hover">
     <tr><th>Name</th><th>Rating</th><th>Location</th><th>Member Since</th>
         <%for (User user : list) {%>
     <tr>

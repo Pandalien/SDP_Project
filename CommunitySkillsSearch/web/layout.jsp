@@ -1,7 +1,7 @@
 <%-- 
     Document   : layout
-    Created on : Apr 19, 2016, 6:42:13 PM
-    Author     : Administrator
+    Created on : Aug 19, 2016, 6:42:13 PM
+    Author     : AndyChen
 --%>
 <%@page import="utils.Contract"%>
 <%@page import="entities.User"%>
@@ -18,9 +18,11 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
         <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css"/>
         <link rel="stylesheet" href="css/navbar-fixed-top.css" type="text/css"/>
-        <link rel="stylesheet" href="css/login.css" type="text/css"/>
+        <%-- <link rel="stylesheet" href="css/login.css" type="text/css"/>--%>
         <link rel="stylesheet" href="css/bootstrap-tagsinput.css" type="text/css"/>
         <link rel="stylesheet" href="css/bootstrap-toggle.min.css" type="text/css"/>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script type="text/javascript" src="js/jquery-3.1.0.js"></script>
         <title>Community Skills Search</title>
     </head>
     <body>
@@ -35,7 +37,7 @@
                         <ul class="dropdown-menu">
                             <li><a href="#">My Applications</a></li>
                             <li role="separator" class="divider"></li>
-                            <li><a href="#">My Advertisements</a></li>
+                            <li><a href="user?action=openings">My Advertisements</a></li>
                             <li><a href="#">Received Applications</a></li>
                             <li role="separator" class="divider"></li>
                             <li><a href="user?action=edit">Edit Account</a></li>
@@ -81,19 +83,15 @@
             </div><!-- /.container-fluid -->
         </nav>
 
-        <div class="content">
+        <div class="container-fluid" id="main_conainer">
             <div class="container">
                 <jsp:include page="${content}"/>
             </div>
             <hr>
         </div>
-
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-        <script type="text/javascript" src="js/bootstrap.min.js"></script>
-        <script type="text/javascript" src="js/jquery-3.1.0.js"></script>
-        <script type="text/javascript" src="js/login.js"></script>
-        <script type="text/javascript" src="js/bootstrap-tagsinput.js"></script>
-        <script type="text/javascript" src="js/bootstrap-tagsinput-angular.js"></script>
-        <script type="text/javascript" src="js/bootstrap-toggle.min.js"></script>
+            <script type="text/javascript" src="js/bootstrap.min.js"></script>
+            <script type="text/javascript" src="js/bootstrap-tagsinput.js"></script>
+            <script type="text/javascript" src="js/bootstrap-tagsinput-angular.js"></script>
+            <script type="text/javascript" src="js/bootstrap-toggle.min.js"></script>
     </body>
 </html>

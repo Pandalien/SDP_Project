@@ -9,16 +9,21 @@ import entities.Adverts;
 import entities.Classification;
 import entities.Requirements;
 import entities.RequirementsPK;
+import entities.Skills;
 import entities.Suburb;
 import entities.User;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import sb.AdvertsFacade;
 import sb.RequirementsFacade;
+import utils.Contract;
+import utils.StringUtils;
 
 
 
@@ -53,12 +58,28 @@ public class JobsServlet extends AbstractServlet {
     
     public void createPost(HttpServletRequest request, HttpServletResponse response) {
         //login required to create an ad
+        boolean isUpdate;
+        
         User user = getCurrentUser(request);
         if(user == null){
             login(request, response);
         }
         
-        Adverts ad = new Adverts();
+        Adverts ad;
+        
+        int oldId = getRequestId(request);
+        if (oldId == -1) {
+            isUpdate = false;
+            //create new
+            ad = new Adverts();
+        }else{
+            isUpdate = true;
+            ad = advertsFacade.find(oldId);
+            if (ad == null) {
+                sendMessage(request, response, "This job was not found.");
+                return;
+            }
+        }
         
         ad.setTitle(request.getParameter("title"));
         ad.setContent(request.getParameter("content"));
@@ -82,11 +103,30 @@ public class JobsServlet extends AbstractServlet {
         
         ad.setExpiryDate(date);
         
-        //add the ad to database
-        advertsFacade.create(ad);
+        String msg;
+        
+        if (isUpdate) {
+            advertsFacade.edit(ad);
+            
+            //delete old requirements
+            List<Requirements> reqs = requirementsFacade.findByAdvertsId(ad.getId());
+            if (reqs != null) {
+                reqs.stream().forEach((r) -> {
+                    requirementsFacade.remove(r);
+                });
+            }
+            
+            msg = ad.getTitle() + " updated Successfully!";
+        }else{
+            //add the ad to database
+            advertsFacade.create(ad);
+
+            //return a brief message
+            msg = ad.getTitle() + " created Successfully!";
+        }
         
         //create skills requirements db entries
-        String [] skills = request.getParameterValues("skills");
+        String[] skills = request.getParameterValues("skills");
         if (skills != null) {
             for (String skill : skills) {
                 Requirements rq = new Requirements(new RequirementsPK(ad.getId(), Integer.parseInt(skill)));
@@ -94,7 +134,45 @@ public class JobsServlet extends AbstractServlet {
             }
         }
         
-        //return a brief message
-        sendMessage(request, response, ad.getTitle() + " created Successfully!");
+        sendMessage(request, response, msg);
+    }
+    
+    public void view(HttpServletRequest request, HttpServletResponse response) {
+        int id = getRequestId(request);
+        if (id != -1) {
+            Adverts ad = advertsFacade.find(id);
+
+            if (ad != null) {
+                request.setAttribute(Contract.VIEW_ADVERT, ad);
+                getView(request, response, "jobs/view.jsp");
+            }
+        }
+        
+        sendMessage(request, response, "The job not found.");
+    }
+    
+    public void edit(HttpServletRequest request, HttpServletResponse response) {
+        int id = getRequestId(request);
+        if (id != -1) {
+            Adverts ad = advertsFacade.find(id);
+
+            if (ad != null) {
+                List<Requirements> reqs = requirementsFacade.findByAdvertsId(ad.getId());
+                List<Integer> reSkIds = new ArrayList<>();
+                
+                reqs.stream().forEach((s) -> {
+                    reSkIds.add(s.getSkills().getId());
+                });
+        
+                //a list of current required skill ids
+                request.setAttribute(Contract.ADVERT_SKILL_IDS, reSkIds);
+                request.setAttribute(Contract.VIEW_ADVERT, ad);
+                
+                create(request, response);
+                return;
+            }
+        }
+
+        sendMessage(request, response, "The job not found.");
     }
 }

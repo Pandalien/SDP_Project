@@ -24,6 +24,7 @@ import sb.SkillsFacade;
 import sb.SuburbFacade;
 import sb.UserFacade;
 import utils.Contract;
+import utils.StringUtils;
 
 
 public class AbstractServlet extends HttpServlet {
@@ -145,6 +146,16 @@ public class AbstractServlet extends HttpServlet {
     public void login(HttpServletRequest request, HttpServletResponse response) {
         setCollectionSuburbs(request);
         getView(request, response, "user/login.jsp");
+    }
+    
+    public int getRequestId(HttpServletRequest request){
+        String strId = request.getParameter("id");
+        
+        if (StringUtils.isNumeric(strId)) {
+            return Integer.parseInt(strId);
+        }
+        
+        return -1;
     }
     
     protected void setCollectionSkills(HttpServletRequest request){
