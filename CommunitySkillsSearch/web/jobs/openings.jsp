@@ -9,6 +9,7 @@
 <%@page import="java.util.List"%>
 <%
      List<Adverts> ads = (List<Adverts>) request.getAttribute(Contract.USER_ADVERTS);
+     boolean isClosed;
 %>
 
 
@@ -19,12 +20,13 @@
 <%
     if(ads !=null){
         for(Adverts a : ads){
+            isClosed = a.getClosed()==null||!a.getClosed();
 %>
     <tr><td><%=a.getId()%></td>
         <td><a href='jobs?action=view&id=<%=a.getId()%>'><%=a.getTitle()%></a></td>
-        <td><%=a.getClosed()==null||a.getClosed()? "Open" : "Closed"%></td>
+        <td><%=isClosed? "Open" : "Closed"%></td>
         <td>
-            <a href='jobs?action=close&id=<%=a.getId()%>' class="btn btn-outline-primary">Close</a>
+            <a href='jobs?action=<%=isClosed? "close" : "open"%>&id=<%=a.getId()%>' class="btn btn-outline-primary"><%=isClosed? "Close" : "Open"%></a>
             <a href='jobs?action=edit&id=<%=a.getId()%>' class="btn btn-outline-primary">Edit</a>
             <a href='jobs?action=delete&id=<%=a.getId()%>' class="btn btn-outline-danger">Delete</a>
         </td>

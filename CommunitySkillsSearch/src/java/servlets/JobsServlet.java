@@ -134,7 +134,11 @@ public class JobsServlet extends AbstractServlet {
             }
         }
         
-        sendMessage(request, response, msg);
+        if (isUpdate) {
+            openings(request, response);
+        }else{
+            sendMessage(request, response, msg);
+        }
     }
     
     public void view(HttpServletRequest request, HttpServletResponse response) {
@@ -169,6 +173,60 @@ public class JobsServlet extends AbstractServlet {
                 request.setAttribute(Contract.VIEW_ADVERT, ad);
                 
                 create(request, response);
+                return;
+            }
+        }
+
+        sendMessage(request, response, "The job not found.");
+    }
+    
+    
+    public void openings(HttpServletRequest request, HttpServletResponse response) {
+        User user = getCurrentUser(request);
+        if (user == null) {
+            login(request, response);
+            return;
+        }
+        
+        List<Adverts> ads = advertsFacade.findByUser(user);
+        request.setAttribute(Contract.USER_ADVERTS, ads);
+        getView(request, response, "jobs/openings.jsp");
+    }
+    
+    private void vacancyWrapper(HttpServletRequest request, HttpServletResponse response, Boolean isClosed) {
+        int id = getRequestId(request);
+        if (id != -1) {
+            Adverts ad = advertsFacade.find(id);
+
+            if (ad != null) {
+                ad.setClosed(isClosed);
+                advertsFacade.edit(ad);
+
+                openings(request, response);
+                return;
+            }
+        }
+
+        sendMessage(request, response, "The job not found.");
+    }
+    
+    public void close(HttpServletRequest request, HttpServletResponse response) {
+        vacancyWrapper(request, response, Boolean.TRUE);
+    }
+    
+    public void open(HttpServletRequest request, HttpServletResponse response) {
+        vacancyWrapper(request, response, Boolean.FALSE);
+    }
+    
+    public void delete(HttpServletRequest request, HttpServletResponse response) {
+        int id = getRequestId(request);
+        if (id != -1) {
+            Adverts ad = advertsFacade.find(id);
+
+            if (ad != null) {
+                advertsFacade.remove(ad);
+
+                openings(request, response);
                 return;
             }
         }

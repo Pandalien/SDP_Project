@@ -146,16 +146,4 @@ public class UserServlet extends AbstractServlet {
         HttpSession session = request.getSession();
         session.setAttribute(Contract.CURRENT_USER, user);
     }
-    
-    public void openings(HttpServletRequest request, HttpServletResponse response) {
-        User user = getCurrentUser(request);
-        if (user == null) {
-            login(request, response);
-            return;
-        }
-        
-        List<Adverts> ads = advertsFacade.findByUser(user);
-        request.setAttribute(Contract.USER_ADVERTS, ads);
-        getView(request, response, "user/openings.jsp");
-    }
 }
