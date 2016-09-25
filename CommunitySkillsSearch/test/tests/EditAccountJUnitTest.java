@@ -1,10 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package tests;
 
+import entities.Suburb;
+import entities.User;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -12,6 +10,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import utils.EditAccount;
+import utils.UserCtrl;
 
 /**
  *
@@ -19,7 +18,19 @@ import utils.EditAccount;
  */
 public class EditAccountJUnitTest {
     EditAccount editAcc;
-    
+    UserCtrl userController;
+    int dummyUserId = 0;
+    User dummyUser;
+    String username;
+    String password;
+    String email;
+    String phone;
+    String intro;
+    boolean visible;
+    String newEmail;
+    String newPhone;
+    String newIntro;
+    boolean newVisible;
     
     public EditAccountJUnitTest() {
     }
@@ -31,12 +42,23 @@ public class EditAccountJUnitTest {
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     @Before
     public void setUp() {
         this.editAcc = new EditAccount();
+        this.userController = new UserCtrl();
+        username = "test";
+        password = "test";
+        email = "test@test.com";
+        phone = "1234567890";
+        intro = "This is a test.";
+        visible = true;
+        newEmail = "matt@matt.com";
+        newPhone = "0987654321";
+        newIntro = "I'm Matt.";
+        newVisible = false;
     }
-    
+
     @Test
     public void testValidEmail() {
         assertTrue(editAcc.validateEmail("username@domain.com.nz"));    // valid email
@@ -111,6 +133,51 @@ public class EditAccountJUnitTest {
     public void testInvalidPhone3() {
         assertFalse(editAcc.validatePhone("1234-567-890"));      // wrong format
     } 
+    
+    @Test
+    public void testUpdateAccount() {
+        User user = createDummyUser();
+        // create a dummy user in database
+        dummyUser = userController.create(user);
+        // update the dummy user in the database
+        updateDummyUser();
+        // retrieve the dummy user from the database
+        User updatedUser = userController.findById(dummyUserId);
+        // test whether the data is updated
+        assertEquals(newEmail, updatedUser.getEmail());
+        assertEquals(newPhone, updatedUser.getPhone());
+        assertEquals(newIntro, updatedUser.getIntroduction());
+        assertEquals(newVisible, updatedUser.getVisible());
+        testDelete();
+    }
+    
+    // create a dummy user in database
+    private User createDummyUser() {
+        User user = new User();
+        user.setId(dummyUserId);    // unchangable
+        user.setName(username);     // unchangable
+        user.setPassword(password);
+        user.setEmail(email);
+        user.setPhone(phone);
+        user.setSuburbId(new Suburb(1));
+        user.setIntroduction(intro);
+        user.setVisible(visible);
+        return user;
+    }
+    
+    // update the dummy user in the database
+    private void updateDummyUser() {
+        dummyUser.setEmail(newEmail);
+        dummyUser.setPhone(newPhone);
+        dummyUser.setIntroduction(newIntro);
+        dummyUser.setVisible(newVisible);
+        
+        userController.update(dummyUser);
+    }
+    
+    public void testDelete() {
+        userController.delete(dummyUser);
+    }
     
     @After
     public void tearDown() {

@@ -18,10 +18,8 @@ import utils.UserCtrl;
 public class LoginJUnitTest {
     Login login;
     UserCtrl userController;
-    int createdUserId = 0;
-    User createdUser;
-    String name;
-    String email;
+    User dummyUser;
+    String username;
     String password;
 
     public LoginJUnitTest() {
@@ -39,19 +37,8 @@ public class LoginJUnitTest {
     public void setUp() {
         this.login = new Login();
         this.userController = new UserCtrl();
-        name = "test";
-        email = "test@test.com";
+        username = "test";
         password = "test";
-    }
-
-    // create a dunmmy user to database
-    private User createDummyUser(){
-        User user = new User();
-        user.setName(name);
-        user.setEmail(email);
-        user.setPassword(password);
-        user.setSuburbId(new Suburb(1));
-        return user;
     }
     
     @Test
@@ -112,20 +99,29 @@ public class LoginJUnitTest {
     }
 
     @Test
-    public void testLoginMatchDatabase() {
+    public void testLoginFunction() {
         User user = createDummyUser();
-        createdUser = userController.create(user);
+        dummyUser = userController.create(user);
         assertTrue(testLoginHelper("test", "test"));        // login matches with database
         assertFalse(testLoginHelper("test", "wrongpw"));    // login does not match with database
         testDelete();       // remove dummy user
     }
+
+    // create a dunmmy user in database
+    private User createDummyUser(){
+        User user = new User();
+        user.setName(username);
+        user.setPassword(password);
+        user.setSuburbId(new Suburb(1));
+        return user;
+    }
     
     public boolean testLoginHelper(String username, String password) {
-        return username.equals(createdUser.getName()) && password.equals(createdUser.getPassword());
+        return username.equals(dummyUser.getName()) && password.equals(dummyUser.getPassword());
     }
 
     public void testDelete() {
-        userController.delete(createdUser);
+        userController.delete(dummyUser);
     }
     
     @After

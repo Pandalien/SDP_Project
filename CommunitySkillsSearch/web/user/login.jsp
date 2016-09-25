@@ -1,7 +1,7 @@
 <%-- 
     Document   : login
     Created on : Apr 17, 2016, 4:31:18 PM
-    Author     : Andy Chen
+    Author     : Andy Chen, Matt Chung
 --%>
 <%@page import="utils.Contract"%>
 <%@page import="java.util.List"%>

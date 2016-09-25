@@ -5,10 +5,8 @@
  */
 package servlets;
 
-import entities.Adverts;
 import entities.User;
 import entities.UserSkills;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.ejb.EJB;
@@ -17,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import sb.AdvertsFacade;
 import utils.Contract;
+import utils.EditAccount;
 import utils.Login;
 import utils.StringUtils;
 
@@ -48,7 +47,8 @@ public class UserServlet extends AbstractServlet {
         String name = request.getParameter("username");
         String pass1 = request.getParameter("password");
         String pass2 = request.getParameter("password_match");
-        Login checker = new Login();
+        Login passwordChecker = new Login();
+        EditAccount emailChecker = new EditAccount();
         
         try{
             //check user name
@@ -61,7 +61,7 @@ public class UserServlet extends AbstractServlet {
             }
 
             //check email
-            if (!checker.validateEmail(email)) {
+            if (!emailChecker.validateEmail(email)) {
                 errorCount++;
                 alertDanger(request, "Please input an valid email address.");
             } else if (userFacade.isExist("email", email)) {
@@ -73,7 +73,7 @@ public class UserServlet extends AbstractServlet {
         }
         
         //check password
-        if (!checker.validatePassword(pass1)) {
+        if (!passwordChecker.validatePassword(pass1)) {
             errorCount++;
             alertDanger(request, "Please input an valid password. "
                     + "Four characters minimum, must include an uppercase, lowercase, and numeric character. No spaces.");
@@ -131,7 +131,7 @@ public class UserServlet extends AbstractServlet {
         User user = getCurrentUser(request);
         user.setPhone(request.getParameter("phone"));
         user.setSuburbId(suburbFacade.findById(Integer.parseInt(request.getParameter("suburb_id"))));
-        user.setVisible((request.getParameter("visible")==null? false : true));
+        user.setVisible((request.getParameter("visible") == null ? false : true));
         user.setIntroduction(request.getParameter("intro"));
         //user.setEmail(request.getParameter("email"));
         
