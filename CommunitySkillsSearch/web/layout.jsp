@@ -62,9 +62,10 @@
                     </div>
                     <%}%>
                     
-                    <form class="navbar-form navbar-left">
+                    <form action="search" class="navbar-form navbar-left">
+                        <input type="hidden" name="action" value="searchFor">
                         <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Search" id="searchbar">
+                            <input name="keywords" type="text" class="form-control" placeholder="Search" id="searchbar">
                         </div>
                         <button type="submit" class="btn btn-default">Submit</button>
                     </form>

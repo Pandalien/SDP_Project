@@ -36,9 +36,9 @@ public class SearchServlet extends AbstractServlet {
     
     public void searchFor(HttpServletRequest request, HttpServletResponse response) {
       
-      String suburb_id_param = request.getParameter("suburb_id");
-      String classification_id_param = request.getParameter("classification_id");
-      String skills_id_param = request.getParameter("skills_id");
+      String suburb_id_param = request.getParameter("suburb");
+      String classification_id_param = request.getParameter("classification");
+      String skills_id_param = request.getParameter("skills");
       String keywords_param = request.getParameter("keywords");
       String type_param = request.getParameter("type");
       

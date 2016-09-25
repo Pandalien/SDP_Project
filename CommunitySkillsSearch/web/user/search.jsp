@@ -20,21 +20,22 @@
 <h1>COMMUNITY SKILLS SEARCH</h1>
 <div class="main">
     <div class="form">
-        <form action="user?action=search" method="post">
-            Location <select name='suburb'> 
+        <form action="search">
+            <input type="hidden" name="action" value="searchFor">
+            Location <select name="suburb"> 
                 <%for (Suburb sub : suburbs) {%>
-                <option value='<%=sub.getId()%>'><%=sub.getSuburb()%></option>
+                <option value="<%=sub.getId()%>"><%=sub.getSuburb()%></option>
                 <%}%>
             </select>
-            Category <select name='classification'> 
+            Category <select name="classification"> 
                 <%for (Classification cls : classifications) {%>
-                <option value='<%=cls.getId()%>'><%=cls.getName()%></option>
+                <option value="<%=cls.getId()%>"><%=cls.getName()%></option>
                 <%}%>
             </select>
             <br/>
-            Skills <select name='skills' multiple="true"> 
+            Skills <select name="skills" multiple="true"> 
                 <%for (Skills s : skills) {%>
-                <option value='<%=s.getId()%>'><%=s.getName()%></option>
+                <option value="<%=s.getId()%>"><%=s.getName()%></option>
                 <%}%>
             </select>
             <br/>
@@ -44,7 +45,7 @@
             <input type="radio" name="type" value="workers"/> For Worker
             <input type="radio" name="type" value="jobs"/> For Jobs
             <br/>
-        <form/>   
+        </form>   
     <div/>
 <div/>
 <!-- search results -->
