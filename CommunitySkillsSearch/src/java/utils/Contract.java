@@ -22,6 +22,8 @@ public class Contract {
     final public static String USER_ADVERTS = "current_user_adverts";
     final public static String VIEW_ADVERT = "view_advert";
     final public static String ADVERT_SKILL_IDS = "advert_skill_ids";
+    
+    final public static String MESSAGES_FROM_SERVER = "messages_from_server";
    
     final public static int WORKER = 0;
     final public static int JOB = 1;

@@ -43,6 +43,7 @@ public class UserServlet extends AbstractServlet {
     }
     
     public void createPost(HttpServletRequest request, HttpServletResponse response) {
+        int errorCount = 0;
         String email = request.getParameter("email");
         String name = request.getParameter("username");
         String pass1 = request.getParameter("password");
@@ -52,20 +53,20 @@ public class UserServlet extends AbstractServlet {
         try{
             //check user name
             if (StringUtils.isBlank(name)) {
-                sendMessage(request, response, "User name cannot be empty.");
-                return;
+                errorCount++;
+                alertDanger(request, "User name cannot be empty.");
             } else if (userFacade.isExist("name", name)) {
-                sendMessage(request, response, "User name " + name + " already exist.");
-                return;
+                errorCount++;
+                alertDanger(request, "User name " + name + " already exist.");
             }
 
             //check email
             if (!checker.validateEmail(email)) {
-                sendMessage(request, response, "Please input an valid email address.");
-                return;
+                errorCount++;
+                alertDanger(request, "Please input an valid email address.");
             } else if (userFacade.isExist("email", email)) {
-                sendMessage(request, response, "Email " +email+ " already exist.");
-                return;
+                errorCount++;
+                alertDanger(request, "Email " +email+ " already exist.");
             }
         }catch(Exception ex){
             
@@ -73,11 +74,17 @@ public class UserServlet extends AbstractServlet {
         
         //check password
         if (!checker.validatePassword(pass1)) {
-            sendMessage(request, response, "Please input an valid password. "
+            errorCount++;
+            alertDanger(request, "Please input an valid password. "
                     + "Four characters minimum, must include an uppercase, lowercase, and numeric character. No spaces.");
-            return;
+            
         }else if (pass1 == null ? pass2 != null : !pass1.equals(pass2)) {
-            sendMessage(request, response, "The passwords you input do not match.");
+            errorCount++;
+            alertDanger(request, "The passwords you input do not match.");
+        }
+        
+        if (errorCount > 0) {
+            showGoBackPage(request, response);
             return;
         }
         
@@ -92,9 +99,10 @@ public class UserServlet extends AbstractServlet {
         try {
             userFacade.create(user);
             sessionStart(request, user);
-            sendMessage(request, response, "Hello " + user.getName() + ", your account was created successfully!");
+            alertSuccess(request, "Hello " + user.getName() + ", your account was created successfully!");
+            edit(request, response);
         } catch (Exception e) {
-            sendMessage(request, response, "Failed to created account:" + e);
+            alertDanger(request, "Failed to created account:" + e);
         }
     }
     
@@ -132,8 +140,20 @@ public class UserServlet extends AbstractServlet {
     }
     
     public void loginPost(HttpServletRequest request, HttpServletResponse response) {
-        User user = userFacade.findByUsernameAndPassword(request.getParameter("username"), request.getParameter("password"));
-        request.getSession().setAttribute(Contract.CURRENT_USER, user);
+        List<User> users = userFacade.findByName(request.getParameter("username"));
+        
+        if (users == null || users.isEmpty()) {
+            alertDanger(request, "The user you entered does not exist.");
+        }else{
+            User user = userFacade.findByUsernameAndPassword(request.getParameter("username"), request.getParameter("password"));
+
+            if (user == null) {
+                alertDanger(request, "Your user and pass did not match, please try again.");
+            }else{
+                request.getSession().setAttribute(Contract.CURRENT_USER, user);
+            }
+        }
+        
         login(request, response);
     }
     

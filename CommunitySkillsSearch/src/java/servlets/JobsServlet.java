@@ -76,7 +76,8 @@ public class JobsServlet extends AbstractServlet {
             isUpdate = true;
             ad = advertsFacade.find(oldId);
             if (ad == null) {
-                sendMessage(request, response, "This job was not found.");
+                alertWarning(request, "This job was not found.");
+                showGoBackPage(request, response);
                 return;
             }
         }
@@ -135,11 +136,8 @@ public class JobsServlet extends AbstractServlet {
             }
         }
         
-        if (isUpdate) {
-            openings(request, response);
-        }else{
-            sendMessage(request, response, msg);
-        }
+        alertSuccess(request, msg);
+        openings(request, response);
     }
     
     public void view(HttpServletRequest request, HttpServletResponse response) {
@@ -152,8 +150,8 @@ public class JobsServlet extends AbstractServlet {
                 getView(request, response, "jobs/view.jsp");
             }
         }
-        
-        sendMessage(request, response, "The job not found.");
+        alertWarning(request, "The job not found.");
+        showGoBackPage(request, response);
     }
     
     public void edit(HttpServletRequest request, HttpServletResponse response) {
@@ -177,7 +175,8 @@ public class JobsServlet extends AbstractServlet {
             }
         }
 
-        sendMessage(request, response, "The job not found.");
+        alertWarning(request, "The job not found.");
+        showGoBackPage(request, response);
     }
     
     
@@ -207,7 +206,8 @@ public class JobsServlet extends AbstractServlet {
             }
         }
 
-        sendMessage(request, response, "The job not found.");
+        alertWarning(request, "The job not found.");
+        showGoBackPage(request, response);
     }
     
     public void close(HttpServletRequest request, HttpServletResponse response) {
@@ -231,6 +231,7 @@ public class JobsServlet extends AbstractServlet {
             }
         }
 
-        sendMessage(request, response, "The job not found.");
+        alertWarning(request, "The job not found.");
+        showGoBackPage(request, response);
     }
 }

@@ -88,6 +88,7 @@
 
         <div class="container-fluid" id="main_conainer">
             <div class="container">
+                <jsp:include page="shared\message.jsp"/>
                 <jsp:include page="${content}"/>
             </div>
             <hr>

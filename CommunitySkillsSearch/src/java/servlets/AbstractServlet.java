@@ -1,5 +1,7 @@
 package servlets;
 
+import beans.MessageType;
+import beans.ServerMessage;
 import entities.Classification;
 import entities.Skills;
 import entities.Suburb;
@@ -8,6 +10,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.logging.Level;
@@ -118,14 +121,49 @@ public class AbstractServlet extends HttpServlet {
             Method m = this.getClass().getMethod(action, new Class[]{HttpServletRequest.class, HttpServletResponse.class});
             Object ret = m.invoke(this, new Object[]{req, resp});
         } catch (NoSuchMethodException ex) {
-            sendMessage(req, resp, "Page not found.");
+            alertWarning(req, "Page not found.");
+            showGoBackPage(req, resp);
         } catch(SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex){
-            sendMessage(req, resp, ex.toString());
+            alertDanger(req, ex.toString());
+            showGoBackPage(req, resp);
         }
     }
 
     protected void error404(HttpServletRequest req, HttpServletResponse resp){
-        sendMessage(req, resp, "The page does not exist.");
+        alertWarning(req, "The page does not exist.");
+        showGoBackPage(req, resp);
+    }
+    
+    public void alert(HttpServletRequest req, String msg, MessageType type){
+        //get old object
+        List<ServerMessage> msgs = (List<ServerMessage>) req.getAttribute(Contract.MESSAGES_FROM_SERVER);
+        if (msgs == null) {
+            msgs = new ArrayList<>();
+        }
+        
+        //update to the new one
+        msgs.add(new ServerMessage(msg, type));
+        req.setAttribute(Contract.MESSAGES_FROM_SERVER, msgs);
+    }
+    
+    public void alertSuccess(HttpServletRequest req, String msg){
+        alert(req, msg, MessageType.SUCCESS);
+    }
+    
+    public void alertInfo(HttpServletRequest req, String msg){
+        alert(req, msg, MessageType.INFO);
+    }
+    
+    public void alertWarning(HttpServletRequest req, String msg){
+        alert(req, msg, MessageType.WARNING);
+    }
+    
+    public void alertDanger(HttpServletRequest req, String msg){
+        alert(req, msg, MessageType.DANGER);
+    }
+    
+    public void showGoBackPage(HttpServletRequest req, HttpServletResponse resp){
+        getView(req, resp, "shared/goback.jsp");
     }
     
     protected void sendMessage(HttpServletRequest req, HttpServletResponse resp, String msg){
