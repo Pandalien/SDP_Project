@@ -39,9 +39,9 @@
                 <%}%>
             </select>
             <br/>
-            Keywords <input type="text" name="Keywords"/>
-            <input type="submit" name="Search"/>
-            <input type="reset" name="Reset"/>
+            Keywords <input type="text" name="keywords" placeholder="keywords"/>
+            <input type="submit" value="Search"/>
+            <input type="reset" value="Reset"/>
             <input type="radio" name="type" value="workers"/> For Worker
             <input type="radio" name="type" value="jobs"/> For Jobs
             <br/>
