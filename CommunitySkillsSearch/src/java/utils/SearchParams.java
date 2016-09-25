@@ -1,7 +1,6 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * SearchParams java bean for validating search parameters and holding them
+ * as a bean for access by search.jsp.
  */
 package utils;
 
@@ -15,6 +14,70 @@ import java.util.List;
  * @author AD
  */
 public class SearchParams {
+
+  // search types  
+  final public static int WORKER = 0;
+  final public static int JOB = 1;
+  
+  // object fields
+  public int suburb_id;
+  public int classification_id;
+  public int skills_id;
+  public List<String> keywords;
+  public int type;
+  
+  public SearchParams() {
+    suburb_id = -1;
+    classification_id = -1;
+    skills_id = -1;
+    keywords = null;
+    type = WORKER;
+  }
+  
+  // -- getters and setters --
+  
+  public int getSuburbId() {
+    return suburb_id;
+  }
+  
+  public void setSuburbId(int suburb_id) {
+    this.suburb_id = SearchParams.validateSuburbId(suburb_id) ? suburb_id : -1;
+  }
+  
+  public int getClassificationId() {
+    return classification_id;
+  }
+  
+  public void setClassificationId(int classification_id) {
+    this.classification_id = SearchParams.validateClassificationId(classification_id) ? classification_id : -1;
+  }
+  
+  public int getSkillsId() {
+    return skills_id;
+  }
+
+  public void setSkillsId(int skills_id) {
+    this.skills_id = SearchParams.validateSkillsId(skills_id) ? skills_id : -1;
+  }
+  
+  public String getKeywords() {
+    return keywords == null ? "" : String.join(" ", keywords);
+  }
+  
+  public void setKeywords(String keywords) {
+    this.keywords = SearchParams.parseKeywords(keywords);
+  }
+  
+  public int getType() {
+    return type;
+  }
+  
+  public void setType(int type) {
+    this.type = type;
+  }
+  
+  
+  // ----- static methods: -----
   
   // -- parsers -- 
 
@@ -35,24 +98,24 @@ public class SearchParams {
   
   public static int parseType(String type) {
     if (type == null)
-      return -1;    
+      return WORKER;
     String s = type.trim().toLowerCase();    
-    return s.startsWith("worker") ? Contract.WORKER :
-           s.startsWith("job") ? Contract.JOB :
-           -1;
+    return s.startsWith("worker") ? WORKER :
+           s.startsWith("job") ? JOB :
+           WORKER;
   }
   
   // -- validators --
   
-  public static boolean validateSuburbID(int suburb_id) {
+  public static boolean validateSuburbId(int suburb_id) {
     return suburb_id >= 0;
   }
   
-  public static boolean validateClassificationID(int classification_id) {
+  public static boolean validateClassificationId(int classification_id) {
     return classification_id >= 0;
   }
 
-  public static boolean validateSkillsID(int skills_id) {
+  public static boolean validateSkillsId(int skills_id) {
     return skills_id >= 0;
   }
   

@@ -24,7 +24,4 @@ public class Contract {
     final public static String ADVERT_SKILL_IDS = "advert_skill_ids";
     
     final public static String MESSAGES_FROM_SERVER = "messages_from_server";
-   
-    final public static int WORKER = 0;
-    final public static int JOB = 1;
 }

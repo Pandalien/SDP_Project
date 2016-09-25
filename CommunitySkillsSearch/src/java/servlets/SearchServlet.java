@@ -29,6 +29,7 @@ public class SearchServlet extends AbstractServlet {
     @EJB
     private UserSkillsFacade userSkillsFacade;
       
+/*    
     public void showall(HttpServletRequest request, HttpServletResponse response) {  
       List<Adverts> adverts = advertsFacade.findAll();
       request.setAttribute(Contract.ADVERTS, adverts);
@@ -39,6 +40,7 @@ public class SearchServlet extends AbstractServlet {
       
       getView(request, response, "user/search.jsp");        
     }
+*/
     
     public void searchFor(HttpServletRequest request, HttpServletResponse response) {
       
@@ -56,13 +58,22 @@ public class SearchServlet extends AbstractServlet {
       List<String> keywords = SearchParams.parseKeywords(keywords_param);
       int type = SearchParams.parseType(type_param);
       
-      if (type == Contract.JOB) {
+      
+      SearchParams search = new SearchParams();
+      search.setSuburbId(suburb_id);
+      search.setClassificationId(classification_id);
+      search.setSkillsId(skills_id);
+      search.setKeywords(keywords_param);
+      search.setType(type);
+      
+      
+      if (type == SearchParams.JOB) {
         List<Adverts> adverts = advertsFacade.findByVarious(suburb_id, classification_id, keywords);
         request.setAttribute(Contract.ADVERTS, adverts);
       }
-      else if (type == Contract.WORKER) {
+      else if (type == SearchParams.WORKER) {
         List<UserSkills> userSkills;
-        if (SearchParams.validateSkillsID(skills_id))
+        if (SearchParams.validateSkillsId(skills_id))
           userSkills = userSkillsFacade.findBySkillsId(skills_id);
         else
           userSkills = userSkillsFacade.findAll();
@@ -71,7 +82,7 @@ public class SearchServlet extends AbstractServlet {
         for (UserSkills us: userSkills) {
           User u = us.getUser();
           if (u != null && u.getVisible().booleanValue()) {
-            if (SearchParams.validateSuburbID(suburb_id)) {
+            if (SearchParams.validateSuburbId(suburb_id)) {
               if (suburb_id == u.getSuburbId().getId()) 
                 users.add(u);
             }
@@ -83,6 +94,8 @@ public class SearchServlet extends AbstractServlet {
         }
         request.setAttribute(Contract.USERS, users);
       }
+      
+      request.setAttribute("search", search);
       
       setCollectionSkills(request);
       setCollectionSuburbs(request);

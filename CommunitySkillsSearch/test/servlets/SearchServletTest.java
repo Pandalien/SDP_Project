@@ -48,7 +48,7 @@ public class SearchServletTest {
     HttpServletRequest request = null;
     HttpServletResponse response = null;
     SearchServlet instance = new SearchServlet();
-    instance.showall(request, response);
+    //instance.showall(request, response);
     // TODO review the generated test code and remove the default call to fail.
     fail("The test case is a prototype.");
   }

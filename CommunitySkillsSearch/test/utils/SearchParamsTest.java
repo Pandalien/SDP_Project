@@ -19,6 +19,8 @@ import static org.junit.Assert.*;
  */
 public class SearchParamsTest {
   
+  private SearchParams search;
+  
   public SearchParamsTest() {
   }
   
@@ -32,10 +34,16 @@ public class SearchParamsTest {
   
   @Before
   public void setUp() {
+    search = new SearchParams();
   }
   
   @After
   public void tearDown() {
+  }
+  
+  @Test
+  public void testGetKeywords() {
+    assertNotNull(search.getKeywords());
   }
   
   @Test
@@ -55,27 +63,27 @@ public class SearchParamsTest {
   
   @Test 
   public void testParseType() {
-    assertEquals(Contract.WORKER, SearchParams.parseType("workers"));
-    assertEquals(Contract.JOB, SearchParams.parseType("jobs"));     
-    assertEquals(-1, SearchParams.parseType(null));
+    assertEquals(SearchParams.WORKER, SearchParams.parseType("workers"));
+    assertEquals(SearchParams.JOB, SearchParams.parseType("jobs"));     
+    assertEquals(SearchParams.WORKER, SearchParams.parseType(null));
   }
 
   @Test
   public void testSuburbIDNegative() {
     int suburb_id = -1;
-    assertFalse(SearchParams.validateSuburbID(suburb_id));
+    assertFalse(SearchParams.validateSuburbId(suburb_id));
   }
 
   @Test
   public void testClassificationIDNegative() {
     int classification_id = -1;
-    assertFalse(SearchParams.validateClassificationID(classification_id));
+    assertFalse(SearchParams.validateClassificationId(classification_id));
   }
 
   @Test
   public void testSkillsIDNegative() {
     int skills_id = -1;
-    assertFalse(SearchParams.validateSkillsID(skills_id));
+    assertFalse(SearchParams.validateSkillsId(skills_id));
   }
 
   @Test

@@ -76,21 +76,23 @@ public class AdvertsFacade extends AbstractFacade<Adverts> {
 
         int index = 0;
         
-        if (SearchParams.validateSuburbID(suburb_id)) {
+        if (SearchParams.validateSuburbId(suburb_id)) {
           where.add("suburb_id=?" + ++index);
           params.add(suburb_id);
         }
         
-        if (SearchParams.validateClassificationID(classification_id)) {
+        if (SearchParams.validateClassificationId(classification_id)) {
           where.add("classification_id=?" + ++index);
           params.add(classification_id);
         }
         
         if (keywords != null)
           for (String s: keywords) {
-            where.add("(content like ?" + ++index + " or title like ?" + ++index + ")");
-            params.add("%"+s+"%");
-            params.add("%"+s+"%");
+            if (s.length() > 0) {
+              where.add("(content like ?" + ++index + " or title like ?" + ++index + ")");
+              params.add("%"+s+"%");
+              params.add("%"+s+"%");
+            }
           }
         
         // combine into one query string
