@@ -48,30 +48,48 @@
         </form>   
     <div/>
 <div/>
-<!-- search results -->
+<!-- search results for jobs -->
 <%
-    List<Adverts> list = (List<Adverts>) request.getAttribute(Contract.ADVERTS);
+    List<Adverts> jobsList = (List<Adverts>) request.getAttribute(Contract.ADVERTS);
 %>
 <%
-    if (list != null) {
+    if (jobsList != null) {
 %>
 
 <table>
-    <tr><th>Results</th>
-        <%if(list!=null){%>
-            <%for (Adverts advert : list) {%>
-        <tr>
-            <td><%= advert.getTitle() %></td>
-            <td><%= advert.getContent() %></td>
-            <td></td>
-            <td></td>
-        </tr>
-            <%}%>
-        <%} else {%>
-            <%=""%>
-        <%}%>
+  <tr><th>Results</th></tr>
+    <%for (Adverts advert : jobsList) {%>
+    <tr>
+      <td><%= advert.getTitle() %></td>
+      <td><%= advert.getContent() %></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <%}%>
 </table>
 
-<%}%>
+<%  }%>
     
+
+<!-- search results for workers -->
+<%
+    List<User> workersList = (List<User>) request.getAttribute(Contract.USERS);
+%>
+<%
+    if (workersList != null) {
+%>
+
+<table>
+  <tr><th>Results</th></tr>
+    <%for (User u : workersList) {%>
+    <tr>
+        <td><%= u.getName() %></td>
+        <td><%= u.getPhone() %></td>
+        <td></td>
+        <td></td>
+    </tr>
+    <%}%>
+</table>
+
+<%  }%>
     

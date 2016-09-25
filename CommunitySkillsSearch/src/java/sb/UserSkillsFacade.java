@@ -5,14 +5,18 @@
  */
 package sb;
 
+import entities.Adverts;
+import entities.User;
 import entities.UserSkills;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
- * @author andyc
+ * @author andyc, AD
  */
 @Stateless
 public class UserSkillsFacade extends AbstractFacade<UserSkills> {
@@ -28,5 +32,13 @@ public class UserSkillsFacade extends AbstractFacade<UserSkills> {
     public UserSkillsFacade() {
         super(UserSkills.class);
     }
+    
+    //find advert by user object (not Id)
+    public List<UserSkills> findBySkillsId(int skills_id){
+        Query q = em.createNamedQuery("UserSkills.findBySkillsId");
+        q.setParameter("skillsId", new Integer(skills_id)); 
+        return q.getResultList();
+    }
+    
     
 }
