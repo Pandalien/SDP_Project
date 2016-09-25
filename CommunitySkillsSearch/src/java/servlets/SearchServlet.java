@@ -49,10 +49,6 @@ public class SearchServlet extends AbstractServlet {
       List<String> keywords = SearchParams.parseKeywords(keywords_param);
       int type = SearchParams.parseType(type_param);
 
-      // methods possible:
-      // make several NameQueries on each field, and append to the list (OR)
-      // else make one large method, but some way to build up the query dynamically.
-      
       List<Adverts> adverts = advertsFacade.findByVarious(suburb_id, classification_id, keywords);
       request.setAttribute(Contract.ADVERTS, adverts);
       

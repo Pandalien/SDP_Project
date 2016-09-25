@@ -10,6 +10,7 @@ import entities.Classification;
 import entities.Suburb;
 import entities.User;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -50,12 +51,14 @@ public class AdvertsFacade extends AbstractFacade<Adverts> {
     
     
     public List<Adverts> findByVarious(int suburb_id, int classification_id, List<String> keywords) {
-
-        // default find all
+        // default find all query string
         String qs = "select * from Adverts";
         
+        // list of "where" conditions:        
         ArrayList<String> where = new ArrayList();
+        ArrayList<Object> params = new ArrayList();
         
+/*                
         if (SearchParams.validateSuburbID(suburb_id))
           where.add("suburb_id=" + suburb_id);
         
@@ -69,9 +72,38 @@ public class AdvertsFacade extends AbstractFacade<Adverts> {
         // combine into one query string
         if (where.size() > 0) 
           qs += " where " + String.join(" and ", where);
+*/
 
+        int index = 0;
+        
+        if (SearchParams.validateSuburbID(suburb_id)) {
+          where.add("suburb_id=?" + ++index);
+          params.add(suburb_id);
+        }
+        
+        if (SearchParams.validateClassificationID(classification_id)) {
+          where.add("classification_id=?" + ++index);
+          params.add(classification_id);
+        }
+        
+        if (keywords != null)
+          for (String s: keywords) {
+            where.add("(content like ?" + ++index + " or title like ?" + ++index + ")");
+            params.add("%"+s+"%");
+            params.add("%"+s+"%");
+          }
+        
+        // combine into one query string
+        if (where.size() > 0) 
+          qs += " where " + String.join(" and ", where);        
+        
         // native SQL query returns Adverts objects
-        Query q = em.createNativeQuery(qs, Adverts.class);        
+        Query q = em.createNativeQuery(qs, Adverts.class);   
+        
+        // set parameters
+        for (int i = 0; i < params.size(); i++) 
+          q.setParameter(i + 1, params.get(i));        
+
         return q.getResultList();
     }
     
