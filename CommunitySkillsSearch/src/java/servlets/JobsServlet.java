@@ -111,9 +111,10 @@ public class JobsServlet extends AbstractServlet {
             //delete old requirements
             List<Requirements> reqs = requirementsFacade.findByAdvertsId(ad.getId());
             if (reqs != null) {
-                reqs.stream().forEach((r) -> {
+                for(Requirements r : reqs){
                     requirementsFacade.remove(r);
-                });
+
+                }
             }
             
             msg = ad.getTitle() + " updated Successfully!";
@@ -163,10 +164,9 @@ public class JobsServlet extends AbstractServlet {
             if (ad != null) {
                 List<Requirements> reqs = requirementsFacade.findByAdvertsId(ad.getId());
                 List<Integer> reSkIds = new ArrayList<>();
-                
-                reqs.stream().forEach((s) -> {
-                    reSkIds.add(s.getSkills().getId());
-                });
+                for(Requirements r : reqs){
+                    reSkIds.add(r.getRequirementsPK().getSkillsId());
+                }
         
                 //a list of current required skill ids
                 request.setAttribute(Contract.ADVERT_SKILL_IDS, reSkIds);

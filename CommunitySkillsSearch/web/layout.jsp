@@ -15,10 +15,12 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="shortcut icon" href="res/images/favicon.ico" type="image/x-icon"/>
+        <link rel="icon" href="res/images/favicon.ico" type="image/x-icon"/>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
         <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css"/>
         <link rel="stylesheet" href="css/navbar-fixed-top.css" type="text/css"/>
-        <%-- <link rel="stylesheet" href="css/login.css" type="text/css"/>--%>
+        <link rel="stylesheet" href="css/login.css" type="text/css"/>
         <link rel="stylesheet" href="css/bootstrap-tagsinput.css" type="text/css"/>
         <link rel="stylesheet" href="css/bootstrap-toggle.min.css" type="text/css"/>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>

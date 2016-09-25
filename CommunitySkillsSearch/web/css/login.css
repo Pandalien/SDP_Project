@@ -4,7 +4,7 @@
     Author     : matt
 */
 
-body {
+/*body {
     background: #FFAB4A;
     background: -webkit-linear-gradient(#FFAB4A, #FFFFCC) fixed;
     background: -moz-linear-gradient(#FFAB4A, #FFFFCC) fixed;
@@ -34,7 +34,7 @@ h2 {
     width: 420px;
     padding: 2% 0 0;
     margin: auto;
-}
+}*/
 
 .login_form {
     position: relative;
@@ -111,11 +111,12 @@ login_form > p {
 .bootstrap-tagsinput {
     width: 220%;
 }
-a {
+
+/*a {
     color: #FF8D22;
     text-decoration: none;
 }
 
 a:hover, a:active, a:focus {
     color: #FF7419;
-}
+}*/
