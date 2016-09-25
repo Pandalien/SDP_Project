@@ -56,14 +56,18 @@
 %>
 
 <table>
-    <tr><th>Title</th><th>Content</th><th>?</th><th>?</th>
-        <%for (Adverts advert : list) {%>
-    <tr>
-        <td><%= advert.getTitle() %></td>
-        <td><%= advert.getContent() %></td>
-        <td></td>
-        <td></td>
-    </tr>
+    <tr><th>Results</th>
+        <%if(list!=null){%>
+            <%for (Adverts advert : list) {%>
+        <tr>
+            <td><%= advert.getTitle() %></td>
+            <td><%= advert.getContent() %></td>
+            <td></td>
+            <td></td>
+        </tr>
+            <%}%>
+        <%} else {%>
+            <%=""%>
         <%}%>
 </table>
 
