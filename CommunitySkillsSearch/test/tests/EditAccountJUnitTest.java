@@ -142,7 +142,7 @@ public class EditAccountJUnitTest {
         // update the dummy user in the database
         updateDummyUser();
         // retrieve the dummy user from the database
-        User updatedUser = userController.findById(dummyUserId);
+        User updatedUser = userController.findById(dummyUser.getId());
         // test whether the data is updated
         assertEquals(newEmail, updatedUser.getEmail());
         assertEquals(newPhone, updatedUser.getPhone());
@@ -154,7 +154,6 @@ public class EditAccountJUnitTest {
     // create a dummy user in database
     private User createDummyUser() {
         User user = new User();
-        user.setId(dummyUserId);    // unchangable
         user.setName(username);     // unchangable
         user.setPassword(password);
         user.setEmail(email);
