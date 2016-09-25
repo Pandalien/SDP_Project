@@ -39,7 +39,7 @@
                 <%}%>
             </select>
             <br/>
-            Keywords <input type="text" name="keywords" placeholder="keywords"/>
+            Keywords <input type="text" name="keywords" placeholder="keywords" pattern="^[A-Za-z0-9_]{1,15}$"/>
             <input type="submit" value="Search"/>
             <input type="reset" value="Reset"/>
             <input type="radio" name="type" value="workers"/> For Worker
