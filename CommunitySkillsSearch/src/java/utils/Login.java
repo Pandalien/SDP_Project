@@ -9,24 +9,23 @@ import java.util.regex.Pattern;
  * @author matt
  */
 public class Login {
-    private String email;
+    private String username;
     private String password;
-
-    public void setEmail(String email) {
-        if (validateEmail(email))
-            this.email = email;
+    
+    public void setUsername(String username) {
+        if (validateUsername(username))
+            this.username = username;
     }
-
+    
     public void setPassword(String password) {
         if (validatePassword(password))
             this.password = password;
     }
     
-    public boolean validateEmail(String email) {
-        // restrict leading, trailing, consecutive dots
-        // top-level domain consists of 2 - 6 letters only
-        Pattern pattern = Pattern.compile("^[\\w!#$%&’*+/=?`{|}~^-]+(?:\\.[\\w!#$%&’*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$");
-        Matcher matcher = pattern.matcher(email);
+    public boolean validateUsername(String username) {
+        // at least 4 characters, whitespace is not allowed
+        Pattern pattern = Pattern.compile("^[A-Za-z0-9._-]{4,}$");
+        Matcher matcher = pattern.matcher(username);
         return matcher.matches();
     }
     

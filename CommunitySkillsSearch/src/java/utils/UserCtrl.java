@@ -14,10 +14,12 @@ import services.clients.UserClient;
  */
 public class UserCtrl {
     Login loginValidator;
+    EditAccount emailValidator;
     UserClient userClient;
     
     public UserCtrl(){
         loginValidator = new Login();
+        emailValidator = new EditAccount();
         userClient = new UserClient();
     }
     
@@ -30,7 +32,7 @@ public class UserCtrl {
     }
     
     public boolean verifyEmail(String email){
-        return loginValidator.validateEmail(email);
+        return emailValidator.validateEmail(email);
     }
     
     public boolean verifyPassword(String password){

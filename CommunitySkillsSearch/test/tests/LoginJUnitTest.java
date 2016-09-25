@@ -1,11 +1,7 @@
 package tests;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
+import entities.Suburb;
+import entities.User;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -13,6 +9,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import utils.Login;
+import utils.UserCtrl;
 
 /**
  *
@@ -20,7 +17,13 @@ import utils.Login;
  */
 public class LoginJUnitTest {
     Login login;
-    
+    UserCtrl userController;
+    int createdUserId = 0;
+    User createdUser;
+    String name;
+    String email;
+    String password;
+
     public LoginJUnitTest() {
     }
     
@@ -35,66 +38,96 @@ public class LoginJUnitTest {
     @Before
     public void setUp() {
         this.login = new Login();
+        this.userController = new UserCtrl();
+        name = "test";
+        email = "test@test.com";
+        password = "test";
+    }
+
+    // create a dunmmy user to database
+    private User createDummyUser(){
+        User user = new User();
+        user.setName(name);
+        user.setEmail(email);
+        user.setPassword(password);
+        user.setSuburbId(new Suburb(1));
+        return user;
     }
     
     @Test
-    public void testLoginEmptyEmail() {
-        assertFalse(login.validateEmail(""));                       // empty email
+    public void testLoginValidUsername() {
+        assertTrue(login.validateUsername("this.is-user_name"));    // valid username
     }
     
     @Test
-    public void testLoginInvalidEmail1() {
-        assertFalse(login.validateEmail("usernamedomain.com"));     // missing @ symbol
+    public void testLoginEmptyUsername() {
+        assertFalse(login.validateUsername(""));    // empty username
     }
     
     @Test
-    public void testLoginInvalidEmail2() {
-        assertFalse(login.validateEmail("user@name@domain.com"));   // more than one @ symbol
+    public void testLoginInvalidUsername1() {
+        assertFalse(login.validateUsername("cyo"));  // less than 4 characters
     }
     
     @Test
-    public void testLoginInvalidEmail3() {
-        assertFalse(login.validateEmail("user name@domain.com"));   // whitespace in username
+    public void testLoginInvalidUsername2() {
+        assertFalse(login.validateUsername("user@name"));  // contains @ symbol
+    }
+    @Test
+    public void testLoginInvalidUsername3() {
+        assertFalse(login.validateUsername("user name"));  // contains whitespace
     }
     
     @Test
-    public void testLoginInvalidEmail4() {
-        assertFalse(login.validateEmail("username@domain..com"));   // consecutive dots in domain
-    }
-    
-    @Test
-    public void testLoginInvalidEmail5() {
-        assertFalse(login.validateEmail(".username@domain.com"));   // username starts with dot
-    }
+    public void testLoginValidPassword() {
+        assertFalse(login.validatePassword("pAssWord"));     // less than 4 characters
+    }  
     
     @Test
     public void testLoginEmptyPassword() {
-        assertFalse(login.validatePassword(""));                    // empty password
+        assertFalse(login.validatePassword(""));    // empty password
     }
     
     @Test
     public void testLoginInvalidPassword1() {
-        assertFalse(login.validatePassword("Pw1"));                 // less than 4 characters
+        assertFalse(login.validatePassword("Pw1"));     // less than 4 characters
     }
     
     @Test
     public void testLoginInvalidPassword2() {
-        assertFalse(login.validatePassword("Password 1"));          // whitespace in password
+        assertFalse(login.validatePassword("Password 1"));      // whitespace in password
     }
 
     @Test
     public void testLoginInvalidPassword3() {
-        assertFalse(login.validatePassword("PASSWORD1"));            // at least one lowercase letter
+        assertFalse(login.validatePassword("PASSWORD1"));       // at least one lowercase letter
     }
     @Test
     public void testLoginInvalidPassword4() {
-        assertFalse(login.validatePassword("password1"));            // at least one uppercase letter
+        assertFalse(login.validatePassword("password1"));       // at least one uppercase letter
     }
     @Test
     public void testLoginInvalidPassword5() {
-        assertFalse(login.validatePassword("12345678"));            // at least one uppercase and lowercase letter
-    }    
+        assertFalse(login.validatePassword("12345678"));        // at least one uppercase and lowercase letter
+    }
 
+    @Test
+    public void testLoginMatchDatabase() {
+        User user = createDummyUser();
+        createdUser = userController.create(user);
+        assertTrue(testLoginHelper("test", "test"));        // login matches with database
+        assertFalse(testLoginHelper("test", "wrongpw"));    // login does not match with database
+        testDelete();       // remove dummy user
+    }
+    
+    public boolean testLoginHelper(String username, String password) {
+        return username.equals(createdUser.getName()) && password.equals(createdUser.getPassword());
+    }
+
+    public void testDelete() {
+        userController.delete(createdUser);
+    }
+    
     @After
     public void tearDown() {
     }
