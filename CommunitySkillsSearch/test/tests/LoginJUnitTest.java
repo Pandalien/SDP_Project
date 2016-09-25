@@ -44,6 +44,10 @@ public class LoginJUnitTest {
         this.userController = new UserCtrl();
         username = "test";
         password = "test";
+        email = "test@test.com";
+        phone = "1234567890";
+        intro = "This is a test.";
+        visible = true;
     }
     
     @Test
