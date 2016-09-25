@@ -16,6 +16,7 @@
 <%
     List<Suburb> suburbs = (List<Suburb>) request.getAttribute(Contract.SUBURBS);
     List<Skills> skills = (List<Skills>) request.getAttribute(Contract.SKILLS);
+    Collection<UserSkills> userSkills = (Collection<UserSkills>) request.getAttribute("skillsList");
     User user = (User) session.getAttribute(Contract.CURRENT_USER);
 %>
 
@@ -71,7 +72,6 @@
                     <div class="input-group">
                         <select id="skillsinput" multiple name="current_skill" data-role="tagsinput">
                         <%
-                            Collection<UserSkills> userSkills = user.getUserSkillsCollection();
                             Iterator<UserSkills> skillsIterator = userSkills.iterator();
                             while (skillsIterator.hasNext()) {
                                 Skills skill = skillsIterator.next().getSkills();

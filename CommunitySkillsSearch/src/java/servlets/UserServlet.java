@@ -7,7 +7,9 @@ package servlets;
 
 import entities.Adverts;
 import entities.User;
+import entities.UserSkills;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
@@ -109,6 +111,9 @@ public class UserServlet extends AbstractServlet {
     }
     
     public void edit(HttpServletRequest request, HttpServletResponse response) {
+        User user = getCurrentUser(request);
+        Collection<UserSkills> userSkills = user.getUserSkillsCollection();
+        request.setAttribute("skillsList", userSkills);
         setCollectionSuburbs(request);
         setCollectionSkills(request);
         getView(request, response, "user/edit.jsp");
