@@ -18,9 +18,14 @@ import utils.UserCtrl;
 public class LoginJUnitTest {
     Login login;
     UserCtrl userController;
+    int dummyUserId = 0;
     User dummyUser;
     String username;
     String password;
+    String email;
+    String phone;
+    String intro;
+    boolean visible;
 
     public LoginJUnitTest() {
     }
@@ -101,18 +106,24 @@ public class LoginJUnitTest {
     @Test
     public void testLoginFunction() {
         User user = createDummyUser();
+        // create a dummy user in database
         dummyUser = userController.create(user);
+        assertNotNull(dummyUser);
         assertTrue(testLoginHelper("test", "test"));        // login matches with database
         assertFalse(testLoginHelper("test", "wrongpw"));    // login does not match with database
         testDelete();       // remove dummy user
     }
 
-    // create a dunmmy user in database
-    private User createDummyUser(){
+    // create a dummy user in database
+    private User createDummyUser() {
         User user = new User();
-        user.setName(username);
+        user.setName(username);     // unchangable
         user.setPassword(password);
+        user.setEmail(email);
+        user.setPhone(phone);
         user.setSuburbId(new Suburb(1));
+        user.setIntroduction(intro);
+        user.setVisible(visible);
         return user;
     }
     
@@ -121,7 +132,11 @@ public class LoginJUnitTest {
     }
 
     public void testDelete() {
+        dummyUserId = dummyUser.getId();
         userController.delete(dummyUser);
+        dummyUser = userController.findById(dummyUserId);
+        //if not null then failed to delete
+        assertNull(dummyUser);
     }
     
     @After

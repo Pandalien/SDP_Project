@@ -155,7 +155,6 @@ public class EditAccountJUnitTest {
     // create a dummy user in database
     private User createDummyUser() {
         User user = new User();
-        //user.setId(dummyUserId);    // unchangable
         user.setName(username);     // unchangable
         user.setPassword(password);
         user.setEmail(email);
@@ -177,7 +176,11 @@ public class EditAccountJUnitTest {
     }
     
     public void testDelete() {
+        dummyUserId = dummyUser.getId();
         userController.delete(dummyUser);
+        dummyUser = userController.findById(dummyUserId);
+        //if not null then failed to delete
+        assertNull(dummyUser);
     }
     
     @After
