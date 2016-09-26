@@ -28,6 +28,7 @@ public class SearchServlet extends AbstractServlet {
     
     @EJB
     private UserSkillsFacade userSkillsFacade;
+   
       
 /*    
     public void showall(HttpServletRequest request, HttpServletResponse response) {  
@@ -67,31 +68,19 @@ public class SearchServlet extends AbstractServlet {
       search.setType(type);
       
       
-      if (type == SearchParams.JOB) {
-        List<Adverts> adverts = advertsFacade.findByVarious(suburb_id, classification_id, keywords);
-        request.setAttribute(Contract.ADVERTS, adverts);
-      }
-      else if (type == SearchParams.WORKER) {
-        List<UserSkills> userSkills;
-        if (SearchParams.validateSkillsId(skills_id))
-          userSkills = userSkillsFacade.findBySkillsId(skills_id);
-        else
-          userSkills = userSkillsFacade.findAll();
+      if (search.type == SearchParams.JOB) {
         
-        List<User> users = new ArrayList();
-        for (UserSkills us: userSkills) {
-          User u = us.getUser();
-          if (u != null && u.getVisible().booleanValue()) {
-            if (SearchParams.validateSuburbId(suburb_id)) {
-              if (suburb_id == u.getSuburbId().getId()) 
-                users.add(u);
-            }
-            else
-              users.add(u);
-            
-          }
-            
-        }
+        List<Adverts> adverts = advertsFacade.findByVarious(
+                search.suburb_id, search.classification_id, search.keywords);
+        
+        request.setAttribute(Contract.ADVERTS, adverts);
+        
+      }
+      else if (search.type == SearchParams.WORKER) {
+        
+        List<User> users = userFacade.findByVarious(
+                search.suburb_id, search.skills_id, search.keywords);     
+        
         request.setAttribute(Contract.USERS, users);
       }
       

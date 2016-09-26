@@ -98,11 +98,11 @@ public class SearchParams {
   
   public static int parseType(String type) {
     if (type == null)
-      return WORKER;
+      return JOB;
     String s = type.trim().toLowerCase();    
     return s.startsWith("worker") ? WORKER :
            s.startsWith("job") ? JOB :
-           WORKER;
+           JOB;
   }
   
   // -- validators --
