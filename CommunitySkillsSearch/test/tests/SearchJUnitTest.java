@@ -13,17 +13,25 @@ import org.junit.BeforeClass;
  * @author Dan
  */
 public class SearchJUnitTest {
+    //test results from jobs
+    //test results from workers
+    //test keyword char allowance
+    //test reset button
     
     @BeforeClass
     public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
+        
     }
     
     @Before
     public void setUp() {
         
     }
+    
+    @AfterClass
+    public static void tearDownClass() {
+        
+    }
+    
+    
 }

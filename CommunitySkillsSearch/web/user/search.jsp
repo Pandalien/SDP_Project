@@ -24,11 +24,11 @@
                 <option value="<%=sub.getId()%>"<%=search.getSuburbId() == sub.getId() ? " selected" : ""%>><%=sub.getSuburb()%></option>
                 <%}%>
             </select>
-            Category <select name="classification"> 
+            <%--Category <select name="classification"> 
                 <%for (Classification cls : classifications) {%>
                 <option value="<%=cls.getId()%>"<%=search.getClassificationId() == cls.getId() ? " selected" : ""%>><%=cls.getName()%></option>
                 <%}%>
-            </select>
+            </select>--%>
             <br/>
             Skills <select name="skills" multiple="true"> 
                 <%for (Skills s : skills) {%>
