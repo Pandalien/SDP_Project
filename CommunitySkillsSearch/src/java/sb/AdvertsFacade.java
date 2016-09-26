@@ -50,46 +50,37 @@ public class AdvertsFacade extends AbstractFacade<Adverts> {
     }
     
     
-    public List<Adverts> findByVarious(int suburb_id, int classification_id, List<String> keywords) {
+    public List<Adverts> findByVarious(int suburb_id, int skills_id, int classification_id, List<String> keywords) {
         // default find all query string
-        String qs = "select * from Adverts";
+        String qs = "select a.* from adverts a";
         
         // list of "where" conditions:        
         ArrayList<String> where = new ArrayList();
         ArrayList<Object> params = new ArrayList();
-        
-/*                
-        if (SearchParams.validateSuburbID(suburb_id))
-          where.add("suburb_id=" + suburb_id);
-        
-        if (SearchParams.validateClassificationID(classification_id))
-          where.add("classification_id=" + classification_id);
-        
-        if (keywords != null)
-          for (String s: keywords) 
-            where.add("(content like '%"+s+"%' or title like '%"+s+"%')");
-        
-        // combine into one query string
-        if (where.size() > 0) 
-          qs += " where " + String.join(" and ", where);
-*/
 
         int index = 0;
-        
-        if (SearchParams.validateSuburbId(suburb_id)) {
-          where.add("suburb_id=?" + ++index);
-          params.add(suburb_id);
+
+
+        if (SearchParams.validateSkillsId(skills_id)) {
+          qs += ", requirements r";
+          where.add("r.skills_id=?" + ++index + " and r.adverts_id=a.id");
+          params.add(skills_id);
         }
         
+        if (SearchParams.validateSuburbId(suburb_id)) {
+          where.add("a.suburb_id=?" + ++index);
+          params.add(suburb_id);
+        }
+/*        
         if (SearchParams.validateClassificationId(classification_id)) {
           where.add("classification_id=?" + ++index);
           params.add(classification_id);
         }
-        
+*/        
         if (keywords != null)
           for (String s: keywords) {
             if (s.length() > 0) {
-              where.add("(content like ?" + ++index + " or title like ?" + ++index + ")");
+              where.add("(a.content like ?" + ++index + " or a.title like ?" + ++index + ")");
               params.add("%"+s+"%");
               params.add("%"+s+"%");
             }

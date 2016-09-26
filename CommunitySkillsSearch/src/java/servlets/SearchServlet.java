@@ -29,19 +29,6 @@ public class SearchServlet extends AbstractServlet {
     @EJB
     private UserSkillsFacade userSkillsFacade;
    
-      
-/*    
-    public void showall(HttpServletRequest request, HttpServletResponse response) {  
-      List<Adverts> adverts = advertsFacade.findAll();
-      request.setAttribute(Contract.ADVERTS, adverts);
-      
-      setCollectionSkills(request);
-      setCollectionSuburbs(request);
-      setCollectionClassifications(request);
-      
-      getView(request, response, "user/search.jsp");        
-    }
-*/
     
     public void searchFor(HttpServletRequest request, HttpServletResponse response) {
       
@@ -71,7 +58,7 @@ public class SearchServlet extends AbstractServlet {
       if (search.type == SearchParams.JOB) {
         
         List<Adverts> adverts = advertsFacade.findByVarious(
-                search.suburb_id, search.classification_id, search.keywords);
+                search.suburb_id, search.skills_id, search.classification_id, search.keywords);
         
         request.setAttribute(Contract.ADVERTS, adverts);
         
