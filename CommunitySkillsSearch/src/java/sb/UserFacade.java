@@ -63,7 +63,7 @@ public class UserFacade extends AbstractFacade<User> {
     } 
     
     // native sql query
-    public List<User> findByVarious(int suburb_id, int skills_id, List<String> keywords) {
+    public List<User> findByVarious(SearchParams search) {
         // default find all query string
         String qs = "select u.* from user u";
         
@@ -73,15 +73,15 @@ public class UserFacade extends AbstractFacade<User> {
         
         int index = 0;
 
-        if (SearchParams.validateSkillsId(skills_id)) {
+        if (SearchParams.validateSkillsId(search.skills_id)) {
           qs += ", user_skills us";
           where.add("us.skills_id=?" + ++index + " and us.user_id=u.id");
-          params.add(skills_id);
+          params.add(search.skills_id);
         }
         
-        if (SearchParams.validateSuburbId(suburb_id)) {
+        if (SearchParams.validateSuburbId(search.suburb_id)) {
           where.add("u.suburb_id=?" + ++index);
-          params.add(suburb_id);
+          params.add(search.suburb_id);
         }
         
 /*        
@@ -90,8 +90,8 @@ public class UserFacade extends AbstractFacade<User> {
           params.add(classification_id);
         }
 */        
-        if (keywords != null)
-          for (String s: keywords) {
+        if (search.keywords != null)
+          for (String s: search.keywords) {
             if (s.length() > 0) {
               where.add("(u.introduction like ?" + ++index + ")");
               params.add("%"+s+"%");

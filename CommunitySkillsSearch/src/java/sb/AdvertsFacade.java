@@ -41,16 +41,7 @@ public class AdvertsFacade extends AbstractFacade<Adverts> {
         em.persist(object);
     }
     
-    
-    public List<Adverts> findByVarious(int suburb_id, int classification_id) {
-        Query q = em.createNamedQuery("Adverts.findByVarious");
-        q.setParameter("suburbId", new Suburb(suburb_id)); 
-        q.setParameter("classificationId", new Classification(classification_id));         
-        return q.getResultList();
-    }
-    
-    
-    public List<Adverts> findByVarious(int suburb_id, int skills_id, int classification_id, List<String> keywords) {
+    public List<Adverts> findByVarious(SearchParams search) {
         // default find all query string
         String qs = "select a.* from adverts a";
         
@@ -61,15 +52,15 @@ public class AdvertsFacade extends AbstractFacade<Adverts> {
         int index = 0;
 
 
-        if (SearchParams.validateSkillsId(skills_id)) {
+        if (SearchParams.validateSkillsId(search.skills_id)) {
           qs += ", requirements r";
           where.add("r.skills_id=?" + ++index + " and r.adverts_id=a.id");
-          params.add(skills_id);
+          params.add(search.skills_id);
         }
         
-        if (SearchParams.validateSuburbId(suburb_id)) {
+        if (SearchParams.validateSuburbId(search.suburb_id)) {
           where.add("a.suburb_id=?" + ++index);
-          params.add(suburb_id);
+          params.add(search.suburb_id);
         }
 /*        
         if (SearchParams.validateClassificationId(classification_id)) {
@@ -77,8 +68,8 @@ public class AdvertsFacade extends AbstractFacade<Adverts> {
           params.add(classification_id);
         }
 */        
-        if (keywords != null)
-          for (String s: keywords) {
+        if (search.keywords != null)
+          for (String s: search.keywords) {
             if (s.length() > 0) {
               where.add("(a.content like ?" + ++index + " or a.title like ?" + ++index + ")");
               params.add("%"+s+"%");

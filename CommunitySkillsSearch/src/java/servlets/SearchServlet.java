@@ -57,17 +57,13 @@ public class SearchServlet extends AbstractServlet {
       
       if (search.type == SearchParams.JOB) {
         
-        List<Adverts> adverts = advertsFacade.findByVarious(
-                search.suburb_id, search.skills_id, search.classification_id, search.keywords);
-        
+        List<Adverts> adverts = advertsFacade.findByVarious(search);
         request.setAttribute(Contract.ADVERTS, adverts);
         
       }
       else if (search.type == SearchParams.WORKER) {
         
-        List<User> users = userFacade.findByVarious(
-                search.suburb_id, search.skills_id, search.keywords);     
-        
+        List<User> users = userFacade.findByVarious(search);     
         request.setAttribute(Contract.USERS, users);
       }
       
