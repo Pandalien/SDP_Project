@@ -1,6 +1,7 @@
 package servlets;
 
 import beans.MessageType;
+import beans.RequestData;
 import beans.ServerMessage;
 import entities.Classification;
 import entities.Skills;
@@ -205,6 +206,24 @@ public class AbstractServlet extends HttpServlet {
         }
         
         return -1;
+    }
+    
+    public RequestData getAuthenticatedData(HttpServletRequest request, HttpServletResponse response){
+        User user = getCurrentUser(request);
+        if (user == null) {
+            alertInfo(request, "Please log on to continue.");
+            login(request, response);
+            return null;
+        }
+
+        int id = getRequestId(request);
+        if (id == -1) {
+            alertWarning(request, "The request page was not found.");
+            showGoBackPage(request, response);
+            return null;
+        }
+        
+        return new RequestData(user, id);
     }
     
     protected void setCollectionSkills(HttpServletRequest request){

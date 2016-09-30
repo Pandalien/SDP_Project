@@ -97,7 +97,7 @@
         <td><a href='jobs?action=view&id=<%=a.getId()%>'><%=a.getTitle()%></a></td>
         <td><%=isClosed ? "Open" : "Closed"%></td>
         <td>
-            <a href='jobs?action=apply&id=<%=a.getId()%>' class="btn btn-outline-primary">Apply</a>
+            <a href='jobs?action=view&id=<%=a.getId()%>' class="btn btn-outline-primary">View</a>
         </td>
     </tr>
     <%}

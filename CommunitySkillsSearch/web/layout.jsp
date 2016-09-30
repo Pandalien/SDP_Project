@@ -37,7 +37,7 @@
                     <div class="navbar-brand">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" id="menu"> MENU <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="#">My Applications</a></li>
+                            <li><a href="jobs?action=applications">My Applications</a></li>
                             <li role="separator" class="divider"></li>
                             <li><a href="jobs?action=openings">My Advertisements</a></li>
                             <li><a href="#">Received Applications</a></li>

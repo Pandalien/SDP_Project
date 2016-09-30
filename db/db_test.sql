@@ -3,3 +3,4 @@ select * from adverts;
 select * from skills;
 select * from requirements;
 select * from user;
+select * from responders;

@@ -5,10 +5,13 @@
  */
 package servlets;
 
+import beans.RequestData;
 import entities.Adverts;
 import entities.Classification;
 import entities.Requirements;
 import entities.RequirementsPK;
+import entities.Responders;
+import entities.RespondersPK;
 import entities.Skills;
 import entities.Suburb;
 import entities.User;
@@ -17,11 +20,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import sb.AdvertsFacade;
 import sb.RequirementsFacade;
+import sb.RespondersFacade;
 import utils.Contract;
 import utils.StringUtils;
 
@@ -32,6 +37,9 @@ import utils.StringUtils;
  * @author andyc
  */
 public class JobsServlet extends AbstractServlet {
+
+    @EJB
+    private RespondersFacade respondersFacade;
 
     @EJB
     private RequirementsFacade requirementsFacade;
@@ -145,9 +153,17 @@ public class JobsServlet extends AbstractServlet {
         int id = getRequestId(request);
         if (id != -1) {
             Adverts ad = advertsFacade.find(id);
-
+            
             if (ad != null) {
                 request.setAttribute(Contract.VIEW_ADVERT, ad);
+                
+                User user = getCurrentUser(request);
+                //get responder info
+                if (user != null) {
+                    Responders responder = respondersFacade.find(new RespondersPK(user.getId(), ad.getId()));
+                    request.setAttribute(Contract.ADVERT_RESPONDERS, responder);
+                }
+                
                 getView(request, response, "jobs/view.jsp");
             }
         }
@@ -171,6 +187,7 @@ public class JobsServlet extends AbstractServlet {
                 request.setAttribute(Contract.ADVERT_SKILL_IDS, reSkIds);
                 request.setAttribute(Contract.VIEW_ADVERT, ad);
                 
+                alertInfo(request, "Your Application has been cancelled to this job " + ad.getTitle());
                 create(request, response);
                 return;
             }
@@ -237,25 +254,90 @@ public class JobsServlet extends AbstractServlet {
     }
     
     public void apply(HttpServletRequest request, HttpServletResponse response) {
+        RequestData data = getAuthenticatedData(request, response);
+        if (data == null) {
+            return;
+        }
+        
+        //confirm with user first
+        showConfirmPage(request, response, "Do you want to apply to this job?", "jobs?action=apply", data.id);
+    }
+    
+    public void applyPost(HttpServletRequest request, HttpServletResponse response) {
+        RequestData data = getAuthenticatedData(request, response);
+        if (data == null) {
+            return;
+        }
+        
+        //user cannot apply to their own ad
+        Adverts ad = advertsFacade.find(data.id);
+        if (Objects.equals(ad.getUserId().getId(), data.user.getId())) {
+            alertWarning(request, "You cannot apply to your own ad.");
+            showGoBackPage(request, response);
+            return;
+        }
+        
+        //create database entry
+        Responders responder = new Responders(data.user.getId(), ad.getId());
+        respondersFacade.create(responder);
+        
+        //go to the ad page
+        alertSuccess(request, "You successfully applied " + ad.getTitle());
+        view(request, response);
+    }
+    
+    public void cancel(HttpServletRequest request, HttpServletResponse response) {
+        RequestData data = getAuthenticatedData(request, response);
+        if (data == null) {
+            return;
+        }
+        
+        //confirm with user first
+        showConfirmPage(request, response, "Do you want to cancel you application to this job?", "jobs?action=cancel", data.id);
+    }
+    
+    public void cancelPost(HttpServletRequest request, HttpServletResponse response) {
+        RequestData data = getAuthenticatedData(request, response);
+        if (data == null) {
+            return;
+        }
+        
+        Adverts ad = advertsFacade.find(data.id);
+
+        if (ad != null) {
+            Responders responder = new Responders(data.user.getId(), ad.getId());
+            respondersFacade.remove(responder);
+            
+            alertSuccess(request, "Your appliction has been removed from the job " + ad.getTitle());
+            view(request, response);
+            return;
+        }
+
+        alertWarning(request, "The job not found.");
+        showGoBackPage(request, response);
+    }
+    
+    public void applications(HttpServletRequest request, HttpServletResponse response) {
         User user = getCurrentUser(request);
         if (user == null) {
             login(request, response);
             return;
         }
         
-        int id = getRequestId(request);
-        if (id == -1) {
-            alertWarning(request, "The job not found.");
-            showGoBackPage(request, response);
-            return;
+        List<Adverts> ads = new ArrayList<>();
+        
+        //get my applications list
+        List<Responders> responders = respondersFacade.findByUserId(user.getId());
+        if (responders != null) {
+            for (Responders responder : responders) {
+                Adverts ad = advertsFacade.find(responder.getRespondersPK().getAdvertsId());
+                if (ad != null) {
+                    ads.add(ad);
+                }
+            }
         }
         
-        //confirm with user first
-        showConfirmPage(request, response, "Do you want to apply to this job?", "jobs?action=apply", id);
-    }
-    
-    public void applyPost(HttpServletRequest request, HttpServletResponse response) {
-        alertSuccess(request, "Got it!");
-        showGoBackPage(request, response);
+        request.setAttribute(Contract.ADVERTS, ads);
+        getView(request, response, "jobs/applications.jsp");
     }
 }

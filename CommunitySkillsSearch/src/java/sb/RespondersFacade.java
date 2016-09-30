@@ -6,9 +6,11 @@
 package sb;
 
 import entities.Responders;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -29,4 +31,10 @@ public class RespondersFacade extends AbstractFacade<Responders> {
         super(Responders.class);
     }
     
+    public List<Responders> findByUserId(int id) {
+        Query q = em.createNamedQuery("Responders.findByUserId");
+        q.setParameter("userId", id);
+
+        return q.getResultList();
+    }
 }
