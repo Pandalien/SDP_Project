@@ -29,6 +29,7 @@
         <div class="col-md-12">
             <div class="ui-select">
                 <select name="suburb"> 
+                  <option value="-1">Anywhere</option>
                     <%for (Suburb sub : suburbs) {%>
                     <option value="<%=sub.getId()%>"<%=search.getSuburbId() == sub.getId() ? " selected" : ""%>><%=sub.getSuburb()%></option>
                     <%}%>
