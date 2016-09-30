@@ -63,6 +63,7 @@ public class JobsServlet extends AbstractServlet {
         User user = getCurrentUser(request);
         if(user == null){
             login(request, response);
+            return;
         }
         
         Adverts ad;
@@ -232,6 +233,29 @@ public class JobsServlet extends AbstractServlet {
         }
 
         alertWarning(request, "The job not found.");
+        showGoBackPage(request, response);
+    }
+    
+    public void apply(HttpServletRequest request, HttpServletResponse response) {
+        User user = getCurrentUser(request);
+        if (user == null) {
+            login(request, response);
+            return;
+        }
+        
+        int id = getRequestId(request);
+        if (id == -1) {
+            alertWarning(request, "The job not found.");
+            showGoBackPage(request, response);
+            return;
+        }
+        
+        //confirm with user first
+        showConfirmPage(request, response, "Do you want to apply to this job?", "jobs?action=apply", id);
+    }
+    
+    public void applyPost(HttpServletRequest request, HttpServletResponse response) {
+        alertSuccess(request, "Got it!");
         showGoBackPage(request, response);
     }
 }

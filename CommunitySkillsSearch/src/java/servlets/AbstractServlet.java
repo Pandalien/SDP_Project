@@ -166,6 +166,17 @@ public class AbstractServlet extends HttpServlet {
         getView(req, resp, "shared/goback.jsp");
     }
     
+    public void showConfirmPage(HttpServletRequest req, HttpServletResponse resp, String confirmMsg, String action, int id){
+        //show confirm message
+        alertInfo(req, confirmMsg);
+        
+        //set action and id to form tag
+        req.setAttribute("request_action", action);
+        req.setAttribute("request_id", id);
+        
+        getView(req, resp, "shared/confirm.jsp");
+    }
+    
     protected void sendMessage(HttpServletRequest req, HttpServletResponse resp, String msg){
         req.setAttribute("server_message", msg);
         getView(req, resp, "shared/message.jsp");
