@@ -69,8 +69,9 @@
             <div class="form-group">
                 <label class="col-md-3 control-label">Skills</label>
                 <div class="col-md-8">
+                    
                     <div class="input-group">
-                        <select id="skillsinput" multiple name="current_skill" data-role="tagsinput">
+                        <select id="skillTags" multiple name="current_skill" data-role="tagsinput">
                         <%
                             Iterator<UserSkills> skillsIterator = userSkills.iterator();
                             while (skillsIterator.hasNext()) {
@@ -82,16 +83,22 @@
                     </div>
                     <br>
                     <div class="input-group">
-                        <select name="skills" class="form-control" value="">
+                        <select id="skillsList" name="skills" class="form-control" value="">
                             <%for (Skills s : skills) {%>
                             <option value="<%=s.getId()%>"><%=s.getName()%></option>
                             <%}%>
                         </select>
                         <span class="input-group-btn">
-                          <button class="btn btn-success" type="button">+</button>
+                            <button id="add_btn" name="addSkill" class="btn btn-success" type="button" onclick="addSkillTag();">+</button>
+                            <script>
+                                function addSkillTag() {
+                                    var selectedSkill = $("#skillsList option:selected").text();
+                                    $('#skillTags').tagsinput('add', selectedSkill);
+                                }
+                            </script>
                         </span>
                     </div>
-
+                        
                 </div>
             </div>
             <div class="form-group">

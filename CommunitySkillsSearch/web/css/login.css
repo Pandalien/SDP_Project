@@ -36,6 +36,10 @@ h2 {
     margin: auto;
 }*/
 
+.bootstrap-tagsinput {
+  width: 100%;
+}
+
 .login_form {
     position: relative;
     z-index: 1;
