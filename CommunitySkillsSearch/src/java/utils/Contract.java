@@ -27,4 +27,12 @@ public class Contract {
     
     final public static String USER_AS_RESPONDER = "user_as_responder";
     final public static String ADVERT_RESPONDERS = "advert_responders";
+    
+    public enum ResponderStatus{
+        DEFAULT,
+        SELECTED,
+        DECLINED,
+        JOB_DONE,
+        FEEDBACK
+    }
 }

@@ -4,6 +4,7 @@ This class is used verify the input from user
 package utils;
 
 import entities.Adverts;
+import entities.Responders;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -20,6 +21,30 @@ public class AdvertCtrl {
     
     public AdvertCtrl(){
         adClient = new AdvertsClient();
+    }
+
+    public boolean apply(int idAd, int idUser) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public boolean cancel(int idAd, int idUser) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public boolean deselectResponder(int idAd, int idUser) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public Responders getResponder(int idAd, int idUser) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public boolean isApplied(int idUser) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public boolean selectResponder(int idAd, int idUser) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     public boolean verifyTitle(String title){
