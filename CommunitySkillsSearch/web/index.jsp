@@ -10,6 +10,9 @@
 
 <h1>Welcome.</h1>
 
+<h2><a href="user?action=developerLogin">Quick login as admin</a></h2>
+<h2><a href="user?action=mattLogin">Quick login as Matt</a></h2>
+<h2><a href="user?action=andyLogin">Quick login as andy</a></h2>
 Who's here? <a href="user?action=browse">Browse Users</a>
 
 <br/>

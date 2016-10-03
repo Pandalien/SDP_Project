@@ -171,4 +171,34 @@ public class UserServlet extends AbstractServlet {
         HttpSession session = request.getSession();
         session.setAttribute(Contract.CURRENT_USER, user);
     }
+    
+    protected void devLoginWrapper(HttpServletRequest request, HttpServletResponse response, User user) {
+        if (user == null) {
+            alertDanger(request, "Your user and pass did not match, please try again.");
+            login(request, response);
+        } else {
+            alertWarning(request, "You've logged in as the developer");
+            request.getSession().setAttribute(Contract.CURRENT_USER, user);
+        }
+
+        getView(request, response, "index.jsp");
+    }
+    
+    public void developerLogin(HttpServletRequest request, HttpServletResponse response) {
+        User user = userFacade.findByUsernameAndPassword("admin", "admin");
+
+        devLoginWrapper(request, response, user);
+    }
+    
+    public void mattLogin(HttpServletRequest request, HttpServletResponse response) {
+        User user = userFacade.findByUsernameAndPassword("Matt", "Matt");
+
+        devLoginWrapper(request, response, user);
+    }
+    
+    public void andyLogin(HttpServletRequest request, HttpServletResponse response) {
+        User user = userFacade.findByUsernameAndPassword("andy", "andy");
+
+        devLoginWrapper(request, response, user);
+    }
 }

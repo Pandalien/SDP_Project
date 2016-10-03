@@ -18,6 +18,7 @@ import entities.User;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -162,6 +163,7 @@ public class JobsServlet extends AbstractServlet {
                 if (user != null) {
                     Responders responder = respondersFacade.find(new RespondersPK(user.getId(), ad.getId()));
                     request.setAttribute(Contract.ADVERT_RESPONDERS, responder);
+                    request.setAttribute(Contract.CURRENT_USER, user);
                 }
                 
                 getView(request, response, "jobs/view.jsp");
@@ -198,6 +200,7 @@ public class JobsServlet extends AbstractServlet {
     }
     
     
+    //user created adverts page
     public void openings(HttpServletRequest request, HttpServletResponse response) {
         User user = getCurrentUser(request);
         if (user == null) {
@@ -206,7 +209,17 @@ public class JobsServlet extends AbstractServlet {
         }
         
         List<Adverts> ads = advertsFacade.findByUser(user);
-        request.setAttribute(Contract.USER_ADVERTS, ads);
+        if (ads != null) {
+            request.setAttribute(Contract.USER_ADVERTS, ads);
+
+            for (Adverts ad : ads) {
+                List<Responders> responders = respondersFacade.findByAdvertsId(ad.getId());
+                if (responders != null) {
+                    ad.setRespondersCollection(responders);
+                }
+            }
+        }
+        
         getView(request, response, "jobs/openings.jsp");
     }
     
@@ -332,6 +345,11 @@ public class JobsServlet extends AbstractServlet {
             for (Responders responder : responders) {
                 Adverts ad = advertsFacade.find(responder.getRespondersPK().getAdvertsId());
                 if (ad != null) {
+                    //set me as the only responder
+                    List<Responders> meAsResponders = new ArrayList<>(1);
+                    meAsResponders.add(responder);
+                    
+                    ad.setRespondersCollection(meAsResponders);
                     ads.add(ad);
                 }
             }
@@ -339,5 +357,76 @@ public class JobsServlet extends AbstractServlet {
         
         request.setAttribute(Contract.ADVERTS, ads);
         getView(request, response, "jobs/applications.jsp");
+    }
+    
+    //view received applictions
+    public void applicants(HttpServletRequest request, HttpServletResponse response) {
+        User user = getCurrentUser(request);
+        if (user == null) {
+            login(request, response);
+            return;
+        }
+
+        List<Adverts> ads = advertsFacade.findByUser(user);
+        if (ads != null) {
+            request.setAttribute(Contract.USER_ADVERTS, ads);
+            List<Responders> responders = new ArrayList<>();
+            
+            for(Adverts ad : ads){
+                responders.addAll(respondersFacade.findByAdvertsId(ad.getId()));
+                request.setAttribute(Contract.ADVERT_RESPONDERS, responders);
+            }
+        }
+        
+        getView(request, response, "jobs/applicants.jsp");
+    }
+    
+    //view received applictions
+    public void assign(HttpServletRequest request, HttpServletResponse response) {
+        RequestData data = getAuthenticatedData(request, response);
+        if (data == null) {
+            return;
+        }
+        
+        int workerId = Integer.parseInt((String) request.getParameter("userid"));
+        User worker = userFacade.find(workerId);
+        if (worker == null) {
+            alertDanger(request, "The worker was not found, please select anther worker.");
+            return;
+        }
+        
+        showConfirmPage(request, response, "Do you want to select " + worker.getName()+" (rating: " + worker.getRating() +")", "jobs?action=assign&userid="+workerId, data.id);
+    }
+    
+    public void assignPost(HttpServletRequest request, HttpServletResponse response) {
+        RequestData data = getAuthenticatedData(request, response);
+        if (data == null) {
+            return;
+        }
+
+        Adverts ad = advertsFacade.find(data.id);
+        if (ad == null) {
+            alertDanger(request, "The job was not found.");
+            return;
+        }
+        
+        int workerId = Integer.parseInt((String) request.getParameter("userid"));
+        User worker = userFacade.find(workerId);
+        if (worker == null) {
+            alertDanger(request, "The worker was not found, please select anther worker.");
+            return;
+        }
+
+        Responders responder = respondersFacade.find(new RespondersPK(workerId, data.id));
+        if (responder == null) {
+            alertDanger(request, "The worker was not found, or the application has been withdrawn.");
+            return;
+        }
+        
+        responder.setStatus(Contract.ResponderStatus.SELECTED.ordinal());
+        respondersFacade.edit(responder);
+        
+        alertSuccess(request, worker.getName() + " has been assigned to the job: " + ad.getTitle());
+        applicants(request, response);
     }
 }

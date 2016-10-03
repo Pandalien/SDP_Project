@@ -40,7 +40,7 @@
                             <li><a href="jobs?action=applications">My Applications</a></li>
                             <li role="separator" class="divider"></li>
                             <li><a href="jobs?action=openings">My Advertisements</a></li>
-                            <li><a href="#">Received Applications</a></li>
+                            <li><a href="jobs?action=applicants">Received Applications</a></li>
                             <li role="separator" class="divider"></li>
                             <li><a href="user?action=edit">Edit Account</a></li>
                             <li><a href="#">Change Password</a></li>

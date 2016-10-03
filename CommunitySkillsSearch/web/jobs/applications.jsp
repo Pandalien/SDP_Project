@@ -4,6 +4,8 @@
     Author     : andyc
 --%>
 
+<%@page import="java.util.ArrayList"%>
+<%@page import="entities.Responders"%>
 <%@page import="utils.Contract"%>
 <%@page import="entities.Adverts"%>
 <%@page import="java.util.List"%>
@@ -12,10 +14,9 @@
     boolean isClosed;
 %>
 
-
 <h1>My current applications</h1>
 <table class="table table-hover">
-    <tr><th>#</th><th>Title</th><th>Status</th><th>Change</th></tr>
+    <tr><th>#</th><th>Title</th><th>Vacancy</th><th>Status</th><th>Change</th></tr>
 
     <%
         if (ads != null) {
@@ -25,9 +26,50 @@
     <tr><td><%=a.getId()%></td>
         <td><a href='jobs?action=view&id=<%=a.getId()%>'><%=a.getTitle()%></a></td>
         <td><%=isClosed ? "Open" : "Closed"%></td>
+        <%
+            List<Responders> res = new ArrayList<Responders>(a.getRespondersCollection());
+            Integer status = res.get(0).getStatus();
+                if (status == null) {
+                    res.get(0).setStatus(0);
+                }
+            switch (Contract.ResponderStatus.values()[res.get(0).getStatus()]) {
+                case SELECTED:
+        %>
+        <td>Selected!</td>
+        <td><a href='jobs?action=cancel&id=<%=a.getId()%>' class="btn btn-outline-primary">Cancel</a></td>
+        <%
+                break;
+            case DECLINED:
+        %>
+        <td>Declined</td>
+        <td></td>
+        <%
+                break;
+            case JOB_DONE:
+        %>
+        <td>Job done</td>
+        <td></td>
+        <td>
+            <a href='jobs?action=feedback&id=<%=res.get(0).getRespondersPK().getAdvertsId()%>&userid=<%=res.get(0).getRespondersPK().getUserId()%>' class="btn btn-outline-primary">Place feedback</a>
+        </td>
+        <%
+                break;
+            case FEEDBACK:
+        %>
+        <td>Feedback placed</td>
+        <td></td>
+        <%
+                break;
+            default:
+        %>
+        <td>Unassigned</td>
         <td>
             <a href='jobs?action=cancel&id=<%=a.getId()%>' class="btn btn-outline-primary">Cancel</a>
         </td>
+        <%
+                    break;
+            }
+        %>
     </tr>
     <%}
         }

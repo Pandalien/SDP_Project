@@ -37,4 +37,11 @@ public class RespondersFacade extends AbstractFacade<Responders> {
 
         return q.getResultList();
     }
+    
+    public List<Responders> findByAdvertsId(int id) {
+        Query q = em.createNamedQuery("Responders.findByAdvertsId");
+        q.setParameter("advertsId", id);
+
+        return q.getResultList();
+    }
 }
