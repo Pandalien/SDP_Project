@@ -345,6 +345,8 @@ public class JobsServlet extends AbstractServlet {
             for (Responders responder : responders) {
                 Adverts ad = advertsFacade.find(responder.getRespondersPK().getAdvertsId());
                 if (ad != null) {
+                    responder.setAdverts(ad);
+                    responder.setUser(userFacade.find(responder.getRespondersPK().getUserId()));
                     //set me as the only responder
                     List<Responders> meAsResponders = new ArrayList<>(1);
                     meAsResponders.add(responder);
