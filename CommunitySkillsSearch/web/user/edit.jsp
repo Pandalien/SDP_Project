@@ -26,9 +26,12 @@
     <!-- left column -->
     <div class="col-md-3">
         <div class="text-center">
-            <img src="//placehold.it/100" class="avatar img-circle" alt="avatar">
-            <h6>Upload a photo...</h6>
-            <input type="file" class="form-control">
+            <img src="UserPhotos/<%=user.getId()%>.jpg" class="avatar img-responsive img-circle" alt="avatar" onerror="this.onerror=null;this.src='//placehold.it/100';this.className='avatar img-circle';">
+            <form action="user?action=upload" method="post" enctype="multipart/form-data">
+                <h6>Upload a photo...</h6>
+                <input type="file" name="file" class="form-control"/>
+                <input type="submit" value="Upload"/>
+            </form>
         </div>
     </div>
     <!-- edit form column -->

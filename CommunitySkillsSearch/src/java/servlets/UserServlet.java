@@ -10,6 +10,7 @@ import entities.UserSkills;
 import java.util.Collection;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -17,9 +18,13 @@ import sb.AdvertsFacade;
 import utils.Contract;
 import utils.EditAccount;
 import utils.Login;
+import utils.ServletUtils;
 import utils.StringUtils;
 
-
+@MultipartConfig(fileSizeThreshold = 1024 * 1024 * 1, // 1 MB 
+        maxFileSize = 1024 * 1024 * 2, // 2 MB
+        maxRequestSize = 1024 * 1024 * 2, // 2 MB
+        location = "/")
 public class UserServlet extends AbstractServlet {
 
     @EJB
@@ -135,7 +140,22 @@ public class UserServlet extends AbstractServlet {
         user.setIntroduction(request.getParameter("intro"));
         //user.setEmail(request.getParameter("email"));
         
+        alertSuccess(request, "Profile saved.");
+        
         userFacade.edit(user);
+        edit(request, response);
+    }
+    
+    public void uploadPost(HttpServletRequest request, HttpServletResponse response) {
+        User user = getCurrentUser(request);
+        
+        //handle uploading user photo
+        if (ServletUtils.handlePhotoUpload(this, request, user.getId())) {
+            alertSuccess(request, "Photo updated sucessfully.");
+        }else{
+            alertDanger(request, "Not supported file format.");
+        }
+        
         edit(request, response);
     }
     
@@ -201,4 +221,6 @@ public class UserServlet extends AbstractServlet {
 
         devLoginWrapper(request, response, user);
     }
+    
+    
 }
