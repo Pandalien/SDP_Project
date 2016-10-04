@@ -6,9 +6,12 @@
 package sb;
 
 import entities.Messages;
+import entities.User;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -29,4 +32,19 @@ public class MessagesFacade extends AbstractFacade<Messages> {
         super(Messages.class);
     }
     
+    //get unread messages
+    public List<Messages> findByReceiverIdAndRead(User user, Boolean read) {
+        Query q = em.createNamedQuery("Messages.findByReceiverIdAndRead");
+        q.setParameter("receiverId", user);
+        q.setParameter("read", read);
+        return q.getResultList();
+    }
+    
+    //get sent messages
+    public List<Messages> findBySenderIdAndRead(User user, Boolean read) {
+        Query q = em.createNamedQuery("Messages.findBySenderIdAndRead");
+        q.setParameter("senderId", user);
+        q.setParameter("read", read);
+        return q.getResultList();
+    }
 }

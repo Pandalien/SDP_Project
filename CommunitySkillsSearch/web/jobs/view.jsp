@@ -30,8 +30,12 @@
       <dd class="col-sm-9"><%=ad.getClassificationId().getName()%></dd>
       
       <dt class="col-sm-3">Advertiser</dt>
-      <dd class="col-sm-9"><%=ad.getUserId().getName()%></dd>
-
+      <dd class="col-sm-9">
+          <%=ad.getUserId().getName()%>
+          <%if (!isOwner) {%>
+          <a href="message?action=compose&id=<%=ad.getUserId().getId()%>"><i class="material-icons">email</i></a>
+            <%}%>
+      </dd>
       <dt class="col-sm-3">Description</dt>
       <dd class="col-sm-9"><%=ad.getContent()%></dd>
       

@@ -117,7 +117,7 @@
         <td><a href='user?action=details&id=<%=user.getId()%>'><%=user.getName()%></a></td>
         <td><%= user.getPhone() %></td>
         <td>
-            <a href='user?action=send&id=<%=user.getId()%>' class="btn btn-outline-primary">Send Messages</a>
+            <a href='message?action=compose&id=<%=user.getId()%>' class="btn btn-outline-primary">Send Messages</a>
         </td>
     </tr>
     <%}
