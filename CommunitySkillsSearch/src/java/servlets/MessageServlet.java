@@ -43,6 +43,7 @@ public class MessageServlet extends AbstractServlet {
         
         User user = getCurrentUser(request);
         List<Messages> messages = messagesFacade.findBySenderId(user);
+
         request.setAttribute(Contract.MESSAGES_RECEIVED, messages);
 
         request.setAttribute("message_option", "viewSent");
@@ -131,21 +132,15 @@ public class MessageServlet extends AbstractServlet {
         }
         
         Messages msg = new Messages();
-        //MessagesPK msgPk = new MessagesPK();
-        //msgPk.setReceiverId(receiver.getId());
-        //msgPk.setSenderId(data.user.getId());
-        //msgPk.setId(4);
-        //msg.setMessagesPK(msgPk);
-        
         msg.setSenderId(data.user);//sender
         msg.setReceiverId(receiver);//receiver
         msg.setContent(message);
-        //msg.setIsRead(Boolean.FALSE);
-        //msg.setSentTime(new Date());
+        msg.setIsRead(Boolean.FALSE);
         
         messagesFacade.create(msg);
         
+        request.setAttribute("message_option", "viewNew");
         alertSuccess(request, "Message sent.");
-        getView(request, response, "messages/index.jsp");
+        getView(request, response, "messages/_layout.jsp");
     }
 }

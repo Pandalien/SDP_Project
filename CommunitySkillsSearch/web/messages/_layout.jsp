@@ -19,7 +19,7 @@
 <div class="row">
     <div class="col-lg-12">
         <h1 class="page-header">Messages
-            <small>Inbox</small>
+            
         </h1>
         <ol class="breadcrumb">
             <li><a href="home">Home</a>
@@ -39,18 +39,21 @@
 <div class="row">
     <!-- Sidebar Column -->
     <div class="col-md-3">
+        <p>Messages</p>
         <div class="list-group">
             <%if (messages != null) {
                     for (Messages m : messages) {
             %>
-            <a href="messages?action=<%=act%>&id=<%=m.getId()%>" class="list-group-item"><%=m.getContent()%></a>
+            <a href="messages?action=<%=act%>&id=<%=m.getId()%>" class="list-group-item"><%=act.equalsIgnoreCase("viewSent")? m.getReceiverId().getName() : m.getSenderId().getName()%></a>
             <%}
             }%>
         </div>
     </div>
     <!-- Content Column -->
     <div class="col-md-9">
-        <h2><%=msg != null ? msg.getSenderId().getName() : "Message"%></h2>
+        <h2><%=msg != null ? msg.getSenderId().getName() : "Message"%>
+            <small><%=msg != null ? "Received: " +msg.getSentTime() : ""%></small>
+        </h2>
         <p><%=msg != null ? msg.getContent() : "No message selected."%></p>
     </div>
 </div>
