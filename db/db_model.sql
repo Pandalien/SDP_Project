@@ -125,7 +125,7 @@ CREATE TABLE IF NOT EXISTS `CSS_DB`.`adverts` (
   `user_id` INT NOT NULL,
   `title` VARCHAR(45) NOT NULL,
   `content` VARCHAR(500) NOT NULL,
-  `closed` TINYINT(1) NULL,
+  `closed` TINYINT(1) NULL DEFAULT 0,
   `suburb_id` INT NOT NULL,
   `classification_id` INT NOT NULL,
   `expiry_date` TIMESTAMP NULL,
@@ -210,12 +210,12 @@ DROP TABLE IF EXISTS `CSS_DB`.`messages` ;
 
 CREATE TABLE IF NOT EXISTS `CSS_DB`.`messages` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `content` VARCHAR(45) NOT NULL,
-  `read` TINYINT(1) NULL DEFAULT 0,
-  `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `content` VARCHAR(200) NOT NULL,
+  `is_read` TINYINT(1) NULL DEFAULT 0,
+  `sent_time` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `sender_id` INT NOT NULL,
   `receiver_id` INT NOT NULL,
-  PRIMARY KEY (`id`, `sender_id`, `receiver_id`),
+  PRIMARY KEY (`id`),
   INDEX `fk_messages_user1_idx` (`sender_id` ASC),
   INDEX `fk_messages_user2_idx` (`receiver_id` ASC),
   CONSTRAINT `fk_messages_user1`

@@ -67,7 +67,6 @@ public class User implements Serializable {
     @Size(min = 1, max = 45)
     @Column(name = "password")
     private String password;
-    @Basic(optional = false)
     @Column(name = "joined_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date joinedDate;
@@ -96,9 +95,9 @@ public class User implements Serializable {
     private String phone;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
     private Collection<Adverts> advertsCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "senderId")
     private Collection<Messages> messagesCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user1")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "receiverId")
     private Collection<Messages> messagesCollection1;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private Collection<Responders> respondersCollection;
@@ -115,11 +114,10 @@ public class User implements Serializable {
         this.id = id;
     }
 
-    public User(Integer id, String name, String password, Date joinedDate, String email) {
+    public User(Integer id, String name, String password, String email) {
         this.id = id;
         this.name = name;
         this.password = password;
-        this.joinedDate = joinedDate;
         this.email = email;
     }
 

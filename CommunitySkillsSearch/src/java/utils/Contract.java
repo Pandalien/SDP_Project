@@ -26,6 +26,7 @@ public class Contract {
     final public static String MESSAGES_FROM_SERVER = "messages_from_server";
     final public static String MESSAGES_RECEIVED = "messages_received";
     final public static String MESSAGES_SENT = "messages_sent";
+    final public static String MESSAGES_SELECTED = "messages_selected";
     
     final public static String USER_AS_RESPONDER = "user_as_responder";
     final public static String ADVERT_RESPONDERS = "advert_responders";

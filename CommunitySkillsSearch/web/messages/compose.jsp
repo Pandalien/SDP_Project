@@ -13,7 +13,7 @@
 <div class="row">
     <!-- edit form column -->
     <div class="col-md-9">
-        <form class="form-horizontal" role="form" action="message?action=compose" method="post">
+        <form class="form-horizontal" role="form" action="messages?action=compose" method="post">
             <input type="hidden" name="id" value="<%=receiver.getId()%>"/>
             <div class="form-group">
                 <label class="col-md-3 control-label">Receiver</label>

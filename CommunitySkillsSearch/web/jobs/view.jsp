@@ -33,7 +33,7 @@
       <dd class="col-sm-9">
           <%=ad.getUserId().getName()%>
           <%if (!isOwner) {%>
-          <a href="message?action=compose&id=<%=ad.getUserId().getId()%>"><i class="material-icons">email</i></a>
+          <a href="messages?action=compose&id=<%=ad.getUserId().getId()%>"><i class="material-icons">email</i></a>
             <%}%>
       </dd>
       <dt class="col-sm-3">Description</dt>

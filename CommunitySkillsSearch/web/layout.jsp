@@ -78,7 +78,7 @@
                             <%} else {%>
                         <li><a href="user?action=edit"><i class="material-icons">account_box</i><%= user.getName()%></a></li>
                         <li><a href="#"><i class="material-icons">assignment</i></a></li>
-                        <li><a href="#"><i class="material-icons">email</i></a></li>
+                        <li><a href="messages?action=viewNew"><i class="material-icons">email</i></a></li>
                         <li><a href="user?action=logout"><i class="material-icons">exit_to_app</i></a></li>
                         <%}%>
                     </ul>

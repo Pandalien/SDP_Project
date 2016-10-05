@@ -9,8 +9,10 @@ import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -31,62 +33,60 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Messages.findAll", query = "SELECT m FROM Messages m"),
-    @NamedQuery(name = "Messages.findById", query = "SELECT m FROM Messages m WHERE m.messagesPK.id = :id"),
+    @NamedQuery(name = "Messages.findById", query = "SELECT m FROM Messages m WHERE m.id = :id"),
     @NamedQuery(name = "Messages.findByContent", query = "SELECT m FROM Messages m WHERE m.content = :content"),
-    @NamedQuery(name = "Messages.findByRead", query = "SELECT m FROM Messages m WHERE m.read = :read"),
-    @NamedQuery(name = "Messages.findByTime", query = "SELECT m FROM Messages m WHERE m.time = :time"),
-    @NamedQuery(name = "Messages.findBySenderId", query = "SELECT m FROM Messages m WHERE m.messagesPK.senderId = :senderId"),
-    @NamedQuery(name = "Messages.findByReceiverId", query = "SELECT m FROM Messages m WHERE m.messagesPK.receiverId = :receiverId"),
-    @NamedQuery(name = "Messages.findBySenderIdAndRead", query = "SELECT m FROM Messages m WHERE m.messagesPK.senderId = :senderId AND m.read = :read"),
-    @NamedQuery(name = "Messages.findByReceiverIdAndRead", query = "SELECT m FROM Messages m WHERE m.messagesPK.receiverId = :receiverId AND m.read = :read")
+    @NamedQuery(name = "Messages.findByIsRead", query = "SELECT m FROM Messages m WHERE m.isRead = :isRead"),
+    @NamedQuery(name = "Messages.findBySentTime", query = "SELECT m FROM Messages m WHERE m.sentTime = :sentTime"),
+    @NamedQuery(name = "Messages.findBySenderId", query = "SELECT m FROM Messages m WHERE m.senderId = :senderId"),
+    @NamedQuery(name = "Messages.findByReceiverId", query = "SELECT m FROM Messages m WHERE m.receiverId = :receiverId"),
+    @NamedQuery(name = "Messages.findBySenderIdAndRead", query = "SELECT m FROM Messages m WHERE m.senderId = :senderId AND m.isRead = :isRead"),
+    @NamedQuery(name = "Messages.findByReceiverIdAndRead", query = "SELECT m FROM Messages m WHERE m.receiverId = :receiverId AND m.isRead = :isRead"),
+    @NamedQuery(name = "Messages.findByUserAndId", query = "SELECT m FROM Messages m WHERE (m.senderId = :senderId OR m.receiverId = :receiverId) AND m.id = :id"),
 })
 public class Messages implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @EmbeddedId
-    protected MessagesPK messagesPK;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "id")
+    private Integer id;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 45)
+    @Size(min = 1, max = 200)
     @Column(name = "content")
     private String content;
-    @Column(name = "read")
-    private Boolean read;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "time")
+    @Column(name = "is_read")
+    private Boolean isRead;
+    @Column(name = "sent_time")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date time;
-    @JoinColumn(name = "sender_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private Date sentTime;
+    @JoinColumn(name = "sender_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
-    private User user;
-    @JoinColumn(name = "receiver_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private User senderId;
+    @JoinColumn(name = "receiver_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
-    private User user1;
+    private User receiverId;
 
     public Messages() {
     }
 
-    public Messages(MessagesPK messagesPK) {
-        this.messagesPK = messagesPK;
+    public Messages(Integer id) {
+        this.id = id;
     }
 
-    public Messages(MessagesPK messagesPK, String content, Date time) {
-        this.messagesPK = messagesPK;
+    public Messages(Integer id, String content, Date sentTime) {
+        this.id = id;
         this.content = content;
-        this.time = time;
+        this.sentTime = sentTime;
     }
 
-    public Messages(int id, int senderId, int receiverId) {
-        this.messagesPK = new MessagesPK(id, senderId, receiverId);
+    public Integer getId() {
+        return id;
     }
 
-    public MessagesPK getMessagesPK() {
-        return messagesPK;
-    }
-
-    public void setMessagesPK(MessagesPK messagesPK) {
-        this.messagesPK = messagesPK;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getContent() {
@@ -97,42 +97,42 @@ public class Messages implements Serializable {
         this.content = content;
     }
 
-    public Boolean getRead() {
-        return read;
+    public Boolean getIsRead() {
+        return isRead;
     }
 
-    public void setRead(Boolean read) {
-        this.read = read;
+    public void setIsRead(Boolean isRead) {
+        this.isRead = isRead;
     }
 
-    public Date getTime() {
-        return time;
+    public Date getSentTime() {
+        return sentTime;
     }
 
-    public void setTime(Date time) {
-        this.time = time;
+    public void setSentTime(Date sentTime) {
+        this.sentTime = sentTime;
     }
 
-    public User getUser() {
-        return user;
+    public User getSenderId() {
+        return senderId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setSenderId(User senderId) {
+        this.senderId = senderId;
     }
 
-    public User getUser1() {
-        return user1;
+    public User getReceiverId() {
+        return receiverId;
     }
 
-    public void setUser1(User user1) {
-        this.user1 = user1;
+    public void setReceiverId(User receiverId) {
+        this.receiverId = receiverId;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (messagesPK != null ? messagesPK.hashCode() : 0);
+        hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
@@ -143,7 +143,7 @@ public class Messages implements Serializable {
             return false;
         }
         Messages other = (Messages) object;
-        if ((this.messagesPK == null && other.messagesPK != null) || (this.messagesPK != null && !this.messagesPK.equals(other.messagesPK))) {
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
@@ -151,7 +151,7 @@ public class Messages implements Serializable {
 
     @Override
     public String toString() {
-        return "entities.Messages[ messagesPK=" + messagesPK + " ]";
+        return "entities.Messages[ id=" + id + " ]";
     }
     
 }

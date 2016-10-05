@@ -6,7 +6,6 @@
 package services;
 
 import entities.Messages;
-import entities.MessagesPK;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -20,7 +19,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.PathSegment;
 
 /**
  *
@@ -32,31 +30,6 @@ public class MessagesFacadeREST extends AbstractFacade<Messages> {
 
     @PersistenceContext(unitName = "CommunitySkillsSearchPU")
     private EntityManager em;
-
-    private MessagesPK getPrimaryKey(PathSegment pathSegment) {
-        /*
-         * pathSemgent represents a URI path segment and any associated matrix parameters.
-         * URI path part is supposed to be in form of 'somePath;id=idValue;senderId=senderIdValue;receiverId=receiverIdValue'.
-         * Here 'somePath' is a result of getPath() method invocation and
-         * it is ignored in the following code.
-         * Matrix parameters are used as field names to build a primary key instance.
-         */
-        entities.MessagesPK key = new entities.MessagesPK();
-        javax.ws.rs.core.MultivaluedMap<String, String> map = pathSegment.getMatrixParameters();
-        java.util.List<String> id = map.get("id");
-        if (id != null && !id.isEmpty()) {
-            key.setId(new java.lang.Integer(id.get(0)));
-        }
-        java.util.List<String> senderId = map.get("senderId");
-        if (senderId != null && !senderId.isEmpty()) {
-            key.setSenderId(new java.lang.Integer(senderId.get(0)));
-        }
-        java.util.List<String> receiverId = map.get("receiverId");
-        if (receiverId != null && !receiverId.isEmpty()) {
-            key.setReceiverId(new java.lang.Integer(receiverId.get(0)));
-        }
-        return key;
-    }
 
     public MessagesFacadeREST() {
         super(Messages.class);
@@ -72,23 +45,21 @@ public class MessagesFacadeREST extends AbstractFacade<Messages> {
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") PathSegment id, Messages entity) {
+    public void edit(@PathParam("id") Integer id, Messages entity) {
         super.edit(entity);
     }
 
     @DELETE
     @Path("{id}")
-    public void remove(@PathParam("id") PathSegment id) {
-        entities.MessagesPK key = getPrimaryKey(id);
-        super.remove(super.find(key));
+    public void remove(@PathParam("id") Integer id) {
+        super.remove(super.find(id));
     }
 
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Messages find(@PathParam("id") PathSegment id) {
-        entities.MessagesPK key = getPrimaryKey(id);
-        return super.find(key);
+    public Messages find(@PathParam("id") Integer id) {
+        return super.find(id);
     }
 
     @GET

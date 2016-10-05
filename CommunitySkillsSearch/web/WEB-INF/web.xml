@@ -26,7 +26,7 @@
         <servlet-class>servlets.SearchServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>MessageServlet</servlet-name>
+        <servlet-name>Messages</servlet-name>
         <servlet-class>servlets.MessageServlet</servlet-class>
     </servlet>
     <servlet-mapping>
@@ -50,8 +50,8 @@
         <url-pattern>/search</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>MessageServlet</servlet-name>
-        <url-pattern>/message</url-pattern>
+        <servlet-name>Messages</servlet-name>
+        <url-pattern>/messages</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
