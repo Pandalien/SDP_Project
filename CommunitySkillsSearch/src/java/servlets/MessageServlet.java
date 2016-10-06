@@ -35,7 +35,12 @@ public class MessageServlet extends AbstractServlet {
         getMessage(request, response);
         
         request.setAttribute("message_option", "viewRead");
-        messageWrapper(request, response, true);
+        
+        User user = getCurrentUser(request);
+        List<Messages> messages = messagesFacade.findByReceiverIdAndRead(user, true);
+        request.setAttribute(Contract.MESSAGES_RECEIVED, messages);
+        
+        getView(request, response, "messages/_layout.jsp");
     }
 
     public void viewSent(HttpServletRequest request, HttpServletResponse response) {
@@ -58,19 +63,11 @@ public class MessageServlet extends AbstractServlet {
             messagesFacade.edit(msg);
         }
 
-        //return list of messages
+        //return list of messages (new message handled by AbstractSevlet.invokeMethod() on every request)
         request.setAttribute("message_option", "viewNew");
-        messageWrapper(request, response, false);
-    }
-    
-    private void messageWrapper(HttpServletRequest request, HttpServletResponse response, boolean readOnly) {
-        User user = getCurrentUser(request);
-        List<Messages> messages = messagesFacade.findByReceiverIdAndRead(user, readOnly);
-        request.setAttribute(Contract.MESSAGES_RECEIVED, messages);
-        
         getView(request, response, "messages/_layout.jsp");
     }
-    
+ 
     private Messages getMessage(HttpServletRequest request, HttpServletResponse response) {
         User user = getCurrentUser(request);
         if (user == null) {
@@ -142,5 +139,11 @@ public class MessageServlet extends AbstractServlet {
         request.setAttribute("message_option", "viewNew");
         alertSuccess(request, "Message sent.");
         getView(request, response, "messages/_layout.jsp");
+    }
+    
+    @Override
+    protected void invokeMethod(HttpServletRequest req, HttpServletResponse resp, boolean doPost) {
+        req.setAttribute("current_path", "Messages");
+        super.invokeMethod(req, resp, doPost);
     }
 }

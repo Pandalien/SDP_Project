@@ -15,11 +15,13 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
         <link rel="shortcut icon" href="res/images/favicon.ico" type="image/x-icon"/>
         <link rel="icon" href="res/images/favicon.ico" type="image/x-icon"/>
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
         <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css"/>
-        <link rel="stylesheet" href="css/navbar-fixed-top.css" type="text/css"/>
+        <link rel="stylesheet" href="css/site.css" type="text/css"/>
         <link rel="stylesheet" href="css/login.css" type="text/css"/>
         <link rel="stylesheet" href="css/bootstrap-tagsinput.css" type="text/css"/>
         <link rel="stylesheet" href="css/bootstrap-toggle.min.css" type="text/css"/>
@@ -28,71 +30,47 @@
         <title>Community Skills Search</title>
     </head>
     <body>
-        <nav class="navbar navbar-default navbar-fixed-top">
-            <div class="container-fluid">
-                <!-- Brand and toggle get grouped for better mobile display -->
-                <%
-                        if (user != null) {
-                    %>
-                    <div class="navbar-brand">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" id="menu"> MENU <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="jobs?action=applications">My Applications</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="jobs?action=openings">My Advertisements</a></li>
-                            <li><a href="jobs?action=applicants">Received Applications</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="user?action=edit">Edit Account</a></li>
-                            <li><a href="user?action=changepwd">Change Password</a></li>
-                            <li><a href="#">Delete Account</a></li>
-                        </ul>
-                    </div>
-                <%}%>
-                
-                <!-- Collect the nav links, forms, and other content for toggling -->
-                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                    <%
-                        if (user != null) {
-                    %>
-                    <div class="navbar-brand">
-                        <ul class="nav navbar-nav">
-                            <li><a href="home"><i class="material-icons">home</i></a></li>
-                            <li><a href="jobs?action=create"><i class="material-icons">note_add</i></a></li>
-                        </ul>
-                    </div>
-                    <%}%>
-                    
-                    <form action="search" class="navbar-form navbar-left">
-                        <input type="hidden" name="action" value="searchFor">
-                        <div class="form-group">
-                            <input name="keywords" type="text" class="form-control" placeholder="Search" id="searchbar">
-                        </div>
-                        <button type="submit" class="btn btn-default">Submit</button>
-                    </form>
-                    
-                    <ul class="nav navbar-nav navbar-right">
-                        <%
-                            if (user == null) {
-                        %>
-                        <li class="nb-right"><a href="user?action=login"><img src="res/images/ic_perm_identity_white_24px.svg" alt="Log in"/>Log in</a></li>
-                            <%} else {%>
-                        <li><a href="user?action=edit"><i class="material-icons">account_box</i><%= user.getName()%></a></li>
-                        <li><a href="#"><i class="material-icons">assignment</i></a></li>
-                        <li><a href="messages?action=viewNew"><i class="material-icons">email</i></a></li>
-                        <li><a href="user?action=logout"><i class="material-icons">exit_to_app</i></a></li>
-                        <%}%>
-                    </ul>
-                </div><!-- /.navbar-collapse -->
-            </div><!-- /.container-fluid -->
-        </nav>
+        <!-- Navigation -->
+        <jsp:include page="shared\_nav.jsp"/>
 
-        <div class="container-fluid" id="main_conainer">
-            <div class="container">
-                <jsp:include page="shared\message.jsp"/>
-                <jsp:include page="${content}"/>
+        <div class="container" id="main_conainer">
+            <!-- Page Heading/Breadcrumbs -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">Community Skills Search
+                        <small></small>
+                    </h1>
+                    <ol class="breadcrumb">
+                        <li><a href="home">Home</a>
+                        </li>
+                        <li class="active">${current_path}</li>
+                    </ol>
+                </div>
             </div>
+            <!-- /.row -->
+
+            <!-- Content Row -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <jsp:include page="shared\message.jsp"/>
+                    <jsp:include page="${content}"/>
+                </div>
+            </div>
+            <!-- /.row -->
+            
             <hr>
-        </div>
+            <!-- Footer -->
+            <footer>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <p>Copyright &copy; Community Skills Search 2016</p>
+                    </div>
+                </div>
+            </footer>
+    </div>
+            
+            <!-- jQuery -->
+            <!-- Bootstrap Core JavaScript -->
             <script type="text/javascript" src="js/bootstrap.min.js"></script>
             <script type="text/javascript" src="js/bootstrap-tagsinput.js"></script>
             <script type="text/javascript" src="js/bootstrap-tagsinput-angular.js"></script>

@@ -375,7 +375,8 @@ public class JobsServlet extends AbstractServlet {
             List<Responders> responders = new ArrayList<>();
             
             for(Adverts ad : ads){
-                responders.addAll(respondersFacade.findByAdvertsId(ad.getId()));
+                List<Responders> rs = respondersFacade.findByAdvertsId(ad.getId());
+                responders.addAll(rs);
                 request.setAttribute(Contract.ADVERT_RESPONDERS, responders);
             }
         }
@@ -430,5 +431,11 @@ public class JobsServlet extends AbstractServlet {
         
         alertSuccess(request, worker.getName() + " has been assigned to the job: " + ad.getTitle());
         applicants(request, response);
+    }
+    
+    @Override
+    protected void invokeMethod(HttpServletRequest req, HttpServletResponse resp, boolean doPost) {
+        req.setAttribute("current_path", "Jobs");
+        super.invokeMethod(req, resp, doPost);
     }
 }

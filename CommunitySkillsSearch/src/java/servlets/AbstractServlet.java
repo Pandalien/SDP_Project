@@ -4,6 +4,7 @@ import beans.MessageType;
 import beans.RequestData;
 import beans.ServerMessage;
 import entities.Classification;
+import entities.Messages;
 import entities.Skills;
 import entities.Suburb;
 import entities.User;
@@ -24,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import sb.ClassificationFacade;
+import sb.MessagesFacade;
 import sb.SkillsFacade;
 import sb.SuburbFacade;
 import sb.UserFacade;
@@ -32,6 +34,9 @@ import utils.StringUtils;
 
 
 public class AbstractServlet extends HttpServlet {
+
+    @EJB
+    private MessagesFacade messagesFacade;
 
     @EJB
     private ClassificationFacade classificationFacade;
@@ -110,10 +115,20 @@ public class AbstractServlet extends HttpServlet {
     }
     
     protected void invokeMethod(HttpServletRequest req, HttpServletResponse resp, boolean doPost){
+        //call a public method according to the action name, if empty, index() is invoked
         String action = req.getParameter("action");
         if (action == null) {
             action = "index";
         }
+        
+        //check for new messages
+        User user = getCurrentUser(req);
+        if (user != null) {
+            List<Messages> messages = messagesFacade.findByReceiverIdAndRead(user, false);
+            if (messages != null && !messages.isEmpty()) {
+                req.setAttribute(Contract.MESSAGES_RECEIVED, messages);
+            }
+        }   
         
         try {
             if (doPost) {

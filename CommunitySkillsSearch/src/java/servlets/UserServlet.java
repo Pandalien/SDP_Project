@@ -272,5 +272,9 @@ public class UserServlet extends AbstractServlet {
         devLoginWrapper(request, response, user);
     }
     
-    
+    @Override
+    protected void invokeMethod(HttpServletRequest req, HttpServletResponse resp, boolean doPost) {
+        req.setAttribute("current_path", "User");
+        super.invokeMethod(req, resp, doPost);
+    }
 }
