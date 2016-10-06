@@ -35,17 +35,23 @@ public class UserFacade extends AbstractFacade<User> {
     
     //return user object, require username and password. this funciont can be used for user logging in
     public User findByUsernameAndPassword(Object username, Object password){
-        Query q = em.createNamedQuery("User.findByUsernameAndPassword");
+      // Note from AD: I changed this to check the password in java code as 
+      // database queries are case insensitive. 
+      
+        Query q = em.createNamedQuery("User.findByName");
+//        Query q = em.createNamedQuery("User.findByUsernameAndPassword");
         q.setParameter("name", username);
-        q.setParameter("password", password);
+//        q.setParameter("password", password);
         
         List<User> users = q.getResultList();
         
         if (users != null && users.size() > 0) {
-            return users.get(0);
-        }else{
-            return null;
+            User user = users.get(0);
+            if (user != null && user.getPassword().equals(password))
+                return user;
         }
+
+        return null;
     }
     
     //find user by username

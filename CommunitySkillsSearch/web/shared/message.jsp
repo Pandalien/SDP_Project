@@ -13,27 +13,27 @@
                 switch (msg.level) {
                     case SUCCESS:%>
                     <div class="alert alert-success" role="alert">
-                        <strong>Well done!</strong><%=msg.message%>
+                        <strong>Well done!</strong>&nbsp;<%=msg.message%>
                     </div>
                         <%break;
                     case INFO:%>
                     <div class="alert alert-info" role="alert">
-                        <strong>Heads up!</strong><%=msg.message%>
+                        <strong>Heads up!</strong>&nbsp;<%=msg.message%>
                     </div>
                         <%break;
                     case WARNING:%>
                     <div class="alert alert-warning" role="alert">
-                        <strong>Warning!</strong><%=msg.message%>
+                        <strong>Warning!</strong>&nbsp;<%=msg.message%>
                     </div>
                         <%break;
                     case DANGER:%>
                     <div class="alert alert-danger" role="alert">
-                        <strong>Oh snap!</strong><%=msg.message%>
+                        <strong>Oh snap!</strong>&nbsp;<%=msg.message%>
                     </div>
                         <%break;
                     case LINK:%>
                     <div class="alert alert-danger" role="alert">
-                        <strong>Oh snap!</strong>
+                        <strong>Oh snap!</strong>&nbsp;
                         <a href="#" class="alert-link"><%=msg.message%></a>
                     </div>
                         <%break;
@@ -42,7 +42,7 @@
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">×</span>
                         </button>
-                        <strong>Holy guacamole!</strong><%=msg.message%>
+                        <strong>Holy guacamole!</strong>&nbsp;<%=msg.message%>
                     </div>
                         <%break;
                     case HEADING:%>
