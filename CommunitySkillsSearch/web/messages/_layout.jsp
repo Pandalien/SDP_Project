@@ -21,12 +21,6 @@
         <h1 class="page-header">Messages
             
         </h1>
-        <ol class="breadcrumb">
-            <li><a href="home">Home</a>
-            </li>
-            <li class="active">Messages</li>
-        </ol>
-
         <ul class="nav nav-pills">
             <li <%=act.equalsIgnoreCase("viewNew")? "class='active'" : ""%>><a href="messages?action=viewNew">Inbox</a></li> 
             <li <%=act.equalsIgnoreCase("viewSent")? "class='active'" : ""%>><a href="messages?action=viewSent">Sent</a></li>
@@ -39,14 +33,22 @@
 <div class="row">
     <!-- Sidebar Column -->
     <div class="col-md-3">
-        <p>Messages</p>
-        <div class="list-group">
-            <%if (messages != null) {
-                    for (Messages m : messages) {
-            %>
-            <a href="messages?action=<%=act%>&id=<%=m.getId()%>" class="list-group-item"><%=act.equalsIgnoreCase("viewSent")? m.getReceiverId().getName() : m.getSenderId().getName()%></a>
-            <%}
-            }%>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Messages</h3>
+            </div>
+            <div class="panel-body">
+                <div class="list-group">
+                    <%if (messages != null) {
+                            for (Messages m : messages) {
+                    %>
+                    <li class="list-group-item list-group-item-info">
+                    <a href="messages?action=<%=act%>&id=<%=m.getId()%>" class="list-group-item"><%=act.equalsIgnoreCase("viewSent") ? m.getReceiverId().getName() : m.getSenderId().getName()%></a>
+                    </li>
+                    <%}
+                }%>
+                </div>
+            </div>
         </div>
     </div>
     <!-- Content Column -->

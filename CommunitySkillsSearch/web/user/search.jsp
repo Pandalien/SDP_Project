@@ -114,7 +114,7 @@
             for (User user : workersList) {
     %>
     <tr><td><%=user.getId()%></td>
-        <td><a href='user?action=details&id=<%=user.getId()%>'><%=user.getName()%></a></td>
+        <td><a href='user?action=view&id=<%=user.getId()%>'><%=user.getName()%></a></td>
         <td><%= user.getPhone() %></td>
         <td>
             <a href='messages?action=compose&id=<%=user.getId()%>' class="btn btn-outline-primary">Send Messages</a>

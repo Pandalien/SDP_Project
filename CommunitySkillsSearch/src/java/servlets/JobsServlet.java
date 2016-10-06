@@ -167,6 +167,7 @@ public class JobsServlet extends AbstractServlet {
                 }
                 
                 getView(request, response, "jobs/view.jsp");
+                return;
             }
         }
         alertWarning(request, "The job not found.");
@@ -189,7 +190,6 @@ public class JobsServlet extends AbstractServlet {
                 request.setAttribute(Contract.ADVERT_SKILL_IDS, reSkIds);
                 request.setAttribute(Contract.VIEW_ADVERT, ad);
                 
-                alertInfo(request, "Your Application has been cancelled to this job " + ad.getTitle());
                 create(request, response);
                 return;
             }

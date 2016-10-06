@@ -5,6 +5,7 @@
  */
 package servlets;
 
+import beans.RequestData;
 import entities.User;
 import entities.UserSkills;
 import java.util.Collection;
@@ -275,6 +276,37 @@ public class UserServlet extends AbstractServlet {
     @Override
     protected void invokeMethod(HttpServletRequest req, HttpServletResponse resp, boolean doPost) {
         req.setAttribute("current_path", "User");
+        
+        //features in this servlet require users to login
+        User user = getCurrentUser(req);
+        if (false && user == null) {
+            login(req, resp);
+            return;
+        }
+        
         super.invokeMethod(req, resp, doPost);
+    }
+    
+    //view a user's details, or themselve's profile
+    public void view(HttpServletRequest request, HttpServletResponse response) {
+        RequestData data = getAuthenticatedData(request, response);
+        if (data != null) {
+            User worker = userFacade.find(data.id);
+            
+            if (worker != null) {
+                if (worker.getId() == data.user.getId()) {
+                    //view profile
+                    edit(request, response);
+                }else{
+                    //view other's profile
+                    request.setAttribute(Contract.OTHER_USER, worker);
+                    getView(request, response, "user/view.jsp");
+                }
+                return;
+            }
+        }
+        
+        alertWarning(request, "The worker was not found.");
+        showGoBackPage(request, response);
     }
 }
