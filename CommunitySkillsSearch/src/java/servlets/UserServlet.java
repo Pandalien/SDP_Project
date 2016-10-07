@@ -336,8 +336,9 @@ public class UserServlet extends AbstractServlet {
         User user = getCurrentUser(request);
         userFacade.remove(user);
         
+        sessionEnd(request);
         alertSuccess(request, "Account Deleted :(");
-        showGoBackPage(request, response);
+        getView(request, response, "index.jsp");
     }
     
     public void deleteAvatar(HttpServletRequest request, HttpServletResponse response) {
