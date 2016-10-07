@@ -217,13 +217,11 @@ public class UserServlet extends AbstractServlet {
             return;
           }
         }
-        
       }
 
       // default action is to show the same page again
       changepwd(request, response);               
-    }
-    
+    }   
     
     public void loginPost(HttpServletRequest request, HttpServletResponse response) {
 /*      

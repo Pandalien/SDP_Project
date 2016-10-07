@@ -22,7 +22,7 @@
         <form id="login_login" class="login" action="user?action=login" method="post">
             <input type="text" name="username" placeholder="username"/>
             <input type="password" name="password" placeholder="password"/>
-            <p id="forgotpw"><a href="#">Forgot password?</a></p>
+            <p id="forgotpw"><a href="reset?action=resetpwd">Forgot password?</a></p>
             <button>login</button>
             <p class="text">Not registered? <a href="#" class="togglelink">Create an account</a></p>
         </form>

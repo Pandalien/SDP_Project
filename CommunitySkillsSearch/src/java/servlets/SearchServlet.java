@@ -46,14 +46,12 @@ public class SearchServlet extends AbstractServlet {
       List<String> keywords = SearchParams.parseKeywords(keywords_param);
       int type = SearchParams.parseType(type_param);
       
-      
       SearchParams search = new SearchParams();
       search.setSuburbId(suburb_id);
       search.setClassificationId(classification_id);
       search.setSkillsId(skills_id);
       search.setKeywords(keywords_param);
       search.setType(type);
-      
       
       if (search.type == SearchParams.JOB) {
         

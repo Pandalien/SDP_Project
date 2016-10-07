@@ -29,6 +29,10 @@
         <servlet-name>Messages</servlet-name>
         <servlet-class>servlets.MessageServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ResetPasswordServlet</servlet-name>
+        <servlet-class>servlets.ResetPasswordServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>/test/*</url-pattern>
@@ -52,6 +56,10 @@
     <servlet-mapping>
         <servlet-name>Messages</servlet-name>
         <url-pattern>/messages</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ResetPasswordServlet</servlet-name>
+        <url-pattern>/reset</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
