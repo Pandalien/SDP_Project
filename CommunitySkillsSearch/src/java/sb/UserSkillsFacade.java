@@ -39,6 +39,10 @@ public class UserSkillsFacade extends AbstractFacade<UserSkills> {
         q.setParameter("skillsId", new Integer(skills_id)); 
         return q.getResultList();
     }
-    
+    public List<UserSkills> findByUserId(int id){
+        Query q = em.createNamedQuery("UserSkills.findByUserId");
+        q.setParameter("userId", new Integer(id)); 
+        return q.getResultList();
+    }
     
 }

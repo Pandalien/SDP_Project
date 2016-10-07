@@ -16,7 +16,7 @@
 <%
     List<Suburb> suburbs = (List<Suburb>) request.getAttribute(Contract.SUBURBS);
     List<Skills> skills = (List<Skills>) request.getAttribute(Contract.SKILLS);
-    Collection<UserSkills> userSkills = (Collection<UserSkills>) request.getAttribute("skillsList");
+    List<UserSkills> userSkills = (List<UserSkills>) request.getAttribute("skillsList");
     User user = (User) session.getAttribute(Contract.CURRENT_USER);
 %>
 
@@ -42,26 +42,26 @@
             <div class="form-group">
                 <label class="col-md-3 control-label">User Name</label>
                 <div class="col-md-8">
-                    <input name="name" class="form-control" type="text" value='<%=user.getName()%>' readonly>
+                    <input class="form-control" type="text" name="name" value='<%=user.getName()%>' readonly>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-md-3 control-label">Email</label>
                 <div class="col-md-8">
-                    <input name="email" class="form-control" type="email" value='<%=user.getEmail()%>' readonly>
+                    <input class="form-control" type="email" name="email" value='<%=user.getEmail()%>'>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-md-3 control-label">Contact</label>
                 <div class="col-md-8">
-                    <input name="phone" class="form-control" type="tel" value='<%=user.getPhone()%>'>
+                    <input class="form-control" type="tel" name="phone" value='<%=user.getPhone()%>'>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-md-3 control-label">Suburb</label>
                 <div class="col-md-8">
                     <div class="ui-select">
-                        <select name="suburb_id" class="form-control" value="">
+                        <select class="form-control" name="suburb_id" value="">
                             <%for (Suburb s : suburbs) {%>
                             <option value="<%=s.getId()%>"<%=s.getId()==user.getSuburbId().getId() ? " selected" : ""%>><%=s.getSuburb()%></option>
                             <%}%>
@@ -74,52 +74,63 @@
                 <div class="col-md-8">
                     
                     <div class="input-group">
-                        <select id="skillTags" multiple name="current_skill" data-role="tagsinput">
-                        <%
-                            Iterator<UserSkills> skillsIterator = userSkills.iterator();
-                            while (skillsIterator.hasNext()) {
-                                Skills skill = skillsIterator.next().getSkills();
-                                %><option value="<%=skill.getName()%>"></option>
-                          <%}
-                        %>
-                        </select>
+                        <input id="skillTags" type="text" name="current_skill"/>
+                        <script type="text/javascript">
+                            $(document).ready(function(){
+                                $('#skillTags').tagsinput({
+                                    allowDuplicates: false,
+                                    itemValue: 'id',  // this will be used to set id of tag
+                                    itemText: 'label' // this will be used to set text of tag
+                                });
+                            });
+                            <%
+                                for (UserSkills skill : userSkills) {
+                                    if (skill == null) {
+                                            continue;
+                                        }
+                            %>
+                                    $(document).ready(function(){
+                                        $('#skillTags').tagsinput('add', {"id": <%=skill.getUserSkillsPK().getSkillsId()%>, "label": "<%=skill.getSkills().getName()%>"});
+                                    });
+                                <%}
+                            %>
+                        </script>
                     </div>
                     <br>
                     <div class="input-group">
-                        <select id="skillsList" name="skills" class="form-control" value="">
+                        <select id="skillsList" class="form-control" name="skills" value="">
                             <%for (Skills s : skills) {%>
                             <option value="<%=s.getId()%>"><%=s.getName()%></option>
                             <%}%>
                         </select>
                         <span class="input-group-btn">
-                            <button id="add_btn" name="addSkill" class="btn btn-success" type="button" onclick="addSkillTag();">+</button>
+                            <button id="add_btn" class="btn btn-success" type="button" onclick="addSkillTag();">+</button>
                             <script>
                                 function addSkillTag() {
-                                    var selectedSkill = $("#skillsList option:selected").text();
-                                    $('#skillTags').tagsinput('add', selectedSkill);
+                                    var selectedSkill = $("#skillsList option:selected");
+                                    $('#skillTags').tagsinput('add', {"id": selectedSkill.val(), "label": selectedSkill.text()});
                                 }
                             </script>
                         </span>
-                    </div>
-                        
+                    </div>  
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-md-3 control-label">Introduction</label>
                 <div class="col-md-8">
-                    <textarea name="intro" class="form-control" value=''><%=user.getIntroduction()%></textarea>
+                    <textarea class="form-control" name="intro" value=''><%=user.getIntroduction()%></textarea>
                 </div>
             </div>      
             <div class="form-group">
                 <label class="col-md-3 control-label">Join Date</label>
                 <div class="col-md-8">
-                    <input name="joined_date" class="form-control" type="text" value='<%=user.getJoinedDate()%>' readonly='true'/>
+                    <input class="form-control" type="text" name="joined_date" value='<%=user.getJoinedDate()%>' readonly='true'/>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-md-3 control-label">Visible in Search?</label>
                 <div class="col-md-8">
-                    <input name="visible" id="edit_visible" type="checkbox"
+                    <input id="edit_visible" type="checkbox" name="visible" 
                            data-toggle="toggle" data-onstyle="success" data-offstyle="danger"
                            <%=user.getVisible() != null && user.getVisible().booleanValue() ? " checked" : ""%>
                            />

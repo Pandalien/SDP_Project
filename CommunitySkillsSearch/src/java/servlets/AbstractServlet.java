@@ -47,7 +47,7 @@ public class AbstractServlet extends HttpServlet {
     protected SuburbFacade suburbFacade;
     
     @EJB
-    private SkillsFacade skillsFacade;
+    protected SkillsFacade skillsFacade;
     
     protected String parametersGet(HttpServletRequest req){
         StringBuilder sb = new StringBuilder();

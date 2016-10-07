@@ -8,6 +8,7 @@ package servlets;
 import beans.RequestData;
 import entities.User;
 import entities.UserSkills;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.ejb.EJB;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import sb.AdvertsFacade;
+import sb.UserSkillsFacade;
 import utils.Contract;
 import utils.EditAccount;
 import utils.Login;
@@ -27,6 +29,9 @@ import utils.StringUtils;
         maxRequestSize = 1024 * 1024 * 2, // 2 MB
         location = "/")
 public class UserServlet extends AbstractServlet {
+
+    @EJB
+    private UserSkillsFacade userSkillsFacade;
 
     @EJB
     private AdvertsFacade advertsFacade;
@@ -126,7 +131,10 @@ public class UserServlet extends AbstractServlet {
     
     public void edit(HttpServletRequest request, HttpServletResponse response) {
         User user = getCurrentUser(request);
-        Collection<UserSkills> userSkills = user.getUserSkillsCollection();
+        List<UserSkills> userSkills = userSkillsFacade.findByUserId(user.getId());
+        for(UserSkills us : userSkills){
+            us.setSkills(skillsFacade.find(us.getUserSkillsPK().getSkillsId()));
+        }
         request.setAttribute("skillsList", userSkills);
         setCollectionSuburbs(request);
         setCollectionSkills(request);
@@ -139,6 +147,24 @@ public class UserServlet extends AbstractServlet {
         user.setSuburbId(suburbFacade.findById(Integer.parseInt(request.getParameter("suburb_id"))));
         user.setVisible((request.getParameter("visible") == null ? false : true));
         user.setIntroduction(request.getParameter("intro"));
+        
+        List<UserSkills> existingSkills = userSkillsFacade.findByUserId(user.getId());
+        for (UserSkills us : existingSkills)
+            userSkillsFacade.remove(us);
+        
+        String skills = request.getParameter("current_skill");
+        String[] skillsID = skills.split(",");
+        if (skillsID !=null && skillsID.length != 0) {
+            for (String id : skillsID) {
+                if (StringUtils.isBlank(id)) {
+                    continue;
+                }
+                UserSkills userSkill = new UserSkills(user.getId(), Integer.parseInt(id));
+                userSkill.setLevel(1);
+                userSkillsFacade.create(userSkill);
+            }  
+        }
+
         //user.setEmail(request.getParameter("email"));
         
         alertSuccess(request, "Profile saved.");

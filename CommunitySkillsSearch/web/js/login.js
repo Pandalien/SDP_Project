@@ -1,11 +1,10 @@
-
-var main = function(){
+$(document).ready(function(){                             
     $('.togglelink').click(function(){
        $('#login_login').toggle();
        $('#login_create').toggle(); 
        $('#edit_visible').bootstrapToggle();
     });
-};
+});
 
 function isPasswordsMatch() {
     var pass1 = document.getElementById("pass1").value;
@@ -21,5 +20,3 @@ function isPasswordsMatch() {
     
     return ok;
 }
-
-$(document).ready(main);

@@ -20,7 +20,7 @@
 <div class="main">
     <div class="login_form">
         <form id="login_login" class="login" action="user?action=login" method="post">
-            <input type="text" name="username" placeholder="user name"/>
+            <input type="text" name="username" placeholder="username"/>
             <input type="password" name="password" placeholder="password"/>
             <p id="forgotpw"><a href="#">Forgot password?</a></p>
             <button>login</button>
