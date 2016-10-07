@@ -33,7 +33,7 @@
         }
     }
 %>
-<form action="jobs?action=create" method="post">
+<form action="jobs?action=create" method="post" class="form-horizontal">
     <input type="hidden" name="id" value='<%= ad==null? "" : ad.getId()%>'/>
     <div class="form-group">
         <label class="col-md-3 control-label">Title</label>

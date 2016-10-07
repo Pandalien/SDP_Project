@@ -6,35 +6,19 @@
 <%@page import="utils.Contract"%>
 <%@page import="entities.User"%>
 <%
-    User receiver = (User) request.getAttribute(Contract.OTHER_USER);
+    User otherUser = (User) request.getAttribute(Contract.OTHER_USER);
 %>
-<h2>Send Messages</h2>
 <hr>
 <div class="row">
     <!-- edit form column -->
-    <div class="col-md-9">
-        <form class="form-horizontal" role="form" action="messages?action=compose" method="post">
-            <input type="hidden" name="id" value="<%=receiver.getId()%>"/>
+    <div class="well">
+        <h4>Send a Message to <%=otherUser.getName()%></h4>
+        <form role="form" action="messages?action=compose" method="post">
+            <input type="hidden" name="id" value="<%=otherUser.getId()%>"/>
             <div class="form-group">
-                <label class="col-md-3 control-label">Receiver</label>
-                <div class="col-md-8">
-                    <input name="name" class="form-control" type="text" value='<%=receiver.getName()%>' readonly>
-                </div>
+                <textarea name="message" class="form-control" rows="3"></textarea>
             </div>
-            <div class="form-group">
-                <label class="col-md-3 control-label">Message</label>
-                <div class="col-md-8">
-                    <textarea name="message" class="form-control" rows="10" required="true"></textarea>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-md-3 control-label"></label>
-                <div class="col-md-8">
-                    <input type="submit" class="btn btn-primary" value="Send">
-                    <span></span>
-                    <input type="reset" class="btn btn-default" value="Reset">
-                </div>
-            </div>
+            <button type="submit" class="btn btn-primary">Send</button>
         </form>
     </div>
 </div>

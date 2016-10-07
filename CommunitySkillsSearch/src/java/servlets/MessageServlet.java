@@ -81,9 +81,13 @@ public class MessageServlet extends AbstractServlet {
         }
         
         List<Messages> msg = messagesFacade.findByUserAndId(user, id);
-        if (msg != null) {
+        if (msg != null && !msg.isEmpty()) {
             //set selected massage
             request.setAttribute(Contract.MESSAGES_SELECTED, msg.get(0));
+            
+            //get the sender object
+            request.setAttribute(Contract.OTHER_USER, msg.get(0).getSenderId());
+            
             return msg.get(0);
         }
         
