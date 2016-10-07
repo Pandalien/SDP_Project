@@ -26,10 +26,15 @@
         <link rel="stylesheet" href="css/bootstrap-tagsinput.css" type="text/css"/>
         <link rel="stylesheet" href="css/bootstrap-toggle.min.css" type="text/css"/>
         <!-- jQuery -->
-        <script type="text/javascript" src="js/jquery.js"></script>
         <script type="text/javascript" src="js/jquery-3.1.0.js"></script>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+        <script type="text/javascript" src="js/login.js"></script>
+        <!-- Bootstrap Core JavaScript -->
+        <script type="text/javascript" src="js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="js/bootstrap-toggle.min.js"></script> 
+        <script type="text/javascript" src="js/bootstrap-tagsinput.js"></script>
+        <script type="text/javascript" src="js/bootstrap-tagsinput-angular.js"></script>
         <title>Community Skills Search</title>
     </head>
     <body>
@@ -71,11 +76,6 @@
                 </div>
             </footer>
     </div>
-            <!-- Bootstrap Core JavaScript -->
-            <script type="text/javascript" src="js/bootstrap.min.js"></script>
-            <script type="text/javascript" src="js/bootstrap-toggle.min.js"></script> 
-            <script type="text/javascript" src="js/bootstrap-tagsinput.js"></script>
-            <script type="text/javascript" src="js/bootstrap-tagsinput-angular.js"></script>
-            <script type="text/javascript" src="js/login.js"></script>
+
     </body>
 </html>
