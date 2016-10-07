@@ -20,11 +20,14 @@
         <link rel="shortcut icon" href="res/images/favicon.ico" type="image/x-icon"/>
         <link rel="icon" href="res/images/favicon.ico" type="image/x-icon"/>
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+        <!-- Bootstrap Core CSS -->
         <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css"/>
-        <link rel="stylesheet" href="css/site.css" type="text/css"/>
-        <link rel="stylesheet" href="css/login.css" type="text/css"/>
         <link rel="stylesheet" href="css/bootstrap-tagsinput.css" type="text/css"/>
         <link rel="stylesheet" href="css/bootstrap-toggle.min.css" type="text/css"/>
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="css/sb-admin-2.css" type="text/css"/>
+        <link rel="stylesheet" href="css/site.css" type="text/css"/>
+        <link rel="stylesheet" href="css/login.css" type="text/css"/>
         <!-- jQuery -->
         <script type="text/javascript" src="js/jquery-3.1.0.js"></script>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>

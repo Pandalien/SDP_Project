@@ -17,6 +17,4 @@ Who's here? <a href="user?action=browse">Browse Users</a>
 <br/>
 <a href="search?action=searchFor&suburb=-1&keywords=&type=workers">Search Users</a>
 <br/>
-<a href="user?action=deleteAvatar&id=1">Delete Avatar test</a>
-<br/>
 <a href="jobs?action=create">Create a new job</a>

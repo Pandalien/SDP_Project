@@ -10,6 +10,7 @@ import entities.User;
 import entities.UserSkills;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.servlet.annotation.MultipartConfig;
@@ -36,8 +37,17 @@ public class UserServlet extends AbstractServlet {
     @EJB
     private AdvertsFacade advertsFacade;
     
+    private List<String> pagesWithSidebar;
+    
     @Override
     public void init() {
+        pagesWithSidebar = new ArrayList<>();
+        pagesWithSidebar.add("changepwd");
+        pagesWithSidebar.add("changepwdPost");
+        pagesWithSidebar.add("edit");
+        pagesWithSidebar.add("editPost");
+        pagesWithSidebar.add("delete");
+        pagesWithSidebar.add("deletePost");
     }
     
     public void browse(HttpServletRequest request, HttpServletResponse response) {
@@ -107,6 +117,11 @@ public class UserServlet extends AbstractServlet {
                 suburbFacade.findById(Integer.parseInt(request.getParameter("suburb")))
         );
 
+        user.setIntroduction("");
+        user.setJoinedDate(new Date());
+        user.setPhone("");
+        user.setVisible(Boolean.TRUE);
+        
         try {
             userFacade.create(user);
             sessionStart(request, user);
@@ -161,7 +176,17 @@ public class UserServlet extends AbstractServlet {
         alertSuccess(request, "Profile saved.");
         // save the changes of the user into datase User entity
         userFacade.edit(user);
+        
+        //handle photo upload
+        if (ServletUtils.handlePhotoUpload(this, request, user.getId())) {
+            alertSuccess(request, "Photo updated sucessfully.");
+        }
+        
         edit(request, response);
+    }
+    
+    public void upload(HttpServletRequest request, HttpServletResponse response) {
+        getView(request, response, "user/photo.jsp");
     }
     
     public void uploadPost(HttpServletRequest request, HttpServletResponse response) {
@@ -174,7 +199,7 @@ public class UserServlet extends AbstractServlet {
             alertDanger(request, "Not supported file format.");
         }
         
-        edit(request, response);
+        upload(request, response);
     }
 
     public void changepwd(HttpServletRequest request, HttpServletResponse response) {
@@ -297,6 +322,14 @@ public class UserServlet extends AbstractServlet {
         if (false && user == null) {
             login(req, resp);
             return;
+        }
+        
+        //Enable sidebar for some pages
+        String action = req.getParameter("action");
+        if (action != null) {
+            if (pagesWithSidebar.contains(action)) {
+                req.setAttribute(Contract.PREF_BOOLEAN_SIDEBAR_ENABLE, true);
+            }
         }
         
         super.invokeMethod(req, resp, doPost);

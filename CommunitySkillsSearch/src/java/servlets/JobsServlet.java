@@ -97,6 +97,7 @@ public class JobsServlet extends AbstractServlet {
         ad.setUserId(user);
         ad.setClassificationId(new Classification(Integer.parseInt(request.getParameter("classification"))));
         ad.setSuburbId(new Suburb(Integer.parseInt(request.getParameter("suburb"))));
+        ad.setClosed(Boolean.FALSE);
         
         String dateStr = request.getParameter("expiry_date");
         Date date = null;
@@ -142,6 +143,7 @@ public class JobsServlet extends AbstractServlet {
         if (skills != null) {
             for (String skill : skills) {
                 Requirements rq = new Requirements(new RequirementsPK(ad.getId(), Integer.parseInt(skill)));
+                rq.setLevel(1);
                 requirementsFacade.create(rq);
             }
         }
@@ -292,6 +294,9 @@ public class JobsServlet extends AbstractServlet {
         
         //create database entry
         Responders responder = new Responders(data.user.getId(), ad.getId());
+        responder.setFeedback("");
+        responder.setMessage("");
+        responder.setTime(new Date());
         respondersFacade.create(responder);
         
         //go to the ad page
@@ -372,11 +377,13 @@ public class JobsServlet extends AbstractServlet {
         List<Adverts> ads = advertsFacade.findByUser(user);
         if (ads != null) {
             request.setAttribute(Contract.USER_ADVERTS, ads);
-            List<Responders> responders = new ArrayList<>();
             
             for(Adverts ad : ads){
-                List<Responders> rs = respondersFacade.findByAdvertsId(ad.getId());
-                responders.addAll(rs);
+                List<Responders> responders = respondersFacade.findByAdvertsId(ad.getId());
+                for(Responders r : responders){
+                    r.setUser(userFacade.find(r.getRespondersPK().getUserId()));
+                    r.setAdverts(advertsFacade.find(r.getRespondersPK().getAdvertsId()));
+                }
                 request.setAttribute(Contract.ADVERT_RESPONDERS, responders);
             }
         }

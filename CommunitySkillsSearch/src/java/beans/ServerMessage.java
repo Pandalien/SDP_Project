@@ -5,6 +5,8 @@
  */
 package beans;
 
+import utils.StringUtils;
+
 /**
  *
  * @author andyc
@@ -13,6 +15,15 @@ package beans;
 public class ServerMessage implements java.io.Serializable {
     public String message;
     public MessageType level;
+    public String link;
+
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
+    }
 
     public ServerMessage(String msg, MessageType type){
         this.message = msg;
@@ -37,5 +48,9 @@ public class ServerMessage implements java.io.Serializable {
 
     public void setLevel(MessageType level) {
         this.level = level;
+    }
+    
+    public boolean hasLink(){
+        return !StringUtils.isEmpty(link);
     }
 }

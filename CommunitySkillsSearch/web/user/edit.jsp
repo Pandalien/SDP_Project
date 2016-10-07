@@ -20,25 +20,15 @@
     User user = (User) session.getAttribute(Contract.CURRENT_USER);
 %>
 
-<h2>EDIT ACCOUNT</h2>
-<hr>
 <div class="row">
     <!-- left column -->
-    <div class="col-md-3">
-        <div class="text-center">
-            <img src="UserPhotos/<%=user.getId()%>.jpg" class="avatar img-responsive img-circle" alt="avatar" onerror="this.onerror=null;this.src='//placehold.it/100';this.className='avatar img-circle';">
-            <form action="user?action=upload" method="post" enctype="multipart/form-data">
-                <h6>Upload a photo...</h6>
-                <input type="file" name="file" class="form-control"/>
-                <input type="submit" value="Upload"/>
-            </form>
-        </div>
-    </div>
+    <jsp:include page="_navigation.jsp"/>
+
     <!-- edit form column -->
-    <div class="col-md-9 personal-info">
+    <div class="col-md-8 personal-info">
         <h3>Personal info</h3>
         <br>
-        <form class="form-horizontal" name="user_form_edit" role="form" action="user?action=edit" method="post">
+        <form class="form-horizontal" name="user_form_edit" role="form" action="user?action=edit" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label class="col-md-3 control-label">User Name</label>
                 <div class="col-md-8">
@@ -147,10 +137,4 @@
         </form>
     </div>
 </div>
-                            
-<%
-    if (user != null) {
-%>
-
-<a href="listing?action=browse&roll=seller&member=<%= user.getId()%>">Listings</a>
-<%}%>
+                           

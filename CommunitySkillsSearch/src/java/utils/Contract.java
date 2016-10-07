@@ -31,6 +31,8 @@ public class Contract {
     final public static String USER_AS_RESPONDER = "user_as_responder";
     final public static String ADVERT_RESPONDERS = "advert_responders";
     
+    final public static String PREF_BOOLEAN_SIDEBAR_ENABLE = "pref_boolean_sidebar_enable";
+    
     public enum ResponderStatus{
         DEFAULT,
         SELECTED,

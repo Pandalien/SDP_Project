@@ -12,23 +12,27 @@
             for (ServerMessage msg : msgs) {
                 switch (msg.level) {
                     case SUCCESS:%>
-                    <div class="alert alert-success" role="alert">
-                        <strong>Well done!</strong>&nbsp;<%=msg.message%>
+                    <div class="alert alert-success alert-dismissable">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <%=msg.message%>&nbsp;<%if(msg.hasLink()){%><a href="<%=msg.link%>" class="alert-link">Alert Link</a><%}%>
                     </div>
                         <%break;
                     case INFO:%>
-                    <div class="alert alert-info" role="alert">
-                        <strong>Heads up!</strong>&nbsp;<%=msg.message%>
+                    <div class="alert alert-info alert-dismissable">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <%=msg.message%>&nbsp;<%if (msg.hasLink()) {%><a href="<%=msg.link%>" class="alert-link">Alert Link</a><%}%>
                     </div>
                         <%break;
                     case WARNING:%>
-                    <div class="alert alert-warning" role="alert">
-                        <strong>Warning!</strong>&nbsp;<%=msg.message%>
+                    <div class="alert alert-warning alert-dismissable">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <%=msg.message%>&nbsp;<%if (msg.hasLink()) {%><a href="<%=msg.link%>" class="alert-link">Alert Link</a><%}%>
                     </div>
                         <%break;
                     case DANGER:%>
-                    <div class="alert alert-danger" role="alert">
-                        <strong>Oh snap!</strong>&nbsp;<%=msg.message%>
+                    <div class="alert alert-danger alert-dismissable">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <%=msg.message%>&nbsp;<%if (msg.hasLink()) {%><a href="<%=msg.link%>" class="alert-link">Alert Link</a><%}%>
                     </div>
                         <%break;
                     case LINK:%>
