@@ -73,7 +73,7 @@
                         <li><a href="user?action=edit">Edit Account</a></li>
                         <li role="separator" class="divider"></li>
                         <li><a href="user?action=changepwd">Change Password</a></li>
-                        <li><a href="#">Delete Account</a></li>
+                        <li><a href="user?action=delete">Delete Account</a></li>
                     </ul>
                 </li>
                 <li><a href="messages?action=viewNew"><i class="material-icons">email</i><span class="label"><%=messages!=null? messages.size() : ""%></span></a></li>
