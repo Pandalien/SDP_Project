@@ -142,16 +142,21 @@ public class UserServlet extends AbstractServlet {
     }
     
     public void editPost(HttpServletRequest request, HttpServletResponse response) {
+        // get the current user
         User user = getCurrentUser(request);
+        // get the user input in phone field and set it to the user
         user.setPhone(request.getParameter("phone"));
+        // get the user choice in suburb field and set it to the user
         user.setSuburbId(suburbFacade.findById(Integer.parseInt(request.getParameter("suburb_id"))));
+        // get the user choice in the visible checkbox and set it to the user
         user.setVisible((request.getParameter("visible") == null ? false : true));
+        // get the user input in introduction textarea and set it to the user
         user.setIntroduction(request.getParameter("intro"));
-        
+        // deletes all existing skills in database for this user
         List<UserSkills> existingSkills = userSkillsFacade.findByUserId(user.getId());
         for (UserSkills us : existingSkills)
             userSkillsFacade.remove(us);
-        
+        // get the user input in skills field and save it into database UserSkill entity
         String skills = request.getParameter("current_skill");
         String[] skillsID = skills.split(",");
         if (skillsID !=null && skillsID.length != 0) {
@@ -164,11 +169,9 @@ public class UserServlet extends AbstractServlet {
                 userSkillsFacade.create(userSkill);
             }  
         }
-
-        //user.setEmail(request.getParameter("email"));
-        
+        // alert the user the profile has been updated
         alertSuccess(request, "Profile saved.");
-        
+        // save the changes of the user into datase User entity
         userFacade.edit(user);
         edit(request, response);
     }
