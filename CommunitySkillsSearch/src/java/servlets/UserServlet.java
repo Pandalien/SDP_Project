@@ -309,4 +309,17 @@ public class UserServlet extends AbstractServlet {
         alertWarning(request, "The worker was not found.");
         showGoBackPage(request, response);
     }
+    
+    public void delete(HttpServletRequest request, HttpServletResponse response) {
+        int id = getRequestId(request);
+        showConfirmPage(request, response, "Are you sure you want to delete your account?", "user?action=delete", id);
+    }
+    
+    public void deletePost(HttpServletRequest request, HttpServletResponse response) {
+        User user = getCurrentUser(request);
+        userFacade.remove(user);
+        
+        alertSuccess(request, "Account Deleted :(");
+        showGoBackPage(request, response);
+    }
 }

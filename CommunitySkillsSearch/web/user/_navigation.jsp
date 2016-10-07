@@ -28,7 +28,7 @@
             <li role="separator" class="divider"></li>
             <li><a href="user?action=edit">Edit Account</a></li>
             <li><a href="#">Change Password</a></li>
-            <li><a href="#">Delete Account</a></li>
+            <li><a href="user?action=delete">Delete Account</a></li>
         </ul>
     </div>
 </div>
