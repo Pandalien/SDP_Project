@@ -25,7 +25,7 @@
 %>
     <tr>
         <td><a href='user?action=view&id=<%=r.getRespondersPK().getUserId()%>'><%=r.getUser()!=null? r.getUser().getName() : "View"%></a></td>
-        <td><%=r.getUser().getRating()%></td>
+        <td><%=r.getUser()!=null? r.getUser().getRating() : ""%></td>
         <td><a href='jobs?action=view&id=<%=r.getRespondersPK().getAdvertsId()%>'><%=r.getAdverts()!=null? r.getAdverts().getTitle() : "View Ad."%></a></td>
         <%
             switch (Contract.ResponderStatus.values()[r.getStatus()]) {

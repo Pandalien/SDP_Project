@@ -117,18 +117,6 @@ public class UserServlet extends AbstractServlet {
         }
     }
     
-    public void details(HttpServletRequest request, HttpServletResponse response) {
-//        User user = userFacade.findById(request.getParameter("member"));
-//        
-//        if (user == null) {
-//            error404(request, response);
-//            return;
-//        }
-//        
-//        request.setAttribute("user", user);
-        getView(request, response, "user/details.jsp");
-    }
-    
     public void edit(HttpServletRequest request, HttpServletResponse response) {
         User user = getCurrentUser(request);
         List<UserSkills> userSkills = userSkillsFacade.findByUserId(user.getId());
@@ -350,5 +338,24 @@ public class UserServlet extends AbstractServlet {
         
         alertSuccess(request, "Account Deleted :(");
         showGoBackPage(request, response);
+    }
+    
+    public void deleteAvatar(HttpServletRequest request, HttpServletResponse response) {
+        User user = getCurrentUser(request);
+        //confirm with user first
+
+        showConfirmPage(request, response, "Do you want to delete your photo?", "user?action=deleteAvatar", user.getId());
+    }
+
+    public void deleteAvatarPost(HttpServletRequest request, HttpServletResponse response) {
+        User user = getCurrentUser(request);
+        if (ServletUtils.deletePhoto(this, user.getId())) {
+            alertSuccess(request, "Your photo has been deleted.");
+        } else {
+            alertWarning(request, "The photo was not found.");
+        }
+
+        //return to edit page
+        edit(request, response);
     }
 }

@@ -18,9 +18,28 @@ import javax.servlet.http.Part;
  */
 
 public class ServletUtils {
+    public static boolean deletePhoto(String photoPath){
+        File photoFile = new File(photoPath);
+        if (photoFile.exists()) {
+            //delete old photo
+            return photoFile.delete();
+        }
+        return true;
+    }
+    
+    public static boolean deletePhoto(final HttpServlet servlet, int userId){
+        String photoPath = getPhotoPath(servlet, userId);
+        return deletePhoto(photoPath);
+    }
+    
+    public static String getPhotoPath(final HttpServlet servlet, int userId){
+        String photoFolder = getPhotoFolder(servlet);
+        return photoFolder + File.separator + userId + ".jpg";
+    }
+    
     public static boolean handlePhotoUpload(final HttpServlet servlet, HttpServletRequest request, int userId) {
-        String photoFolder = getImageFolder(servlet);
-        String photoPath = photoFolder + File.separator + userId + ".jpg";
+        String photoFolder = getPhotoFolder(servlet);
+        String photoPath = getPhotoPath(servlet, userId);
         
         if(createFolder(photoFolder)){
             return createPhoto(request, photoPath);
@@ -29,7 +48,7 @@ public class ServletUtils {
         return false;
     }
     
-    public static String getImageFolder(final HttpServlet servlet){
+    public static String getPhotoFolder(final HttpServlet servlet){
         String absoluteFilePath = servlet.getServletContext().getRealPath("");
         absoluteFilePath += File.separator + "UserPhotos";
         

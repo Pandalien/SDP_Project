@@ -31,9 +31,9 @@
             <ul class="nav navbar-nav navbar-left">
                 <%if (user != null) {
                 %>
-                <li><a href="jobs?action=create"><i class="material-icons">note_add</i></a></li>
+                <li  data-toggle="tooltip" data-placement="bottom" title="Create a new Ad!"><a href="jobs?action=create"><i class="material-icons">note_add</i></a></li>
 
-                <li class="dropdown">
+                <li class="dropdown"  data-placement="bottom" title="Check your job applications or adverts.">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                         <i class="material-icons">assignment</i>
                         <b class="caret"></b>
@@ -63,7 +63,7 @@
                 <%
                     if (user == null) {
                 %>
-                <li><a href="user?action=login"><i class="material-icons">perm_identity</i>Log in</a></li>
+                <li  data-placement="bottom" title="Login to use our service"><a href="user?action=login"><i class="material-icons">perm_identity</i>Log in</a></li>
                         <%} else {%>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
@@ -76,8 +76,8 @@
                         <li><a href="user?action=delete">Delete Account</a></li>
                     </ul>
                 </li>
-                <li><a href="messages?action=viewNew"><i class="material-icons">email</i><span class="label"><%=messages!=null? messages.size() : ""%></span></a></li>
-                <li><a href="user?action=logout"><i class="material-icons">exit_to_app</i></a></li>
+                <li  data-placement="bottom" title="Check your new messages."><a href="messages?action=viewNew"><i class="material-icons">email</i><span class="label"><%=messages!=null? messages.size() : ""%></span></a></li>
+                <li  data-placement="bottom" title="Log out your account."><a href="user?action=logout"><i class="material-icons">exit_to_app</i></a></li>
                 <%}%>
             </ul>
         </div>

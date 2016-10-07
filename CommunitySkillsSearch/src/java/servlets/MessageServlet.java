@@ -133,6 +133,7 @@ public class MessageServlet extends AbstractServlet {
         msg.setReceiverId(receiver);//receiver
         msg.setContent(message);
         msg.setIsRead(Boolean.FALSE);
+        msg.setSentTime(new Date());
         
         messagesFacade.create(msg);
         
