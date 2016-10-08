@@ -13,7 +13,6 @@
   
         <h2 style="margin-top: -10px;">Reset Password</h2> 
         <p>You may use this form to receive a new password to the email address you signed up with.</p>
-        <br>
 
         <form id="resetpwd" action="reset?action=resetpwd" onsubmit="" method="post">
             <input type="text" name="username" pattern=".{4,}" title="Four or more characters" placeholder="user name" required/>

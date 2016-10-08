@@ -1,14 +1,15 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * ResetPasswordServlet
+ * If an input username and email address matches an existing account in the 
+ * database, a new random password is generated and sent to the email address
+ * on file. SMTP server properties are loaded from WEB-INF/smtp.properties. 
  */
 package servlets;
 
 import entities.User;
+import java.io.FileInputStream;
 import java.util.Date;
 import java.util.Properties;
-import java.util.Random;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.mail.*;
@@ -24,9 +25,8 @@ import utils.StringUtils;
  */
 public class ResetPasswordServlet extends AbstractServlet {
 
-
     public void resetpwd(HttpServletRequest request, HttpServletResponse response) {
-      getView(request, response, "resetpwd.jsp");
+      getView(request, response, "/user/resetpwd.jsp");
     }
 
     public void resetpwdPost(HttpServletRequest request, HttpServletResponse response) {
@@ -45,24 +45,11 @@ public class ResetPasswordServlet extends AbstractServlet {
           alertDanger(request, "User name cannot be empty.");
           errorCount++;
         } 
-/*        
-        else if (!userFacade.isExist("name", name)) {
-          alertDanger(request, "User name " + name + " does not exist.");
-          errorCount++;
-        }
-*/
-
         //check email
         if (!emailChecker.validateEmail(email)) {
           alertDanger(request, "Please input an valid email address.");
           errorCount++;
         } 
-/*        
-        else if (!userFacade.isExist("email", email)) {
-          alertDanger(request, "Email " +email+ " does not exist.");
-          errorCount++;
-        }
-*/
       }
       catch(Exception ex) {
         alertDanger(request, "System error.");
@@ -73,7 +60,7 @@ public class ResetPasswordServlet extends AbstractServlet {
       // 1. retrieve user
       // 2. set password to randomly generated string
       // 3. send same string to email address
-      // 4. user may log-in & change password whenever.
+      // 4. if email sent without errors, store reset password in database
       if (errorCount == 0) {
         
         User user = userFacade.findByUsernameAndEmail(name, email);       
@@ -81,34 +68,44 @@ public class ResetPasswordServlet extends AbstractServlet {
           alertDanger(request, "That is not a registered username or email address.");
         }
         else {
-          
           boolean email_sent = false;
-          
+
+          // make random password
           String resetpass = RandomPassword.makeRandomPassword();
-          
-          // send email using JavaMail API
-          String transport = "smtp";          
+         
+          // --- smtp defaults which can be overridden by smtp.properties file ---
           String smtp_host = "localhost";
           Integer smtp_port = 2525;
-          
           String smtp_user = "";
+          // ---
+          
           String smtp_password = "";
           
-          // message
+          // reset email fields and body content
           String subject = "Password Reset";          
           String from = "Community Skills Search";
-          String from_email = "noreply@localhost";
+          String from_email = "Community Skills Search <noreply@localhost>";
           String to = user.getEmail();
-          String body = "Hello " + user.getName() + ",\n\nyour new password is\n\n" + resetpass + "\n\n" +
-                  "Please log in and change it now.";
-
-          Properties props = new Properties();        
-          props.put("mail.smtp.host", smtp_host);
-          props.put("mail.smtp.port", smtp_port);
-          props.put("mail.smtp.user", smtp_user);
+          String body = "Hello " + user.getName() 
+                  + ",\n\nYour password has been reset to:\n\n" 
+                  + resetpass 
+                  + "\n\n"
+                  + "Regards, \n"
+                  + from;
           
+          Properties props = new Properties();
+          try {
+            props.load(getServletContext().getResourceAsStream("/WEB-INF/smtp.properties"));
+          }
+          catch (Exception e) {
+            System.err.println(e);
+            props.put("mail.smtp.host", smtp_host);
+            props.put("mail.smtp.port", smtp_port);
+            props.put("mail.smtp.user", smtp_user);            
+          }
+          
+          // send email using JavaMail API
           Session session = Session.getInstance(props);
-                   
           try {
             Transport tr = session.getTransport("smtp");
             tr.connect(smtp_host, smtp_user, smtp_password);
@@ -135,6 +132,8 @@ public class ResetPasswordServlet extends AbstractServlet {
             user.setPassword(resetpass);
             userFacade.edit(user);   
             alertSuccess(request, "Password reset. Please check your email.");               
+//            getView(request, response, "user/login.jsp");            
+//            return;
           }          
           else {
             alertDanger(request, "Could not reset password.");            
@@ -147,5 +146,7 @@ public class ResetPasswordServlet extends AbstractServlet {
       // default action is to show the same page again      
       resetpwd(request, response);
     }
+    
+    
   
 }

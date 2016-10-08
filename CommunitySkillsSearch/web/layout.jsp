@@ -42,9 +42,9 @@
     </head>
     <body>
         <!-- Navigation -->
-        <jsp:include page="shared\_nav.jsp"/>
+        <jsp:include page="/shared/_nav.jsp"/>
 
-        <div class="container" id="main_conainer">
+        <div class="container" id="main_container">
             <!-- Page Heading/Breadcrumbs -->
             <div class="row">
                 <div class="col-lg-12">
@@ -63,7 +63,7 @@
             <!-- Content Row -->
             <div class="row">
                 <div class="col-lg-12">
-                    <jsp:include page="shared\message.jsp"/>
+                    <jsp:include page="/shared/message.jsp"/>
                     <jsp:include page="${content}"/>
                 </div>
             </div>
