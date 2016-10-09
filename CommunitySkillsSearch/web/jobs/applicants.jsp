@@ -28,7 +28,7 @@
         <td><%=r.getUser()!=null? r.getUser().getRating() : ""%></td>
         <td><a href='jobs?action=view&id=<%=r.getRespondersPK().getAdvertsId()%>'><%=r.getAdverts()!=null? r.getAdverts().getTitle() : "View Ad."%></a></td>
         <%
-            switch (Contract.ResponderStatus.values()[r.getStatus()]) {
+            switch (Contract.ResponderStatus.JOB_DONE){//(Contract.ResponderStatus.values()[r.getStatus()]) {
                     case SELECTED:
                         %>
                         <td>Selected</td>
@@ -44,10 +44,7 @@
                     case JOB_DONE:
                         %>
                         <td>Job done</td>
-                        <td></td>
-                        <td>
-    <a href='jobs?action=feedback&id=<%=r.getRespondersPK().getAdvertsId()%>&userid=<%=r.getRespondersPK().getUserId()%>' class="btn btn-outline-primary">Place feedback</a>
-                        </td>
+                        <td><a href='user?action=rate&id=<%=r.getRespondersPK().getUserId()%>'>Rate <%=r.getUser()!=null? r.getUser().getName() : "this worker"%></a></td>
                         <%
                         break;
                     case FEEDBACK:

@@ -366,7 +366,7 @@ public class UserServlet extends AbstractServlet {
             }
         }
         
-        alertWarning(request, "The worker was not found.");
+        alertWarning(request, "The worker is not found.");
         showGoBackPage(request, response);
     }
     
@@ -401,5 +401,25 @@ public class UserServlet extends AbstractServlet {
 
         //return to edit page
         edit(request, response);
+    }
+    
+    public void rate(HttpServletRequest request, HttpServletResponse response) {
+        getView(request, response, "user/rate.jsp");
+    }
+    
+    public void ratePost(HttpServletRequest request, HttpServletResponse response) {
+        RequestData data = getAuthenticatedData(request, response);
+        if (data != null) {
+            User worker = userFacade.find(data.id);
+            
+            if (worker != null) {
+                worker.setRating(Double.parseDouble(request.getParameter("rating")));
+                userFacade.edit(worker);
+                return;
+            }
+        }
+        rate(request, response);
+//        alertWarning(request, "The worker is not found.");
+//        showGoBackPage(request, response);
     }
 }

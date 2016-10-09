@@ -27,7 +27,7 @@
     <!-- edit form column -->
     <div class="col-md-8 personal-info">
         <h3>Personal info</h3>
-        <br>
+        <p>* required field</p>
         <form class="form-horizontal" name="user_form_edit" role="form" action="user?action=edit" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label class="col-md-3 control-label">User Name</label>
@@ -36,13 +36,13 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-md-3 control-label">Email</label>
+                <label class="col-md-3 control-label">* Email</label>
                 <div class="col-md-8">
                     <input class="form-control" type="email" name="email" value='<%=user.getEmail()%>'>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-md-3 control-label">Contact</label>
+                <label class="col-md-3 control-label">* Contact</label>
                 <div class="col-md-8">
                     <input class="form-control" type="tel" name="phone" value='<%=user.getPhone()%>'>
                 </div>
