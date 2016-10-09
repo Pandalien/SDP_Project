@@ -12,7 +12,7 @@
 <%
     Adverts ad = (Adverts) request.getAttribute(Contract.VIEW_ADVERT);
     Responders responder = (Responders) request.getAttribute(Contract.ADVERT_RESPONDERS);
-    User currentUser = (User) request.getAttribute(Contract.CURRENT_USER);
+    User currentUser = (User) session.getAttribute(Contract.CURRENT_USER);
     
     boolean isOpen = ad.getClosed()==null||!ad.getClosed();
     boolean hasApplied = responder!=null;

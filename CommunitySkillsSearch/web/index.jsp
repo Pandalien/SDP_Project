@@ -18,3 +18,6 @@ Who's here? <a href="user?action=browse">Browse Users</a>
 <a href="search?action=searchFor&suburb=-1&keywords=&type=workers">Search Users</a>
 <br/>
 <a href="jobs?action=create">Create a new job</a>
+
+<p>Jobs that match your skills</p>
+<jsp:include page="/jobs/_listings.jsp"/>

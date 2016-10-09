@@ -3,6 +3,24 @@ package utils;
 import java.util.Locale;
 
 public class StringUtils {
+    
+    //return a short substring the original one
+    public static String shortenString(final String str, int limit){
+        String newStr = "";
+        
+        if (isBlank(str)) {
+            return newStr;
+        }
+        
+        if (str.length() > limit) {
+            newStr = str.substring(0, limit) + "...";
+        }else{
+            newStr = str;
+        }
+        
+        return newStr;
+    }
+    
     public static final String EMPTY = "";
     public static final int INDEX_NOT_FOUND = -1;
     /**

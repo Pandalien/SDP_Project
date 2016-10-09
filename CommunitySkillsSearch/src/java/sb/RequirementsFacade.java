@@ -39,4 +39,10 @@ public class RequirementsFacade extends AbstractFacade<Requirements> {
         q.setParameter("advertsId", id);
         return q.getResultList();
     }
+    
+    public List<Requirements> findBySkillsId(int id) {
+        Query q = em.createNamedQuery("Requirements.findBySkillsId");
+        q.setParameter("skillsId", id);
+        return q.getResultList();
+    }
 }

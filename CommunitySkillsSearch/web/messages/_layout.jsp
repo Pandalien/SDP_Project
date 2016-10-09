@@ -28,7 +28,7 @@
                 <i class="fa fa-comments fa-fw"></i> Messages
                 <div class="btn-group pull-right">
                     <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-                        <i class="fa fa-chevron-down"></i>
+                        <b class="caret"></b>
                     </button>
                     <ul class="dropdown-menu slidedown">
                         <li>

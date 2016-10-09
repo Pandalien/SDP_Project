@@ -21,36 +21,36 @@
             </div>
             <br/>
             <a href="jobs?action=applications" class="btn btn-default btn-block">
-                <i class="fa fa-comment fa-fw"></i> My Applications
+                <span class="glyphicon glyphicon-list-alt"></span> My Applications
             </a>
             <br/>
             <a href="jobs?action=openings" class="btn btn-default btn-block">
-                <i class="fa fa-comment fa-fw"></i> My Advertisements
+                <span class="glyphicon glyphicon-briefcase"></span> My Advertisements
             </a>
             <br/>
             <a href="jobs?action=applicants" class="btn btn-default btn-block">
-                <i class="fa fa-comment fa-fw"></i> Received Applications
+                <span class="glyphicon glyphicon-check"></span> Received Applications
             </a>
             <br/>
             <a href="user?action=edit" class="btn btn-default btn-block <%=content=="user/edit.jsp"? "active" : ""%>">
-                <i class="fa fa-comment fa-fw"></i> Edit Account
+                <span class="glyphicon glyphicon-cog"></span> Edit Account
             </a>
             <br/>
             <a href="user?action=upload" class="btn btn-default btn-block <%=content=="user/photo.jsp"? "active" : ""%>">
-                <i class="fa fa-comment fa-fw"></i> My Photo
+                <span class="glyphicon glyphicon-picture"></span> My Photo
             </a>
             <br/>
             <a href="user?action=changepwd" class="btn btn-default btn-block <%=content=="user/changepwd.jsp"? "active" : ""%>">
-                <i class="fa fa-comment fa-fw"></i> Change Password
+                <span class="glyphicon glyphicon-lock"></span> Change Password
             </a>
             <br/>
             <a href="user?action=delete" class="btn btn-danger btn-block">
-                <i class="fa fa-comment fa-fw"></i> Delete Account
+                <span class="glyphicon glyphicon-trash"></span> Delete Account
             </a>
             <br/>
         </div>
         <div class="panel-footer">
-            <a href="user?action=logout" class="btn btn-default btn-block">Log out</a>
+            <a href="user?action=logout" class="btn btn-default btn-block"><span class="glyphicon glyphicon-log-out"></span> Log out</a>
         </div>
     </div>
 </div>

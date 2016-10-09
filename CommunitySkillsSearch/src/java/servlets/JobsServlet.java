@@ -252,6 +252,16 @@ public class JobsServlet extends AbstractServlet {
     }
     
     public void delete(HttpServletRequest request, HttpServletResponse response) {
+        RequestData data = getAuthenticatedData(request, response);
+        if (data == null) {
+            return;
+        }
+
+        //confirm with user first
+        showConfirmPage(request, response, "Are you sure you want to delete this job?", "jobs?action=delete", data.id);
+    }
+    
+    public void deletePost(HttpServletRequest request, HttpServletResponse response) {
         int id = getRequestId(request);
         if (id != -1) {
             Adverts ad = advertsFacade.find(id);
