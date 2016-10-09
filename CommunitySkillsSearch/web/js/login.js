@@ -1,9 +1,7 @@
 var main = function(){                             
     $('.togglelink').click(function(){
        $('#login_login').toggle();
-       console.log("clicked1");
        $('#login_create').toggle();
-       console.log("clicked2");
        $('#edit_visible').bootstrapToggle();
     });
 };

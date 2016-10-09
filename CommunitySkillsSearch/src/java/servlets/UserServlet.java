@@ -9,7 +9,6 @@ import beans.RequestData;
 import entities.User;
 import entities.UserSkills;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
@@ -125,10 +124,10 @@ public class UserServlet extends AbstractServlet {
         try {
             userFacade.create(user);
             sessionStart(request, user);
-            alertSuccess(request, "Hello " + user.getName() + ", your account was created successfully!");
+            alertSuccess(request, "Hello " + user.getName() + ", your account is created successfully!");
             edit(request, response);
         } catch (Exception e) {
-            alertDanger(request, "Failed to created account:" + e);
+            alertDanger(request, "Failed to create account:" + e);
         }
     }
     
@@ -147,8 +146,9 @@ public class UserServlet extends AbstractServlet {
     public void editPost(HttpServletRequest request, HttpServletResponse response) {
         // get the current user
         User user = getCurrentUser(request);
-        // get the user input in phone field and set it to the user
-        user.setPhone(request.getParameter("phone"));
+        // get the user input in email & phone field
+        String email = request.getParameter("email");
+        String phone = request.getParameter("phone");
         // get the user choice in suburb field and set it to the user
         user.setSuburbId(suburbFacade.findById(Integer.parseInt(request.getParameter("suburb_id"))));
         // get the user choice in the visible checkbox and set it to the user
@@ -172,11 +172,23 @@ public class UserServlet extends AbstractServlet {
                 userSkillsFacade.create(userSkill);
             }  
         }
-        // alert the user the profile has been updated
-        alertSuccess(request, "Profile saved.");
-        // save the changes of the user into datase User entity
-        userFacade.edit(user);
-        
+        // validate email & phone before saving into database
+        EditAccount editAccount = new EditAccount();
+        if (editAccount.validateEmail(email) && editAccount.validatePhone(phone)) {
+            user.setEmail(email);
+            user.setPhone(phone);
+            // save the changes of the user into datase User entity
+            userFacade.edit(user);
+            // alert the user the profile has been updated
+            alertSuccess(request, "Profile saved.");
+        }  
+        else {
+            if (!editAccount.validateEmail(email))
+              alertDanger(request, "Please input a valid email address.");
+            if (!editAccount.validatePhone(phone))
+              alertDanger(request, "Please input a valid contact number. (eg. 1234567890,  (123)-456-7890, 123-456-7890 x0000)");
+        }
+
         //handle photo upload
         if (ServletUtils.handlePhotoUpload(this, request, user.getId())) {
             alertSuccess(request, "Photo updated sucessfully.");
@@ -225,7 +237,7 @@ public class UserServlet extends AbstractServlet {
           // check new password          
           Login passwordChecker = new Login();
           if (!passwordChecker.validatePassword(pass1)) {
-            alertDanger(request, "Please input an valid password. "
+            alertDanger(request, "Please input a valid password. "
                     + "Four characters minimum, must include an uppercase, lowercase, and numeric character. No spaces.");
           }
           else if (pass1 == null ? pass2 != null : !pass1.equals(pass2)) {
