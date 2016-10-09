@@ -45,7 +45,7 @@
 <%
 } else {
 %>
-<p>Welcome back, <a href="user?action=details&member=<%= user.getId()%>"><%= user.getName()%></a></p>
+<p>Welcome back, <a href="user?action=view&id=<%= user.getId()%>"><%= user.getName()%></a></p>
 <a href="home">Go to home page</a>
 <%
     }

@@ -18,6 +18,16 @@ import javax.servlet.http.Part;
  */
 
 public class ServletUtils {
+    public static String getUserAvatar(final HttpServlet servlet, HttpServletRequest request, int userId){
+        String photoPath = getPhotoPath(servlet, userId);
+        File photoFile = new File(photoPath);
+        if (photoFile.exists()) {
+            return request.getContextPath() + "/UserPhotos/" + userId + ".jpg";
+        }else{
+            return request.getContextPath() + "/res/images/default_avatar.svg";
+        }
+    }
+    
     public static boolean deletePhoto(String photoPath){
         File photoFile = new File(photoPath);
         if (photoFile.exists()) {

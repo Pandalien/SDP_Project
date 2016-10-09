@@ -6,6 +6,7 @@ import entities.User;
 import entities.UserSkills;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,19 +34,37 @@ public class HomeServlet extends AbstractServlet {
     public void index(HttpServletRequest request, HttpServletResponse response){
         User user = getCurrentUser(request);
         if (user != null) {
-            List<Adverts> ads = new ArrayList<>();
             //get all usr skills
+            List<Adverts> ads = new ArrayList<>();
+            
+            
             List<UserSkills> userSkills = userSkillsFacade.findByUserId(user.getId());
             
             for (UserSkills us : userSkills) {
                 //get all requirements form adverts
                 List<Requirements> reqs = requirementsFacade.findBySkillsId(us.getUserSkillsPK().getSkillsId());
+                List<Integer> adIds = new ArrayList<>();
+                int id;
                 for(Requirements r : reqs){
-                    //get all matched adverts
-                    Adverts ad = advertsFacade.find(r.getRequirementsPK().getAdvertsId());
+                    //get advert for at most once only
+                    id = r.getRequirementsPK().getAdvertsId();
+                    if (adIds.contains(id)) {
+                        continue;
+                    }
+                    adIds.add(id);
+                    
+                    //get matched adverts
+                    Adverts ad = advertsFacade.find(id);
                     if (ad.getClosed()) {
                         continue;
                     }
+                    
+                    //don't show own adverts
+                    if (Objects.equals(ad.getUserId().getId(), user.getId())) {
+                        continue;
+                    }
+                    
+                    //add to recomemded list
                     ads.add(ad);
                 }
             }

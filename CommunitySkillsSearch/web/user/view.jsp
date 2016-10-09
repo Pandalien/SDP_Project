@@ -2,6 +2,7 @@
     Author     : Andy Chen
 --%>
 
+<%@page import="utils.ServletUtils"%>
 <%@page import="utils.Contract"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.Objects"%>
@@ -18,21 +19,24 @@
 
     <!-- Contact Details Column -->
     <div class="col-md-12">
-        <img src="UserPhotos/<%=worker.getId()%>.jpg" class="avatar img-responsive img-circle" alt="avatar" onerror="this.onerror=null;this.src='//placehold.it/100';this.className='avatar img-circle';">
-        <h3><%=worker.getName()%></h3>
-        <p>
-            <%=worker.getSuburbId().getSuburb()%><br>
-        </p>
-        <p><i class="fa fa-clock-o"></i> 
-            <abbr title="This is the rating about <%=worker.getName()%> form previous records.">Rating</abbr>: <%=worker.getRating()%></p>
+        <div class="text-center">
+            <img src="<%=ServletUtils.getUserAvatar(this, request, worker.getId())%>" class="avatar img-circle" alt="avatar" width="128" onerror="this.onerror=null;this.src='//placehold.it/128';this.className='avatar img-circle';">
+            <h3><%=worker.getName()%></h3>
+            <p>
+                <%=worker.getSuburbId().getSuburb()%><br>
+            </p>
+            <p><i class="fa fa-clock-o"></i> 
+                <abbr title="This is the rating about <%=worker.getName()%> form previous records.">Rating</abbr>: <%=worker.getRating()%></p>
+
+            <p><i class="fa fa-phone"></i> 
+                <abbr title="Phone">Phone</abbr>: <%=worker.getPhone()%></p>
+            <p><i class="fa fa-envelope-o"></i> 
+                <abbr title="Email">Email</abbr>: <a href="mailto:<%=worker.getEmail()%>"><%=worker.getEmail()%></a>
+            </p>
+            <p><i class="fa fa-clock-o"></i> 
+                <abbr title="Member since">Member</abbr>: <%=worker.getJoinedDate()%></p>
+        </div>
         
-        <p><i class="fa fa-phone"></i> 
-            <abbr title="Phone">Phone</abbr>: <%=worker.getPhone()%></p>
-        <p><i class="fa fa-envelope-o"></i> 
-            <abbr title="Email">Email</abbr>: <a href="mailto:<%=worker.getEmail()%>"><%=worker.getEmail()%></a>
-        </p>
-        <p><i class="fa fa-clock-o"></i> 
-            <abbr title="Member since">Member</abbr>: <%=worker.getJoinedDate()%></p>
         <div class="well">
             <h4>About <%=worker.getName()%></h4>
             <p>

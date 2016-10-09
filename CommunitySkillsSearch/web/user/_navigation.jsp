@@ -3,6 +3,7 @@
     Created on : Oct 4, 2016, 10:21:39 PM
     Author     : andyc
 --%>
+<%@page import="utils.ServletUtils"%>
 <%@page import="utils.Contract"%>
 <%@page import="entities.User"%>
 <%
@@ -17,7 +18,7 @@
         </div>
         <div class="panel-body">
             <div class="text-center">
-                <img src="UserPhotos/<%=user.getId()%>.jpg" class="avatar img-responsive img-circle" alt="avatar" onerror="this.onerror=null;this.src='//placehold.it/100';this.className='avatar img-circle';">
+                <img src="<%=ServletUtils.getUserAvatar(this, request, user.getId())%>" class="avatar img-circle" alt="avatar" width="100" onerror="this.onerror=null;this.src='//placehold.it/100';this.className='avatar img-circle';">
             </div>
             <br/>
             <a href="jobs?action=applications" class="btn btn-default btn-block">
@@ -36,7 +37,7 @@
                 <span class="glyphicon glyphicon-cog"></span> Edit Account
             </a>
             <br/>
-            <a href="user?action=upload" class="btn btn-default btn-block <%=content=="user/photo.jsp"? "active" : ""%>">
+            <a href="photo?action=upload" class="btn btn-default btn-block <%=content=="user/photo.jsp"? "active" : ""%>">
                 <span class="glyphicon glyphicon-picture"></span> My Photo
             </a>
             <br/>

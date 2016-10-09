@@ -150,7 +150,7 @@ public class AbstractServlet extends HttpServlet {
         showGoBackPage(req, resp);
     }
     
-    public void alert(HttpServletRequest req, String msg, MessageType type){
+    public void alert(HttpServletRequest req, String msg, MessageType type, String link){
         //get old object
         List<ServerMessage> msgs = (List<ServerMessage>) req.getAttribute(Contract.MESSAGES_FROM_SERVER);
         if (msgs == null) {
@@ -158,8 +158,15 @@ public class AbstractServlet extends HttpServlet {
         }
         
         //update to the new one
-        msgs.add(new ServerMessage(msg, type));
+        ServerMessage m = new ServerMessage(msg, type);
+        m.setLink(link);
+        
+        msgs.add(m);
         req.setAttribute(Contract.MESSAGES_FROM_SERVER, msgs);
+    }
+    
+    public void alert(HttpServletRequest req, String msg, MessageType type){
+        alert(req, msg, type, "");
     }
     
     public void alertSuccess(HttpServletRequest req, String msg){

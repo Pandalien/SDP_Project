@@ -4,6 +4,7 @@
     Author     : andyc
 --%>
 
+<%@page import="utils.ServletUtils"%>
 <%@page import="entities.User"%>
 <%@page import="entities.Messages"%>
 <%@page import="utils.Contract"%>
@@ -16,6 +17,7 @@
     String act = (String) request.getAttribute("message_option");
     boolean vViewSent = act.equalsIgnoreCase("viewSent");
     String displayName;
+    int displayId;
     String sentTime;
 %>
 
@@ -51,11 +53,12 @@
                     <%if (messages != null) {
                             for (Messages m : messages) {
                                 displayName = vViewSent? m.getReceiverId().getName() : m.getSenderId().getName();
+                                displayId = vViewSent? m.getReceiverId().getId() : m.getSenderId().getId();
                                 sentTime = m.getSentTime().toString();
                     %>
                     <li class="left clearfix">
                         <span class="chat-img pull-left">
-                            <img src="http://placehold.it/50/55C1E7/fff" alt="User Avatar" class="img-circle">
+                            <img src="<%=ServletUtils.getUserAvatar(this, request, displayId)%>" class="avatar img-circle" alt="avatar" width="50" onerror="this.onerror=null;this.src='//placehold.it/50';this.className='avatar img-circle';">
                         </span>
                         <div class="chat-body clearfix">
                             <div class="header">

@@ -36,17 +36,8 @@ public class UserServlet extends AbstractServlet {
     @EJB
     private AdvertsFacade advertsFacade;
     
-    private List<String> pagesWithSidebar;
-    
     @Override
     public void init() {
-        pagesWithSidebar = new ArrayList<>();
-        pagesWithSidebar.add("changepwd");
-        pagesWithSidebar.add("changepwdPost");
-        pagesWithSidebar.add("edit");
-        pagesWithSidebar.add("editPost");
-        pagesWithSidebar.add("delete");
-        pagesWithSidebar.add("deletePost");
     }
     
     public void browse(HttpServletRequest request, HttpServletResponse response) {
@@ -197,23 +188,6 @@ public class UserServlet extends AbstractServlet {
         edit(request, response);
     }
     
-    public void upload(HttpServletRequest request, HttpServletResponse response) {
-        getView(request, response, "user/photo.jsp");
-    }
-    
-    public void uploadPost(HttpServletRequest request, HttpServletResponse response) {
-        User user = getCurrentUser(request);
-        
-        //handle uploading user photo
-        if (ServletUtils.handlePhotoUpload(this, request, user.getId())) {
-            alertSuccess(request, "Photo updated sucessfully.");
-        }else{
-            alertDanger(request, "Not supported file format.");
-        }
-        
-        upload(request, response);
-    }
-
     public void changepwd(HttpServletRequest request, HttpServletResponse response) {
       getView(request, response, "user/changepwd.jsp");
     }
@@ -339,9 +313,6 @@ public class UserServlet extends AbstractServlet {
         //Enable sidebar for some pages
         String action = req.getParameter("action");
         if (action != null) {
-            if (pagesWithSidebar.contains(action)) {
-                req.setAttribute(Contract.PREF_BOOLEAN_SIDEBAR_ENABLE, true);
-            }
         }
         
         super.invokeMethod(req, resp, doPost);
@@ -382,25 +353,6 @@ public class UserServlet extends AbstractServlet {
         sessionEnd(request);
         alertSuccess(request, "Account Deleted :(");
         getView(request, response, "index.jsp");
-    }
-    
-    public void deleteAvatar(HttpServletRequest request, HttpServletResponse response) {
-        User user = getCurrentUser(request);
-        //confirm with user first
-
-        showConfirmPage(request, response, "Do you want to delete your photo?", "user?action=deleteAvatar", user.getId());
-    }
-
-    public void deleteAvatarPost(HttpServletRequest request, HttpServletResponse response) {
-        User user = getCurrentUser(request);
-        if (ServletUtils.deletePhoto(this, user.getId())) {
-            alertSuccess(request, "Your photo has been deleted.");
-        } else {
-            alertWarning(request, "The photo was not found.");
-        }
-
-        //return to edit page
-        edit(request, response);
     }
     
     public void rate(HttpServletRequest request, HttpServletResponse response) {

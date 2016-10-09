@@ -4,6 +4,7 @@
     Author     : andyc
 --%>
 
+<%@page import="utils.ServletUtils"%>
 <%@page import="entities.User"%>
 <%@page import="java.util.Collection"%>
 <%@page import="entities.Responders"%>
@@ -66,7 +67,7 @@
         <!-- To do: Comment -->
         <div class="media">
             <a class="pull-left" href="#">
-                <img class="media-object" src="http://placehold.it/64x64" alt="">
+                <img src="<%=ServletUtils.getUserAvatar(this, request, 0)%>" class="avatar img-circle" alt="avatar" width="64" onerror="this.onerror=null;this.src='//placehold.it/64';this.className='avatar img-circle';">
             </a>
             <div class="media-body">
                 <h4 class="media-heading">Andy
