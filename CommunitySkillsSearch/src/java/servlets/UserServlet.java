@@ -294,7 +294,7 @@ public class UserServlet extends AbstractServlet {
     }
     
     public void andyLogin(HttpServletRequest request, HttpServletResponse response) {
-        User user = userFacade.findByUsernameAndPassword("andy", "andy");
+        User user = userFacade.findByUsernameAndPassword("Andy", "Andy");
 
         devLoginWrapper(request, response, user);
     }

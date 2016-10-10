@@ -36,36 +36,38 @@ public class HomeServlet extends AbstractServlet {
         if (user != null) {
             //get all usr skills
             List<Adverts> ads = new ArrayList<>();
-            
+            List<Integer> adIds = new ArrayList<>();
+            int id;
             
             List<UserSkills> userSkills = userSkillsFacade.findByUserId(user.getId());
-            
-            for (UserSkills us : userSkills) {
-                //get all requirements form adverts
-                List<Requirements> reqs = requirementsFacade.findBySkillsId(us.getUserSkillsPK().getSkillsId());
-                List<Integer> adIds = new ArrayList<>();
-                int id;
-                for(Requirements r : reqs){
-                    //get advert for at most once only
-                    id = r.getRequirementsPK().getAdvertsId();
-                    if (adIds.contains(id)) {
-                        continue;
+            if (userSkills != null) {
+                for (UserSkills us : userSkills) {
+                    //get all requirements form adverts
+                    List<Requirements> reqs = requirementsFacade.findBySkillsId(us.getUserSkillsPK().getSkillsId());
+                    if (reqs != null) {
+                        for (Requirements r : reqs) {
+                            //get advert for at most once only
+                            id = r.getRequirementsPK().getAdvertsId();
+                            if (adIds.contains(id)) {
+                                continue;
+                            }
+                            adIds.add(id);
+
+                            //get matched adverts
+                            Adverts ad = advertsFacade.find(id);
+                            if (ad == null || ad.getClosed()) {
+                                continue;
+                            }
+
+                            //don't show own adverts
+                            if (Objects.equals(ad.getUserId().getId(), user.getId())) {
+                                continue;
+                            }
+
+                            //add to recomemded list
+                            ads.add(ad);
+                        }
                     }
-                    adIds.add(id);
-                    
-                    //get matched adverts
-                    Adverts ad = advertsFacade.find(id);
-                    if (ad.getClosed()) {
-                        continue;
-                    }
-                    
-                    //don't show own adverts
-                    if (Objects.equals(ad.getUserId().getId(), user.getId())) {
-                        continue;
-                    }
-                    
-                    //add to recomemded list
-                    ads.add(ad);
                 }
             }
             request.setAttribute(Contract.ADVERTS, ads);
