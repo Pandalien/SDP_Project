@@ -43,7 +43,7 @@
             <div class="form-group row">  
                 <div class="col-md-8">
                     <input type="submit" value="Change" class="btn btn-primary">
-                    <input type="button" value="Cancel" class="btn btn-secondary">
+                    <input type="reset" value="Reset" class="btn btn-secondary">
                 </div>
             </div>
         </form>
