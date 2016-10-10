@@ -51,6 +51,10 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "User.findByUsernameAndPassword", query = "SELECT u FROM User u WHERE u.name = :name AND u.password = :password")})
 public class User implements Serializable {
 
+    @Size(max = 45)
+    @Column(name = "img")
+    private String img;
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -293,6 +297,14 @@ public class User implements Serializable {
     @Override
     public String toString() {
         return "entities.User[ id=" + id + " ]";
+    }
+
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
     }
     
 }

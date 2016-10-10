@@ -179,11 +179,6 @@ public class UserServlet extends AbstractServlet {
             if (!editAccount.validatePhone(phone))
               alertDanger(request, "Please input a valid contact number. (eg. 1234567890,  (123)-456-7890, 123-456-7890 x0000)");
         }
-
-        //handle photo upload
-        if (ServletUtils.handlePhotoUpload(this, request, user.getId())) {
-            alertSuccess(request, "Photo updated sucessfully.");
-        }
         
         edit(request, response);
     }

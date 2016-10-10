@@ -18,17 +18,44 @@ import javax.servlet.http.Part;
  */
 
 public class ServletUtils {
-    public static String getUserAvatar(final HttpServlet servlet, HttpServletRequest request, int userId){
-        String photoPath = getPhotoPath(servlet, userId);
+    //create a user avatar image path for html use, default avatar is returned is not found
+    public static String getUserAvatar(final HttpServlet servlet, HttpServletRequest request, final String imgName){
+        if (!StringUtils.isEmpty(imgName)) {
+            String photoFolder = getPhotoFolder(servlet);
+            String photoPath = photoFolder + File.separator + imgName;
+
+            File photoFile = new File(photoPath);
+            if (photoFile.exists()) {
+                photoFile = null;
+                return request.getContextPath() + "/UserPhotos/" + imgName;
+            }
+        }
+        
+        return request.getContextPath() + "/res/images/default_avatar.svg";
+    }
+    
+    //create a advert photo for html, empty is returned is not found
+    public static String getUserPhoto(final HttpServlet servlet, HttpServletRequest request, final String imgName){
+        if (StringUtils.isEmpty(imgName)) {
+            return null;
+        }
+        
+        String photoFolder = getPhotoFolder(servlet);
+        String photoPath = photoFolder + File.separator + imgName;
+        
         File photoFile = new File(photoPath);
         if (photoFile.exists()) {
-            return request.getContextPath() + "/UserPhotos/" + userId + ".jpg";
+            return request.getContextPath() + "/UserPhotos/" + imgName;
         }else{
-            return request.getContextPath() + "/res/images/default_avatar.svg";
+            return "";
         }
     }
     
-    public static boolean deletePhoto(String photoPath){
+    //delete an image: both avavtar and photo for adverts
+    public static boolean deleteUserPhoto(final HttpServlet servlet,final String imgName){
+        String photoFolder = getPhotoFolder(servlet);
+        String photoPath = photoFolder + File.separator + imgName;
+        
         File photoFile = new File(photoPath);
         if (photoFile.exists()) {
             //delete old photo
@@ -37,27 +64,18 @@ public class ServletUtils {
         return true;
     }
     
-    public static boolean deletePhoto(final HttpServlet servlet, int userId){
-        String photoPath = getPhotoPath(servlet, userId);
-        return deletePhoto(photoPath);
-    }
-    
-    public static String getPhotoPath(final HttpServlet servlet, int userId){
+    //call this method in servlet to handle photo upload
+    public static String handlePhotoUpload(final HttpServlet servlet, HttpServletRequest request) {
         String photoFolder = getPhotoFolder(servlet);
-        return photoFolder + File.separator + userId + ".jpg";
-    }
-    
-    public static boolean handlePhotoUpload(final HttpServlet servlet, HttpServletRequest request, int userId) {
-        String photoFolder = getPhotoFolder(servlet);
-        String photoPath = getPhotoPath(servlet, userId);
         
         if(createFolder(photoFolder)){
-            return createPhoto(request, photoPath);
+            return createPhoto(request, photoFolder);
         }
         
-        return false;
+        return null;
     }
     
+    //get the default image folder for storage
     public static String getPhotoFolder(final HttpServlet servlet){
         String absoluteFilePath = servlet.getServletContext().getRealPath("");
         absoluteFilePath += File.separator + "UserPhotos";
@@ -65,6 +83,7 @@ public class ServletUtils {
         return absoluteFilePath;
     }
     
+    //create a folder
     public static boolean createFolder(String path){
         // creates the save directory if it does not exists
         File fileSaveDir = new File(path);
@@ -75,10 +94,13 @@ public class ServletUtils {
         return fileSaveDir.exists();
     }
     
-    public static boolean createPhoto(HttpServletRequest request, String photoPath) {
+    //save images to UserPhoto folder and return the a name for the image created 
+    public static String createPhoto(HttpServletRequest request, String folder) {
+        File uniqueFile = null;
+        
         try {
             if (request.getParts() == null) {
-                return false;
+                return null;
             }
             
             for (Part part : request.getParts()) {
@@ -91,14 +113,8 @@ public class ServletUtils {
                             byte[] b = new byte[i];
                             is.read(b);
 
-                            //File uniqueFile = File.createTempFile("img", ".jpg", new File(absoluteFilePath));
-                            File photoFile = new File(photoPath);
-                            if (photoFile.exists()) {
-                                //delete old photo
-                                photoFile.delete();
-                            }
-                            
-                            FileOutputStream os = new FileOutputStream(photoFile);
+                            uniqueFile = File.createTempFile("img", ".jpg", new File(folder));
+                            FileOutputStream os = new FileOutputStream(uniqueFile);
 
                             os.write(b);
                         }
@@ -106,13 +122,21 @@ public class ServletUtils {
                 }
             }
         } catch (Exception ex) {
-            return false;
+            return null;
         }
 
-        File f = new File(photoPath);
-        return f.exists();
+        if (uniqueFile != null) {
+            File f = new File(uniqueFile.getAbsolutePath());
+            if (f.exists()) {
+                //return file name only
+                return uniqueFile.getName();
+            }
+        }
+        
+        return null;
     }
     
+    //get the name of the file being uploading
     public static String getFileName(final Part part) {
         final String partHeader = part.getHeader("content-disposition");
 

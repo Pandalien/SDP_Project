@@ -18,7 +18,7 @@
         </div>
         <div class="panel-body">
             <div class="text-center">
-                <img src="<%=ServletUtils.getUserAvatar(this, request, user.getId())%>" class="avatar img-circle" alt="avatar" width="100" onerror="this.onerror=null;this.src='//placehold.it/100';this.className='avatar img-circle';">
+                <img src="<%=ServletUtils.getUserAvatar(this, request, user.getImg())%>" class="avatar img-circle" alt="avatar" width="100" onerror="this.onerror=null;this.src='//placehold.it/100';this.className='avatar img-circle';">
             </div>
             <br/>
             <a href="jobs?action=applications" class="btn btn-default btn-block">

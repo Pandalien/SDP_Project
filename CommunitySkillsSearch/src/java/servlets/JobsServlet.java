@@ -5,6 +5,7 @@
  */
 package servlets;
 
+import beans.MessageType;
 import beans.RequestData;
 import entities.Adverts;
 import entities.Classification;
@@ -15,6 +16,7 @@ import entities.RespondersPK;
 import entities.Skills;
 import entities.Suburb;
 import entities.User;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -22,6 +24,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -149,7 +153,11 @@ public class JobsServlet extends AbstractServlet {
         }
         
         alertSuccess(request, msg);
-        openings(request, response);
+        try {
+            response.sendRedirect(request.getContextPath() + "/jobs?action=view&id=" + ad.getId());
+        } catch (IOException ex) {
+            openings(request, response);
+        }
     }
     
     public void view(HttpServletRequest request, HttpServletResponse response) {
@@ -212,7 +220,7 @@ public class JobsServlet extends AbstractServlet {
         
         List<Adverts> ads = advertsFacade.findByUser(user);
         if (ads != null) {
-            request.setAttribute(Contract.USER_ADVERTS, ads);
+            request.setAttribute(Contract.ADVERTS, ads);
 
             for (Adverts ad : ads) {
                 List<Responders> responders = respondersFacade.findByAdvertsId(ad.getId());
@@ -386,6 +394,7 @@ public class JobsServlet extends AbstractServlet {
 
         List<Adverts> ads = advertsFacade.findByUser(user);
         if (ads != null) {
+            List<Responders> all = new ArrayList<>();
             request.setAttribute(Contract.USER_ADVERTS, ads);
             
             for(Adverts ad : ads){
@@ -394,8 +403,10 @@ public class JobsServlet extends AbstractServlet {
                     r.setUser(userFacade.find(r.getRespondersPK().getUserId()));
                     r.setAdverts(advertsFacade.find(r.getRespondersPK().getAdvertsId()));
                 }
-                request.setAttribute(Contract.ADVERT_RESPONDERS, responders);
+                all.addAll(responders);
             }
+            
+            request.setAttribute(Contract.ADVERT_RESPONDERS, all);
         }
         
         getView(request, response, "jobs/applicants.jsp");

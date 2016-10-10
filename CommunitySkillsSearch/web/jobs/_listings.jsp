@@ -4,6 +4,7 @@
     Author     : andyc
 --%>
 
+<%@page import="utils.ServletUtils"%>
 <%@page import="utils.StringUtils"%>
 <%@page import="entities.User"%>
 <%@page import="entities.Adverts"%>
@@ -14,18 +15,24 @@
      User currentUser = (User) session.getAttribute(Contract.CURRENT_USER);
      boolean isOwner;
      boolean isOpen;
+     String photo;
 %>
 <%
     if (ads != null) {
         for (Adverts a : ads) {
             isOpen = a.getClosed() == null || !a.getClosed();
             isOwner = currentUser != null && a.getUserId().getId() == currentUser.getId();
+            photo = ServletUtils.getUserPhoto(this, request, a.getImg());
 %>
 
 <div class="row">
     <div class="col-md-4">
-        <a href="portfolio-item.html">
-            <img class="img-responsive img-hover" src="http://placehold.it/400x300" alt="">
+        <a href='jobs?action=view&id=<%=a.getId()%>'>>
+            <%if (!StringUtils.isEmpty(photo)) {%>
+            <img class="img-responsive" src="<%=photo%>" width="400" alt="">
+            <%}else{%>
+            <img class="img-responsive" src="res/images/jobsearch.jpg" alt="">
+            <%}%>
         </a>
     </div>
     <div class="col-md-8">
@@ -40,7 +47,7 @@
         <a href='jobs?action=edit&id=<%=a.getId()%>' class="btn btn-default">Edit</a>
         <a href='jobs?action=delete&id=<%=a.getId()%>' class="btn btn-danger">Delete</a>
         <%if (a.getRespondersCollection() != null && !a.getRespondersCollection().isEmpty()) {%>
-        <a href='jobs?action=applicants'>View Applicants</a>
+        <a href='jobs?action=applicants' class="btn btn-default">View Applicants</a>
         <%}%>
         
         <%}%>

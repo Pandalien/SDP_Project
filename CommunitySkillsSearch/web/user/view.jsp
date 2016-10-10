@@ -20,7 +20,7 @@
     <!-- Contact Details Column -->
     <div class="col-md-12">
         <div class="text-center">
-            <img src="<%=ServletUtils.getUserAvatar(this, request, worker.getId())%>" class="avatar img-circle" alt="avatar" width="128" onerror="this.onerror=null;this.src='//placehold.it/128';this.className='avatar img-circle';">
+            <img src="<%=ServletUtils.getUserAvatar(this, request, worker.getImg())%>" class="avatar img-circle" alt="avatar" width="128" onerror="this.onerror=null;this.src='//placehold.it/128';this.className='avatar img-circle';">
             <h3><%=worker.getName()%></h3>
             <p>
                 <%=worker.getSuburbId().getSuburb()%><br>

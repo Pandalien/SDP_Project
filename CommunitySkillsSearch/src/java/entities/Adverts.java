@@ -56,6 +56,10 @@ import javax.xml.bind.annotation.XmlTransient;
 })
 public class Adverts implements Serializable {
 
+    @Size(max = 45)
+    @Column(name = "img")
+    private String img;
+
     @Column(name = "expiry_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date expiryDate;
@@ -225,5 +229,13 @@ public class Adverts implements Serializable {
 
     public void setSuburbId(Suburb suburbId) {
         this.suburbId = suburbId;
+    }
+
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
     }
 }

@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import sb.AdvertsFacade;
 import sb.ClassificationFacade;
 import sb.MessagesFacade;
 import sb.SkillsFacade;
@@ -36,10 +37,13 @@ import utils.StringUtils;
 public class AbstractServlet extends HttpServlet {
 
     @EJB
-    private MessagesFacade messagesFacade;
+    protected AdvertsFacade advertsFacade;
 
     @EJB
-    private ClassificationFacade classificationFacade;
+    protected MessagesFacade messagesFacade;
+
+    @EJB
+    protected ClassificationFacade classificationFacade;
     @EJB
     protected UserFacade userFacade;  
     

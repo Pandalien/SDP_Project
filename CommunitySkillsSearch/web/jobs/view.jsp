@@ -4,6 +4,8 @@
     Author     : andyc
 --%>
 
+<%@page import="utils.StringUtils"%>
+<%@page import="javax.servlet.Servlet"%>
 <%@page import="utils.ServletUtils"%>
 <%@page import="entities.User"%>
 <%@page import="java.util.Collection"%>
@@ -19,6 +21,8 @@
     boolean hasApplied = responder!=null;
     
     boolean isOwner = currentUser != null && ad.getUserId().getId() == currentUser.getId();
+    
+    String photo = ServletUtils.getUserPhoto(this, request, ad.getImg());
 %>
 <!-- Content Row -->
 <div class="row">
@@ -36,7 +40,11 @@
         <!-- Job Post -->
 
         <!-- Preview Image -->
-        <img class="img-responsive" src="http://placehold.it/900x300" alt="">
+        <%if (!StringUtils.isEmpty(photo)) {%>
+        <img class="img-responsive" src="<%=photo%>" height="200" alt="">
+        <%}else{%>
+        <img class="img-responsive" src="res/images/jobsearch.jpg" alt="">
+        <%}%>
 
         <hr>
 
@@ -67,7 +75,7 @@
         <!-- To do: Comment -->
         <div class="media">
             <a class="pull-left" href="#">
-                <img src="<%=ServletUtils.getUserAvatar(this, request, 0)%>" class="avatar img-circle" alt="avatar" width="64" onerror="this.onerror=null;this.src='//placehold.it/64';this.className='avatar img-circle';">
+                <img src="<%=ServletUtils.getUserAvatar(this, request, "")%>" class="avatar img-circle" alt="avatar" width="64" onerror="this.onerror=null;this.src='//placehold.it/64';this.className='avatar img-circle';">
             </a>
             <div class="media-body">
                 <h4 class="media-heading">Andy
@@ -126,25 +134,42 @@
         <%} else {%>
         
         <div class="well">
-            <h4>Edit post</h4>
+            <h4>Edit Post</h4>
             <div class="row">
-                <div class="col-lg-6">
-                    <ul class="list-unstyled">
-                        <li>
-                            <a href='jobs?action=<%=isOpen ? "close" : "open"%>&id=<%=ad.getId()%>' class="btn btn-outline-primary"><%=isOpen ? "Close" : "Open"%></a>
-                        </li>
-                        <li>
-                            <a href='jobs?action=edit&id=<%=ad.getId()%>' class="btn btn-outline-primary">Edit</a>
-                        </li>
-                        <li>
-                            <a href='jobs?action=delete&id=<%=ad.getId()%>' class="btn btn-outline-danger">Delete</a>
-                        </li>
-                    </ul>
+                <div class="col-lg-12">
+                    <p>
+                        <a href='jobs?action=<%=isOpen ? "close" : "open"%>&id=<%=ad.getId()%>' class="btn btn-default"><%=isOpen ? "Close" : "Open"%></a>
+                        <a href='jobs?action=edit&id=<%=ad.getId()%>' class="btn btn-default">Edit</a>
+                        <a href='jobs?action=delete&id=<%=ad.getId()%>' class="btn btn-danger">Delete</a>
+                    </p>
                 </div>
             </div>
         </div>
-        
-                        
+        <div class="well">
+            <h4>Edit Photo</h4>
+            <div class="row">
+                
+                <div class="col-lg-12">
+                    <form class="form-horizontal" role="form" action="photo?action=uploadAdPhoto" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="id" value='<%= ad==null? "" : ad.getId()%>'/>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Photo</label>
+                            <div class="col-md-9">
+                                <input class="form-control" type="file" name="file"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label"></label>
+                            <div class="col-md-9">
+                                <input type="submit" class="btn btn-primary" value="Upload">
+                                <span></span>
+                                <a class="btn btn-danger" href="photo?action=deleteAdPhoto&id=<%=ad.getId()%>">Delete</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div                
         <!-- Side Widget Well for Responders-->
         <%Collection<Responders> responders = ad.getRespondersCollection();
           if (responders != null && !responders.isEmpty()) {%>
@@ -169,6 +194,3 @@
 
 </div>
 <!-- /.row -->
-
-
-
