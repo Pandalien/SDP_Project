@@ -28,6 +28,8 @@
         <link rel="stylesheet" href="css/sb-admin-2.css" type="text/css"/>
         <link rel="stylesheet" href="css/site.css" type="text/css"/>
         <link rel="stylesheet" href="css/login.css" type="text/css"/>
+        <link rel="stylesheet" href="//www.fuelcdn.com/fuelux/3.13.0/css/fuelux.min.css"/>
+        <link rel="stylesheet" href="css/radio.css" type="text/css"/>
         <!-- jQuery -->
         <script type="text/javascript" src="js/jquery-3.1.0.js"></script>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
@@ -38,6 +40,7 @@
         <script type="text/javascript" src="js/bootstrap-toggle.min.js"></script> 
         <script type="text/javascript" src="js/bootstrap-tagsinput.js"></script>
         <script type="text/javascript" src="js/bootstrap-tagsinput-angular.js"></script>
+        <script type="text/javascript" src="js/radio.js"></script>
         <title>Community Skills Search</title>
     </head>
     <body>
