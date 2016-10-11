@@ -31,7 +31,15 @@
                 <div class="col-md-12">
                     <div class="well">
                         <h4>Rating</h4>
-                        <input id="input-7-lg" class="rating rating-loading" value="4" data-min="0" data-max="5" data-step="0.5" data-size="md" name="rating"><hr/>
+                        <div class="radio radio-inset">
+                            <label class="radio-custom" data-initialize="radio">
+                                <input type="radio" name="rating" value="-1"  class="sr-only">Bad</label>
+                            <label class="radio-custom" data-initialize="radio">
+                                <input type="radio" name="rating" value="0" class="sr-only">Neutral</label>
+                            <label class="radio-custom" data-initialize="radio">
+                                <input type="radio" name="rating" value="1" class="sr-only">Good</label>
+                        </div>
+                        <input id="input-7-lg" class="rating rating-loading" value="4" data-min="0" data-max="5" data-step="0.5" data-size="md" "><hr/>
                     </div>
                 </div>
             </div>

@@ -358,9 +358,10 @@ public class UserServlet extends AbstractServlet {
         RequestData data = getAuthenticatedData(request, response);
         if (data != null) {
             User worker = userFacade.find(data.id);
-            
             if (worker != null) {
+                request.setAttribute(Contract.OTHER_USER, worker);
                 worker.setRating(Double.parseDouble(request.getParameter("rating")));
+                
                 userFacade.edit(worker);
                 return;
             }
