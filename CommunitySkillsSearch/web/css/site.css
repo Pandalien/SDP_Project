@@ -68,17 +68,18 @@ body {
 }
 /* Home Page Carousel */
 
-header.carousel {
+#myCarousel {
     height: 50%;
+    height: 200px;
 }
 
-header.carousel .item,
-header.carousel .item.active,
-header.carousel .carousel-inner {
+#myCarousel .item,
+#myCarousel .item.active,
+#myCarousel .carousel-inner {
     height: 100%;
 }
 
-header.carousel .fill {
+#myCarousel .fill {
     width: 100%;
     height: 100%;
     background-position: center;
@@ -120,7 +121,7 @@ footer {
         margin-bottom: 15px;
     }
 
-    header.carousel .carousel {
+    #myCarousel .carousel {
         height: 70%;
     }
 }

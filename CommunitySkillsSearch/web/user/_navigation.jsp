@@ -21,15 +21,15 @@
                 <img src="<%=ServletUtils.getUserAvatar(this, request, user.getImg())%>" class="avatar img-circle" alt="avatar" width="100" onerror="this.onerror=null;this.src='//placehold.it/100';this.className='avatar img-circle';">
             </div>
             <br/>
-            <a href="jobs?action=applications" class="btn btn-default btn-block">
+            <a href="jobs?action=applications" class="btn btn-default btn-block <%=content=="jobs/applications.jsp"? "active" : ""%>">
                 <span class="glyphicon glyphicon-list-alt"></span> My Applications
             </a>
             <br/>
-            <a href="jobs?action=openings" class="btn btn-default btn-block">
+            <a href="jobs?action=openings" class="btn btn-default btn-block <%=content=="jobs/openings.jsp"? "active" : ""%>">
                 <span class="glyphicon glyphicon-briefcase"></span> My Advertisements
             </a>
             <br/>
-            <a href="jobs?action=applicants" class="btn btn-default btn-block">
+            <a href="jobs?action=applicants" class="btn btn-default btn-block <%=content=="jobs/applicants.jsp"? "active" : ""%>">
                 <span class="glyphicon glyphicon-check"></span> Received Applications
             </a>
             <br/>

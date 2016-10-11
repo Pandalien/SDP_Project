@@ -4,7 +4,17 @@
     Author     : andyc
 --%>
 
-<h1>My current advertisement</h1>
-<hr>
-<jsp:include page="/jobs/_listings.jsp"/>
+<div class="row">
+    <!-- left column -->
+    <jsp:include page="../user/_navigation.jsp"/>
+
+    <!-- edit photo column -->
+    <div class="col-md-8 personal-info">
+        <h2>My current advertisement</h2>
+        <hr>
+        <jsp:include page="/jobs/_listings.jsp"/>
+    </div>
+</div>
+                
+
 

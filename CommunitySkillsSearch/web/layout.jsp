@@ -25,7 +25,6 @@
         <link rel="stylesheet" href="css/bootstrap-tagsinput.css" type="text/css"/>
         <link rel="stylesheet" href="css/bootstrap-toggle.min.css" type="text/css"/>
         <!-- Custom CSS -->
-        <link rel="stylesheet" href="css/sb-admin-2.css" type="text/css"/>
         <link rel="stylesheet" href="css/site.css" type="text/css"/>
         <link rel="stylesheet" href="css/login.css" type="text/css"/>
         <link rel="stylesheet" href="//www.fuelcdn.com/fuelux/3.13.0/css/fuelux.min.css"/>

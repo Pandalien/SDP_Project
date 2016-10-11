@@ -305,11 +305,6 @@ public class UserServlet extends AbstractServlet {
             return;
         }
         
-        //Enable sidebar for some pages
-        String action = req.getParameter("action");
-        if (action != null) {
-        }
-        
         super.invokeMethod(req, resp, doPost);
     }
     

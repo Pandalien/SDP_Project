@@ -28,6 +28,7 @@ public class HomeServlet extends AbstractServlet {
     private UserSkillsFacade userSkillsFacade;
     
     public void help(HttpServletRequest request, HttpServletResponse response){
+        request.setAttribute("current_path", "Help");
         getView(request, response, "help.jsp");
     }
     
@@ -72,6 +73,7 @@ public class HomeServlet extends AbstractServlet {
             }
             request.setAttribute(Contract.ADVERTS, ads);
         }
+        request.setAttribute("current_path", "Welcome");
         getView(request, response, "index.jsp");
     }
 }
