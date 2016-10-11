@@ -461,6 +461,49 @@ public class JobsServlet extends AbstractServlet {
         applicants(request, response);
     }
     
+    public void rate(HttpServletRequest request, HttpServletResponse response) {
+        getView(request, response, "jobs/rate.jsp");
+    }
+    
+    public void ratePost(HttpServletRequest request, HttpServletResponse response) {
+        RequestData data = getAuthenticatedData(request, response);
+        if (data == null) {
+            return;
+        }
+
+        Adverts ad = advertsFacade.find(data.id);
+        if (ad == null) {
+            return;
+        }
+        
+        int workerId = Integer.parseInt((String) request.getParameter("userid"));
+        User worker = userFacade.find(workerId);
+        if (worker == null) {
+            return;
+        }
+        request.setAttribute(Contract.OTHER_USER, worker);
+
+        Responders responder = respondersFacade.find(new RespondersPK(workerId, data.id));
+        if (responder == null) {
+            alertDanger(request, "The worker was not found, or the application has been withdrawn.");
+            return;
+        }
+        
+        // update Responder's status, rating and feedback.
+        responder.setStatus(Contract.ResponderStatus.FEEDBACK.ordinal());
+        responder.setRating(Integer.parseInt(request.getParameter("rating")));
+        responder.setFeedback(request.getParameter("feedback"));
+        respondersFacade.edit(responder);
+        alertSuccess(request, "Feedback is succesfully placed.");
+
+        // update the worker's rating in User
+        Double newRating = worker.getRating() + Double.parseDouble(request.getParameter("rating"));
+        worker.setRating(newRating);
+        userFacade.edit(worker);
+        
+        applicants(request, response);
+    }
+    
     @Override
     protected void invokeMethod(HttpServletRequest req, HttpServletResponse resp, boolean doPost) {
         req.setAttribute("current_path", "Jobs");

@@ -39,7 +39,7 @@
                             <label class="radio-custom" data-initialize="radio">
                                 <input type="radio" name="rating" value="1" class="sr-only">Good</label>
                         </div>
-                        <input id="input-7-lg" class="rating rating-loading" value="4" data-min="0" data-max="5" data-step="0.5" data-size="md" "><hr/>
+                        <input id="input-7-lg" class="rating rating-loading" value="4" data-min="0" data-max="5" data-step="0.5" data-size="md"><hr/>
                     </div>
                 </div>
             </div>

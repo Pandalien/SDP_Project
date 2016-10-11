@@ -13,7 +13,9 @@
 
 <h1>My current advertisement</h1>
 <table class="table table-hover">
-    <tr><th>User</th><th>Rating</th><th>Job</th><th>Status</th><th>Action</th></tr>
+    <tr>
+        <th>User</th><th>Rating</th><th>Job</th><th>Status</th><th>Action</th>
+    </tr>
     
 <%
     if(responders !=null){
@@ -24,9 +26,13 @@
                 }
 %>
     <tr>
+        <%-- User column --%>
         <td><a href='user?action=view&id=<%=r.getRespondersPK().getUserId()%>'><%=r.getUser()!=null? r.getUser().getName() : "View"%></a></td>
+        <%-- Rating column --%>
         <td><%=r.getUser()!=null? r.getUser().getRating() : ""%></td>
+        <%-- Job column --%>
         <td><a href='jobs?action=view&id=<%=r.getRespondersPK().getAdvertsId()%>'><%=r.getAdverts()!=null? r.getAdverts().getTitle() : "View Ad."%></a></td>
+        <%-- Status column --%>
         <%
             switch (Contract.ResponderStatus.JOB_DONE){//(Contract.ResponderStatus.values()[r.getStatus()]) {
                     case SELECTED:
@@ -44,7 +50,7 @@
                     case JOB_DONE:
                         %>
                         <td>Job done</td>
-                        <td><a href='user?action=rate&id=<%=r.getRespondersPK().getUserId()%>'>Rate <%=r.getUser()!=null? r.getUser().getName() : "this worker"%></a></td>
+                        <td><a href='jobs?action=rate&id=<%=r.getRespondersPK().getAdvertsId()%>&userid=<%=r.getRespondersPK().getUserId()%>' class="btn btn-outline-primary">Rate <%=r.getUser()!=null? r.getUser().getName() : "this worker"%></a></td>
                         <%
                         break;
                     case FEEDBACK:
@@ -56,12 +62,10 @@
                     default:
                         %>
                         <td>Unassigned</td>
-                        <td>
-                        <a href='jobs?action=assign&id=<%=r.getRespondersPK().getAdvertsId()%>&userid=<%=r.getRespondersPK().getUserId()%>' class="btn btn-outline-primary">Assign</a>
-                        </td>
+                        <td><a href='jobs?action=assign&id=<%=r.getRespondersPK().getAdvertsId()%>&userid=<%=r.getRespondersPK().getUserId()%>' class="btn btn-outline-primary">Assign</a></td>
                         <%
                         break;
-                }
+                }     
         %>
     </tr>
         <%}
