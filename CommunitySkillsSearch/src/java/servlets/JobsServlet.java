@@ -470,12 +470,10 @@ public class JobsServlet extends AbstractServlet {
         if (data == null) {
             return;
         }
-
-        Adverts ad = advertsFacade.find(data.id);
+        Adverts ad = advertsFacade.find(data.id);         
         if (ad == null) {
             return;
         }
-        
         int workerId = Integer.parseInt((String) request.getParameter("userid"));
         User worker = userFacade.find(workerId);
         if (worker == null) {
@@ -488,6 +486,7 @@ public class JobsServlet extends AbstractServlet {
             alertDanger(request, "The worker was not found, or the application has been withdrawn.");
             return;
         }
+        request.setAttribute(Contract.ADVERT_RESPONDERS, responder);
         
         // update Responder's status, rating and feedback.
         responder.setStatus(Contract.ResponderStatus.FEEDBACK.ordinal());

@@ -1,7 +1,7 @@
 <%-- 
     Document   : rate
-    Created on : Oct 9, 2016, 8:45:06 PM
-    Author     : matt
+    Created on : Oct 11, 2016, 11:52:45 PM
+    Author     : Matt
 --%>
 
 <%@page import="utils.Contract"%>
@@ -9,10 +9,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
     User worker = (User) request.getAttribute(Contract.OTHER_USER);
-    User user = (User) session.getAttribute(Contract.CURRENT_USER);
 %>
-<link rel="stylesheet" href="css/star-rating.css" type="text/css"/>
-<script type="text/javascript" src="js/star-rating.js"></script>
 
 <div class="row">
     <!-- left column -->
@@ -21,12 +18,12 @@
     <!-- rating column -->
     <div class="col-md-8 personal-info">
         <%
-            if (user != null) {
+            if (worker != null) {
         %>
-        <h3>Rate for <%=user.getName()%>:</h3>
+        <h3>Rate for <%=worker.getName()%>:</h3>
         <br>
 
-        <form action="user?action=rate" method="post">
+        <form action="jobs?action=rate" method="post">
             <div class="form-group row">
                 <div class="col-md-12">
                     <div class="well">
@@ -39,7 +36,6 @@
                             <label class="radio-custom" data-initialize="radio">
                                 <input type="radio" name="rating" value="1" class="sr-only">Good</label>
                         </div>
-                        <input id="input-7-lg" class="rating rating-loading" value="4" data-min="0" data-max="5" data-step="0.5" data-size="md"><hr/>
                     </div>
                 </div>
             </div>

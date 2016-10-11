@@ -50,7 +50,7 @@
                     case JOB_DONE:
                         %>
                         <td>Job done</td>
-                        <td><a href='jobs?action=rate&id=<%=r.getRespondersPK().getAdvertsId()%>&userid=<%=r.getRespondersPK().getUserId()%>' class="btn btn-outline-primary">Rate <%=r.getUser()!=null? r.getUser().getName() : "this worker"%></a></td>
+                        <td><a href="jobs?action=rate&id=<%=r.getRespondersPK().getAdvertsId()%>&userid=<%=r.getRespondersPK().getUserId()%>">Rate <%=r.getUser()!=null? r.getUser().getName() : "this worker"%></a></td>
                         <%
                         break;
                     case FEEDBACK:
