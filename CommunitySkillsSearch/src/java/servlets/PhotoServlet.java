@@ -170,5 +170,19 @@ public class PhotoServlet extends AbstractServlet {
         }
         
         super.doPost(request, response);
-    }  
+    }
+
+    @Override
+    protected void invokeMethod(HttpServletRequest req, HttpServletResponse resp, boolean doPost) {
+        req.setAttribute("current_path", "User");
+        
+        //features in this servlet require users to login
+        User user = getCurrentUser(req);
+        if (user == null) {
+            login(req, resp);
+            return;
+        }
+
+        super.invokeMethod(req, resp, doPost); //To change body of generated methods, choose Tools | Templates.
+    }
 }

@@ -16,7 +16,7 @@
 
 <div class="row">
     <!-- left column -->
-    <jsp:include page="_navigation.jsp"/>
+    <jsp:include page="../user/_navigation.jsp"/>
 
     <!-- rating column -->
     <div class="col-md-8 personal-info">

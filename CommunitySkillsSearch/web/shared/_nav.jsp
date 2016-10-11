@@ -39,10 +39,10 @@
                         <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu">
-                        <li class="active"><a href="jobs?action=applications">My Applications</a></li>
+                        <li class="active"><a href="jobs?action=applications"><span class="glyphicon glyphicon-list-alt"></span> My Applications</a></li>
                         <li role="separator" class="divider"></li>
-                        <li><a href="jobs?action=openings">My Advertisements</a></li>
-                        <li><a href="jobs?action=applicants">Received Applications</a></li>
+                        <li><a href="jobs?action=openings"><span class="glyphicon glyphicon-briefcase"></span> My Advertisements</a></li>
+                        <li><a href="jobs?action=applicants"><span class="glyphicon glyphicon-check"></span> Received Applications</a></li>
                     </ul>
                 </li>
 
@@ -67,13 +67,13 @@
                         <%} else {%>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                        <i class="material-icons valign">account_box</i><b class="caret"></b>
+                        <i class="material-icons valign">account_box</i><%=user.getName()%><b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a href="user?action=edit">Edit Account</a></li>
+                        <li><a href="user?action=edit"><span class="glyphicon glyphicon-cog"></span> Edit Account</a></li>
                         <li role="separator" class="divider"></li>
-                        <li><a href="user?action=changepwd">Change Password</a></li>
-                        <li><a href="user?action=delete">Delete Account</a></li>
+                        <li><a href="user?action=changepwd"><span class="glyphicon glyphicon-lock"></span> Change Password</a></li>
+                        <li><a href="user?action=delete"><span class="glyphicon glyphicon-trash"></span> Delete Account</a></li>
                     </ul>
                 </li>
                 <li  data-placement="bottom" title="Check your new messages."><a href="messages?action=viewNew"><i class="material-icons">email</i><span class="label"><%=messages!=null? messages.size() : ""%></span></a></li>

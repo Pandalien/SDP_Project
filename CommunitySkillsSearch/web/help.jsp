@@ -1,48 +1,37 @@
 <%-- 
     Document   : help
-    Created on : Apr 17, 2016, 1:56:02 PM
+    Created on : Aug 17, 2016, 1:56:02 PM
     Author     : Andy Chen
 --%>
 
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<div class="col-lg-12">
+    <div class="panel-group" id="accordion">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true">Lorem ipsum dolor sit amet, consectetur adipiscing elit?</a>
+                </h4>
+            </div>
+            <div id="collapseOne" class="panel-collapse collapse in" aria-expanded="true">
+                <div class="panel-body">
+                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                </div>
+            </div>
+        </div>
+        <!-- /.panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false">Curabitur eget leo at velit imperdiet varius. In eu ipsum vitae velit congue iaculis vitae at risus?</a>
+                </h4>
+            </div>
+            <div id="collapseTwo" class="panel-collapse collapse" aria-expanded="false">
+                <div class="panel-body">
+                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                </div>
+            </div>
+        </div>
 
-    <h1>Help</h1>
-    <h2>Q&A</h2>
-    <ol>
-        <li>
-            <p>How do I create my account?</p>
-            <p>You can create your free account by signing up with our service. Click <a href="user?action=create">here</a> to get started today!</p>
-        </li>
-        <li>
-            <p>How to sell an item?</p>
-            <p>Any <cite>BlackMarket</cite> user can list an item here. Click <a href="listing?action=create">here</a> to get started today!</p>
-        </li>
-        <li>
-            <p>How to ask sellers questions?</p>
-            <p>All listings have a comment section, you can leave your questions there. Note, questions can be seen by others users.</p>
-        </li>
-        <li>
-            <p>How to provide a feedback?</p>
-            <p>After a successful purchase, you may leave a feedback to the item. You can do it by going to the listing page under <cite>Items I won</cite> in your account page.</p>
-        </li>
-        <li>
-            <p>Can I upload photos to a listing?</p>
-            <p>Yes, we have free hosting space for photos, but limited to one photo per item only as in <cite>jpg</cite> format.</p>
-        </li>
-    </ol>
-
-    <h2>About</h2>
-    <table>
-        <tr>
-            <td>Creator</td>
-            <td>Andy Chen</td>
-        </tr>
-        <tr>
-            <td>Student ID</td>
-            <td>16900335</td>
-        </tr>
-        <tr>
-            <td>Email</td>
-            <td><a href='mailto:dxk4532@autuni.ac.nz'>dxk4532@autuni.ac.nz</a></td>
-        </tr>
-    </table>
+    </div>
+    <!-- /.panel-group -->
+</div>
