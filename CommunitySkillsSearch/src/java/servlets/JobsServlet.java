@@ -462,11 +462,17 @@ public class JobsServlet extends AbstractServlet {
     }
     
     public void rate(HttpServletRequest request, HttpServletResponse response) {
+        RequestData data = getAuthenticatedData(request, response);
+        if (data == null) {
+            return;
+        }
+        
         int workerId = Integer.parseInt((String) request.getParameter("userid"));
         User worker = userFacade.find(workerId);
         if (worker == null) {
             return;
         }
+        
         request.setAttribute(Contract.OTHER_USER, worker);
         getView(request, response, "jobs/rate.jsp");
     }

@@ -34,7 +34,7 @@
                 <abbr title="Email">Email</abbr>: <a href="mailto:<%=worker.getEmail()%>"><%=worker.getEmail()%></a>
             </p>
             <p><i class="fa fa-clock-o"></i> 
-                <abbr title="Member since">Member</abbr>: <%=worker.getJoinedDate()%></p>
+                <abbr title="Member since">Member since</abbr>: <%=worker.getJoinedDate()%></p>
         </div>
         
         <div class="well">
