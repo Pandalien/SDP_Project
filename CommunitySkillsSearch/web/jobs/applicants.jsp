@@ -34,7 +34,7 @@
         <td><a href='jobs?action=view&id=<%=r.getRespondersPK().getAdvertsId()%>'><%=r.getAdverts()!=null? r.getAdverts().getTitle() : "View Ad."%></a></td>
         <%-- Status column --%>
         <%
-            switch (Contract.ResponderStatus.JOB_DONE){//(Contract.ResponderStatus.values()[r.getStatus()]) {
+            switch (Contract.ResponderStatus.values()[r.getStatus()]) {//(Contract.ResponderStatus.values()[r.getStatus()]) {
                     case SELECTED:
                         %>
                         <td>Selected</td>

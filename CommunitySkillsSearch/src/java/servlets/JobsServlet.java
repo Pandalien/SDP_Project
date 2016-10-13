@@ -509,6 +509,49 @@ public class JobsServlet extends AbstractServlet {
         applicants(request, response);
     }
     
+    public void accept(HttpServletRequest request, HttpServletResponse response) {
+        RequestData data = getAuthenticatedData(request, response);
+        if (data == null) {
+            return;
+        }
+        //confirm with user first
+        showConfirmPage(request, response, "Are you sure you want to accept this job?", "jobs?action=accept", data.id);
+    }
+    
+    public void acceptPost(HttpServletRequest request, HttpServletResponse response) {
+        
+    }
+    
+    public void reject(HttpServletRequest request, HttpServletResponse response) {
+        RequestData data = getAuthenticatedData(request, response);
+        if (data == null) {
+            return;
+        }
+        //confirm with user first
+        showConfirmPage(request, response, "Are you sure you want to reject this job?", "jobs?action=reject", data.id);
+    }
+    
+    public void rejectPost(HttpServletRequest request, HttpServletResponse response) {
+        RequestData data = getAuthenticatedData(request, response);
+        if (data == null) {
+            return;
+        }
+        
+        Adverts ad = advertsFacade.find(data.id);
+
+        if (ad != null) {
+            Responders responder = new Responders(data.user.getId(), ad.getId());
+            respondersFacade.remove(responder);
+            
+            alertSuccess(request, "You have rejected the job offer. Your application for " + ad.getTitle() + " will be deleted");
+            view(request, response);
+            return;
+        }
+
+        alertWarning(request, "The job not found.");
+        showGoBackPage(request, response);
+    }
+    
     @Override
     protected void invokeMethod(HttpServletRequest req, HttpServletResponse resp, boolean doPost) {
         req.setAttribute("current_path", "Jobs");

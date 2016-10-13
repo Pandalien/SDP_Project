@@ -21,7 +21,7 @@
     <div class="col-md-8 personal-info">
         <h2>My current applications</h2>
         <table class="table table-hover">
-            <tr><th>#</th><th>Title</th><th>Vacancy</th><th>Status</th><th>Change</th></tr>
+            <tr><th>#</th><th>Title</th><th>Vacancy</th><th>Status</th><th>Change</th><th>Pending</th></tr>
 
             <%
                 if (ads != null) {
@@ -42,6 +42,7 @@
                 %>
                 <td>Selected!</td>
                 <td><a href='jobs?action=cancel&id=<%=a.getId()%>' class="btn btn-outline-primary">Cancel</a></td>
+                <td><a href='jobs?action=accept&id=<%=a.getId()%>' class="btn btn-outline-primary">Accept</a>/<a href='jobs?action=reject&id=<%=a.getId()%>' class="btn btn-outline-primary">Reject</a></td>
                 <%
                         break;
                     case DECLINED:
