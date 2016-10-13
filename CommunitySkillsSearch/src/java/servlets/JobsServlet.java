@@ -422,7 +422,7 @@ public class JobsServlet extends AbstractServlet {
         int workerId = Integer.parseInt((String) request.getParameter("userid"));
         User worker = userFacade.find(workerId);
         if (worker == null) {
-            alertDanger(request, "The worker was not found, please select anther worker.");
+            alertDanger(request, "The worker is not found, please select another worker.");
             return;
         }
         
@@ -437,20 +437,20 @@ public class JobsServlet extends AbstractServlet {
 
         Adverts ad = advertsFacade.find(data.id);
         if (ad == null) {
-            alertDanger(request, "The job was not found.");
+            alertDanger(request, "The job is not found.");
             return;
         }
         
         int workerId = Integer.parseInt((String) request.getParameter("userid"));
         User worker = userFacade.find(workerId);
         if (worker == null) {
-            alertDanger(request, "The worker was not found, please select anther worker.");
+            alertDanger(request, "The worker is not found, please select another worker.");
             return;
         }
 
         Responders responder = respondersFacade.find(new RespondersPK(workerId, data.id));
         if (responder == null) {
-            alertDanger(request, "The worker was not found, or the application has been withdrawn.");
+            alertDanger(request, "The worker is not found, or the application has been withdrawn.");
             return;
         }
         
@@ -460,58 +460,93 @@ public class JobsServlet extends AbstractServlet {
         alertSuccess(request, worker.getName() + " has been assigned to the job: " + ad.getTitle());
         applicants(request, response);
     }
+
+    public void done(HttpServletRequest request, HttpServletResponse response) {
+        RequestData data = getAuthenticatedData(request, response);
+        if (data == null) {
+            return;
+        }
+        
+        int workerId = Integer.parseInt((String) request.getParameter("userid"));
+        User worker = userFacade.find(workerId);
+        if (worker == null) {
+            alertDanger(request, "The worker is not found.");
+            return;
+        }
+        
+        showConfirmPage(request, response, "Are you sure the job has been done?", "jobs?action=done&userid="+workerId, data.id);
+    }
+    
+    public void donePost(HttpServletRequest request, HttpServletResponse response) {
+        RequestData data = getAuthenticatedData(request, response);
+        if (data == null) {
+            return;
+        }
+        
+        Adverts ad = advertsFacade.find(data.id);
+        if (ad == null) {
+            alertDanger(request, "The job is not found.");
+            return;
+        }
+        
+        int workerId = Integer.parseInt((String) request.getParameter("userid"));
+        User worker = userFacade.find(workerId);
+        if (worker == null) {
+            alertDanger(request, "The worker is not found.");
+            return;
+        }
+
+        Responders responder = respondersFacade.find(new RespondersPK(workerId, data.id));
+        if (responder == null) {
+            alertDanger(request, "The worker is not found, or the application has been withdrawn.");
+            return;
+        }
+        
+        responder.setStatus(Contract.ResponderStatus.JOB_DONE.ordinal());
+        respondersFacade.edit(responder);
+        
+        alertSuccess(request, "The job: " + ad.getTitle() + " has been marked as done.");
+        applicants(request, response);
+    }
     
     public void rate(HttpServletRequest request, HttpServletResponse response) {
         RequestData data = getAuthenticatedData(request, response);
         if (data == null) {
             return;
         }
-        
         int workerId = Integer.parseInt((String) request.getParameter("userid"));
         User worker = userFacade.find(workerId);
         if (worker == null) {
             return;
         }
+        Adverts ad = advertsFacade.find(data.id);
+        if (ad == null) {
+            alertDanger(request, "The job is not found.");
+            return;
+        }
+        Responders responder = new Responders(workerId, ad.getId());
         
+        request.setAttribute(Contract.ADVERT_RESPONDERS, responder);
         request.setAttribute(Contract.OTHER_USER, worker);
         getView(request, response, "jobs/rate.jsp");
     }
     
     public void ratePost(HttpServletRequest request, HttpServletResponse response) {
-        RequestData data = getAuthenticatedData(request, response);
-        if (data == null) {
-            return;
-        }
-        Adverts ad = advertsFacade.find(data.id);         
-        if (ad == null) {
-            return;
-        }
-        int workerId = Integer.parseInt((String) request.getParameter("userid"));
-        User worker = userFacade.find(workerId);
-        if (worker == null) {
-            return;
-        }
-        request.setAttribute(Contract.OTHER_USER, worker);
+        User worker = (User) request.getSession().getAttribute("worker");
+        Responders responder = (Responders) request.getSession().getAttribute("responder");
 
-        Responders responder = respondersFacade.find(new RespondersPK(workerId, data.id));
-        if (responder == null) {
-            alertDanger(request, "The worker was not found, or the application has been withdrawn.");
-            return;
-        }
-        request.setAttribute(Contract.ADVERT_RESPONDERS, responder);
-        
         // update Responder's status, rating and feedback.
         responder.setStatus(Contract.ResponderStatus.FEEDBACK.ordinal());
         responder.setRating(Integer.parseInt(request.getParameter("rating")));
         responder.setFeedback(request.getParameter("feedback"));
         respondersFacade.edit(responder);
-        alertSuccess(request, "Feedback is succesfully placed.");
-
+        
         // update the worker's rating in User
         Double newRating = worker.getRating() + Double.parseDouble(request.getParameter("rating"));
         worker.setRating(newRating);
         userFacade.edit(worker);
-
+        
+        alertSuccess(request, "Feedback is succesfully placed.");
         applicants(request, response);
     }
     

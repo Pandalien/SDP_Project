@@ -4,11 +4,15 @@
     Author     : Matt
 --%>
 
+<%@page import="entities.Responders"%>
 <%@page import="utils.Contract"%>
 <%@page import="entities.User"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
     User worker = (User) request.getAttribute(Contract.OTHER_USER);
+    Responders responder = (Responders) request.getAttribute(Contract.ADVERT_RESPONDERS);
+    request.getSession().setAttribute("worker", worker);
+    request.getSession().setAttribute("responder", responder);
 %>
 <div class="container fuelux">
     <div class="row">
@@ -25,11 +29,11 @@
                             <h4>Rating</h4>
                             <div class="radio radio-inset">
                                 <label class="radio-custom" data-initialize="radio">
-                                    <input name="radio1" value="-1" title="Sample" class="sr-only" type="radio">Bad</label>
+                                    <input name="rating" value="-1" title="Sample" class="sr-only" type="radio">Bad</label>
                                 <label class="radio-custom" data-initialize="radio">
-                                    <input name="radio1" value="0" title="Sample" class="sr-only" type="radio">Neutral</label>
+                                    <input name="rating" value="0" title="Sample" class="sr-only" type="radio">Neutral</label>
                                 <label class="radio-custom" data-initialize="radio">
-                                    <input name="radio1" value="1" title="Sample" class="sr-only" type="radio">Good</label>
+                                    <input name="rating" value="1" title="Sample" class="sr-only" type="radio" required>Good</label>
                             </div>
                         </div>
                     </div>
@@ -39,7 +43,7 @@
                         <div class="well">
                             <h4>Feedback</h4>
                             <div class="form-group">
-                                <textarea name="feedback" class="form-control" rows="4"></textarea>
+                                <textarea name="feedback" class="form-control" rows="4" required="true"></textarea>
                             </div>
                         </div>
                     </div>
