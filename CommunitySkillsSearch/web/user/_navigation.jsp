@@ -21,6 +21,10 @@
                 <img src="<%=ServletUtils.getUserAvatar(this, request, user.getImg())%>" class="avatar img-circle" alt="avatar" width="100" onerror="this.onerror=null;this.src='//placehold.it/100';this.className='avatar img-circle';">
             </div>
             <br/>
+            <div class="text-center">
+                <strong>Rating: <%=user.getRating()%></strong>
+            </div>
+            <br/>
             <a href="jobs?action=applications" class="btn btn-default btn-block <%=content=="jobs/applications.jsp"? "active" : ""%>">
                 <span class="glyphicon glyphicon-list-alt"></span> My Applications
             </a>
