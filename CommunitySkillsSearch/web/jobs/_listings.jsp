@@ -27,7 +27,7 @@
 
 <div class="row">
     <div class="col-md-4">
-        <a href='jobs?action=view&id=<%=a.getId()%>'>>
+        <br/><a href='jobs?action=view&id=<%=a.getId()%>'>
             <%if (!StringUtils.isEmpty(photo)) {%>
             <img class="img-responsive" src="<%=photo%>" width="400" alt="">
             <%}else{%>
