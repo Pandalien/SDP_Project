@@ -4,15 +4,14 @@
     Author     : Matt
 --%>
 
+<%@page import="entities.Adverts"%>
 <%@page import="entities.Responders"%>
 <%@page import="utils.Contract"%>
 <%@page import="entities.User"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
     User worker = (User) request.getAttribute(Contract.OTHER_USER);
-    Responders responder = (Responders) request.getAttribute(Contract.ADVERT_RESPONDERS);
-    request.getSession().setAttribute("worker", worker);
-    request.getSession().setAttribute("responder", responder);
+    Adverts ad = (Adverts) request.getAttribute(Contract.ADVERTS);
 %>
 <div class="container fuelux">
     <div class="row">
@@ -23,6 +22,8 @@
             <h3>Rate for <%=worker.getName()%>:</h3>
             <br>
             <form action="jobs?action=rate" method="post">
+                <input type="hidden" name="workerId" value='<%= worker==null? "" : worker.getId()%>'/>
+                <input type="hidden" name="advertId" value='<%= ad==null? "" : ad.getId()%>'/>
                 <div class="form-group row">
                     <div class="col-md-12">
                         <div class="well">

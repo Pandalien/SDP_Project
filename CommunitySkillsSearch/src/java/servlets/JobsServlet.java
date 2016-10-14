@@ -524,17 +524,19 @@ public class JobsServlet extends AbstractServlet {
             alertDanger(request, "The job is not found.");
             return;
         }
-        Responders responder = new Responders(workerId, ad.getId());
-        
-        request.setAttribute(Contract.ADVERT_RESPONDERS, responder);
+
+        request.setAttribute(Contract.ADVERTS, ad);
         request.setAttribute(Contract.OTHER_USER, worker);
         getView(request, response, "jobs/rate.jsp");
     }
     
     public void ratePost(HttpServletRequest request, HttpServletResponse response) {
-        User worker = (User) request.getSession().getAttribute("worker");
-        Responders responder = (Responders) request.getSession().getAttribute("responder");
-
+        User worker = userFacade.find(Integer.parseInt(request.getParameter("workerId")));
+        if (worker == null) {
+            return;
+        }
+        Responders responder = new Responders(worker.getId(), Integer.parseInt(request.getParameter("advertId")));
+        
         // update Responder's status, rating and feedback.
         responder.setStatus(Contract.ResponderStatus.FEEDBACK.ordinal());
         responder.setRating(Integer.parseInt(request.getParameter("rating")));
