@@ -38,6 +38,12 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Responders.findByStatus", query = "SELECT r FROM Responders r WHERE r.status = :status")})
 public class Responders implements Serializable {
 
+    @Size(max = 45)
+    @Column(name = "feedback_worker")
+    private String feedbackWorker;
+    @Column(name = "rating_worker")
+    private Integer ratingWorker;
+
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected RespondersPK respondersPK;
@@ -159,6 +165,22 @@ public class Responders implements Serializable {
     @Override
     public String toString() {
         return "entities.Responders[ respondersPK=" + respondersPK + " ]";
+    }
+
+    public String getFeedbackWorker() {
+        return feedbackWorker;
+    }
+
+    public void setFeedbackWorker(String feedbackWorker) {
+        this.feedbackWorker = feedbackWorker;
+    }
+
+    public Integer getRatingWorker() {
+        return ratingWorker;
+    }
+
+    public void setRatingWorker(Integer ratingWorker) {
+        this.ratingWorker = ratingWorker;
     }
     
 }
