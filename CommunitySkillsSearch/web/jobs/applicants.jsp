@@ -40,38 +40,43 @@
                 <%-- Status column --%>
                 <%
                     switch (Contract.ResponderStatus.values()[r.getStatus()]) {
-                            case SELECTED:
-                                %>
-                                <td>Selected</td>
-                                <td><a href='jobs?action=done&id=<%=r.getRespondersPK().getAdvertsId()%>&userid=<%=r.getRespondersPK().getUserId()%>'>Mark as done</a></td>
-                                <%
-                                break;
-                            case DECLINED:
-                                %>
-                                <td>Declined</td>
-                                <td></td>
-                                <%
-                                break;
-                            case JOB_DONE:
-                                %>
-                                <td>Job done</td>
-                                <td><a href='jobs?action=rate&id=<%=r.getRespondersPK().getAdvertsId()%>&userid=<%=r.getRespondersPK().getUserId()%>'>Rate <%=r.getUser()!=null? r.getUser().getName() : "this worker"%></a></td>
-                                <%
-                                break;
-                            case FEEDBACK:
-                                %>
-                                <td>Feedback placed</td>
-                                <td></td>
-                                <%
-                                break;
-                            default:
-                                %>
-                                <td>Unassigned</td>
-                                <td><a href='jobs?action=assign&id=<%=r.getRespondersPK().getAdvertsId()%>&userid=<%=r.getRespondersPK().getUserId()%>'>Assign</a></td>
-                                <%
-                                break;
-                        }     
-                %>
+                    case SELECTED:
+                        %>
+                        <td>Selected</td>
+                        <td><a href='jobs?action=done&id=<%=r.getRespondersPK().getAdvertsId()%>&userid=<%=r.getRespondersPK().getUserId()%>'>Mark as done</a></td>
+                        <%
+                        break;
+                    case DECLINED:
+                        %>
+                        <td>Declined</td>
+                        <td></td>
+                        <%
+                        break;
+                    case JOB_DONE:
+                        %>
+                        <td>Job done</td>
+                        <td><a href='jobs?action=rate&id=<%=r.getRespondersPK().getAdvertsId()%>&userid=<%=r.getRespondersPK().getUserId()%>'>Rate <%=r.getUser()!=null? r.getUser().getName() : "this worker"%></a></td>
+                        <%
+                        break;
+                    case FEEDBACK:
+                        %>
+                        <td>Feedback placed</td>
+                        <td></td>
+                        <%
+                        break;
+                    case FEEDBACK_WORKER:
+                        %>
+                        <td>Feedback received</td>
+                        <td></td>
+                        <%
+                        break;
+                    default:
+                        %>
+                        <td>Unassigned</td>
+                        <td><a href='jobs?action=assign&id=<%=r.getRespondersPK().getAdvertsId()%>&userid=<%=r.getRespondersPK().getUserId()%>'>Assign</a></td>
+                        <%
+                        break;
+                    }%>
             </tr>
                 <%}
             }

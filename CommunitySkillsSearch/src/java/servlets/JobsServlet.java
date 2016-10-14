@@ -5,7 +5,6 @@
  */
 package servlets;
 
-import beans.MessageType;
 import beans.RequestData;
 import entities.Adverts;
 import entities.Classification;
@@ -13,19 +12,15 @@ import entities.Requirements;
 import entities.RequirementsPK;
 import entities.Responders;
 import entities.RespondersPK;
-import entities.Skills;
 import entities.Suburb;
 import entities.User;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,9 +28,6 @@ import sb.AdvertsFacade;
 import sb.RequirementsFacade;
 import sb.RespondersFacade;
 import utils.Contract;
-import utils.StringUtils;
-
-
 
 /**
  *
@@ -48,7 +40,6 @@ public class JobsServlet extends AbstractServlet {
 
     @EJB
     private RequirementsFacade requirementsFacade;
-
     
     @EJB
     private AdvertsFacade advertsFacade;
@@ -488,6 +479,7 @@ public class JobsServlet extends AbstractServlet {
             alertDanger(request, "The job is not found.");
             return;
         }
+        ad.setClosed(true);     // close the job
         
         int workerId = Integer.parseInt((String) request.getParameter("userid"));
         User worker = userFacade.find(workerId);
@@ -514,42 +506,60 @@ public class JobsServlet extends AbstractServlet {
         if (data == null) {
             return;
         }
-        int workerId = Integer.parseInt((String) request.getParameter("userid"));
-        User worker = userFacade.find(workerId);
-        if (worker == null) {
-            return;
-        }
         Adverts ad = advertsFacade.find(data.id);
         if (ad == null) {
             alertDanger(request, "The job is not found.");
             return;
         }
-
+        int workerId = Integer.parseInt((String) request.getParameter("userid"));
+        User worker = userFacade.find(workerId);
+        if (worker == null) {
+            return;
+        }
+        User rater = getCurrentUser(request);
+        
         request.setAttribute(Contract.ADVERTS, ad);
+        request.setAttribute(Contract.CURRENT_USER, rater);
         request.setAttribute(Contract.OTHER_USER, worker);
         getView(request, response, "jobs/rate.jsp");
     }
     
     public void ratePost(HttpServletRequest request, HttpServletResponse response) {
+        User rater = getCurrentUser(request);
         User worker = userFacade.find(Integer.parseInt(request.getParameter("workerId")));
         if (worker == null) {
             return;
         }
-        Responders responder = new Responders(worker.getId(), Integer.parseInt(request.getParameter("advertId")));
+        int advertId = Integer.parseInt(request.getParameter("advertId"));
+        Responders responder = new Responders(worker.getId(), advertId);
         
-        // update Responder's status, rating and feedback.
-        responder.setStatus(Contract.ResponderStatus.FEEDBACK.ordinal());
-        responder.setRating(Integer.parseInt(request.getParameter("rating")));
-        responder.setFeedback(request.getParameter("feedback"));
-        respondersFacade.edit(responder);
-        
-        // update the worker's rating in User
-        Double newRating = worker.getRating() + Double.parseDouble(request.getParameter("rating"));
-        worker.setRating(newRating);
-        userFacade.edit(worker);
-        
+        if (!(rater.getId().equals(worker.getId()))) {      // the advertiser is going to rate the worker
+            // update Responder's status, rating and feedback.
+            responder.setStatus(Contract.ResponderStatus.FEEDBACK.ordinal());
+            responder.setRating(Integer.parseInt(request.getParameter("rating")));
+            responder.setFeedback(request.getParameter("feedback"));
+            respondersFacade.edit(responder);
+            
+            // update the worker's rating in User
+            Double newRating = worker.getRating() + Double.parseDouble(request.getParameter("rating"));
+            worker.setRating(newRating);
+            userFacade.edit(worker);
+            applicants(request, response);
+        }
+        else {    // the worker is going to rate the advertise back
+            Adverts advert = advertsFacade.find(advertId);
+            User advertiser = (User) advert.getUserId();
+            responder.setStatus(Contract.ResponderStatus.FEEDBACK_WORKER.ordinal());
+            responder.setRatingWorker(Integer.parseInt(request.getParameter("rating")));
+            responder.setFeedbackWorker(request.getParameter("feedback"));
+            respondersFacade.edit(responder);
+
+            Double newRating = advertiser.getRating() + Double.parseDouble(request.getParameter("rating"));
+            advertiser.setRating(newRating);
+            userFacade.edit(advertiser);
+            applications(request, response);
+        }
         alertSuccess(request, "Feedback is succesfully placed.");
-        applicants(request, response);
     }
     
     public void accept(HttpServletRequest request, HttpServletResponse response) {

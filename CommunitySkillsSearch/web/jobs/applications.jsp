@@ -28,9 +28,10 @@
                     for (Adverts a : ads) {
                         isClosed = a.getClosed() == null || !a.getClosed();
             %>
-            <tr><td><%=a.getId()%></td>
+            <tr>
+                <td><%=a.getId()%></td>
                 <td><a href='jobs?action=view&id=<%=a.getId()%>'><%=a.getTitle()%></a></td>
-                <td><%=isClosed ? "Open" : "Closed"%></td>
+                <td><%=isClosed ? "Closed" : "Open"%></td>
                 <%
                     List<Responders> res = new ArrayList<Responders>(a.getRespondersCollection());
                     Integer status = res.get(0).getStatus();
@@ -38,48 +39,52 @@
                         res.get(0).setStatus(0);
                     }
                     switch (Contract.ResponderStatus.values()[res.get(0).getStatus()]) {
-                        case SELECTED:
-                %>
-                <td>Selected!</td>
-                <td><a href='jobs?action=cancel&id=<%=a.getId()%>' class="btn btn-outline-primary">Cancel</a></td>
-                <td><a href='jobs?action=accept&id=<%=a.getId()%>' class="btn btn-outline-primary">Accept</a>/<a href='jobs?action=reject&id=<%=a.getId()%>' class="btn btn-outline-primary">Reject</a></td>
-                <%
+                    case SELECTED:
+                        %>
+                        <td>Offered</td>
+                        <td><a href='jobs?action=cancel&id=<%=a.getId()%>'>Withdraw</a></td>
+                        <td><a href='jobs?action=accept&id=<%=a.getId()%>'>Accept</a> / <a href='jobs?action=reject&id=<%=a.getId()%>'>Reject</a></td>
+                        <%
                         break;
                     case DECLINED:
-                %>
-                <td>Declined</td>
-                <td></td>
-                <%
+                        %>
+                        <td>Declined</td>
+                        <td></td>
+                        <td></td>
+                        <%
                         break;
                     case JOB_DONE:
-                %>
-                <td>Job done</td>
-                <td></td>
-                <td>
-                    <a href='jobs?action=feedback&id=<%=res.get(0).getRespondersPK().getAdvertsId()%>&userid=<%=res.get(0).getRespondersPK().getUserId()%>' class="btn btn-outline-primary">Place feedback</a>
-                </td>
-                <%
+                        %>
+                        <td>Job done</td>
+                        <td></td>
+                        <td></td>
+                        <%
                         break;
                     case FEEDBACK:
-                %>
-                <td>Feedback placed</td>
-                <td></td>
-                <%
+                        %>
+                        <td>Feedback received</td>
+                        <td></td>
+                        <td><a href='jobs?action=rate&id=<%=res.get(0).getRespondersPK().getAdvertsId()%>&userid=<%=res.get(0).getRespondersPK().getUserId()%>'>Rate <%=a.getUserId()!=null? a.getUserId().getName() : "this advertiser"%></a></td>
+                        <%
+                        break;
+                    case FEEDBACK_WORKER:
+                        %>
+                        <td>Feedback placed</td>
+                        <td></td>
+                        <td></td>
+                        <%
                         break;
                     default:
-                %>
-                <td>Unassigned</td>
-                <td>
-                    <a href='jobs?action=cancel&id=<%=a.getId()%>' class="btn btn-outline-primary">Cancel</a>
-                </td>
-                <%
-                            break;
-                    }
-                %>
+                        %>
+                        <td>Unassigned</td>
+                        <td><a href='jobs?action=cancel&id=<%=a.getId()%>'>Withdraw</a></td>
+                        <td></td>
+                        <%
+                        break;
+                    }%>
             </tr>
-            <%}
-                }
-            %>
+                  <%}
+                }%>
         </table>
     </div>
 </div>

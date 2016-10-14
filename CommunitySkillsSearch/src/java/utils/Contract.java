@@ -38,6 +38,7 @@ public class Contract {
         SELECTED,
         DECLINED,
         JOB_DONE,
-        FEEDBACK
+        FEEDBACK,
+        FEEDBACK_WORKER
     }
 }

@@ -10,16 +10,18 @@
 <%@page import="entities.User"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
-    User worker = (User) request.getAttribute(Contract.OTHER_USER);
+    User rater = (User) request.getAttribute(Contract.CURRENT_USER);    // the user who gives feeback
+    User worker = (User) request.getAttribute(Contract.OTHER_USER);     // the user who worked for the job
     Adverts ad = (Adverts) request.getAttribute(Contract.ADVERTS);
 %>
 <div class="container fuelux">
     <div class="row">
         <div class="col-md-8 personal-info">
-            <%
-                if (worker != null) {
-            %>
-            <h3>Rate for <%=worker.getName()%>:</h3>
+        <%
+            if (rater != null && worker != null) {
+        %>
+            <%-- if raterID != workerID, the rater is the advertiser --%>
+            <h3>Rate for <%=rater.getId()!=worker.getId() ? worker.getName() : rater.getName()%>:</h3>
             <br>
             <form action="jobs?action=rate" method="post">
                 <input type="hidden" name="workerId" value='<%= worker==null? "" : worker.getId()%>'/>
@@ -56,7 +58,7 @@
                     </div>
                 </div>
             </form>
-            <% } %>
+        <%  }%>
         </div>
     </div>
 </div>
