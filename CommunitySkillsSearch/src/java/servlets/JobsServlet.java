@@ -560,7 +560,24 @@ public class JobsServlet extends AbstractServlet {
     }
     
     public void acceptPost(HttpServletRequest request, HttpServletResponse response) {
+        RequestData data = getAuthenticatedData(request, response);
+        if (data == null) {
+            return;
+        }
         
+        Adverts ad = advertsFacade.find(data.id);
+
+        if (ad != null) {
+            Responders responder = new Responders(data.user.getId(), ad.getId());
+            respondersFacade.remove(responder);
+            
+            alertSuccess(request, "You have accepted the job offer for " + ad.getTitle());
+            view(request, response);
+            return;
+        }
+
+        alertWarning(request, "The job not found.");
+        showGoBackPage(request, response);
     }
     
     public void reject(HttpServletRequest request, HttpServletResponse response) {
