@@ -35,7 +35,10 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Responders.findByTime", query = "SELECT r FROM Responders r WHERE r.time = :time"),
     @NamedQuery(name = "Responders.findByFeedback", query = "SELECT r FROM Responders r WHERE r.feedback = :feedback"),
     @NamedQuery(name = "Responders.findByRating", query = "SELECT r FROM Responders r WHERE r.rating = :rating"),
-    @NamedQuery(name = "Responders.findByStatus", query = "SELECT r FROM Responders r WHERE r.status = :status")})
+    @NamedQuery(name = "Responders.findByStatus", query = "SELECT r FROM Responders r WHERE r.status = :status"),
+    @NamedQuery(name = "Responders.findByUserAndAdvertId", query = "SELECT r FROM Responders r WHERE r.respondersPK.userId = :userId AND r.respondersPK.advertsId = :advertsId"),
+})
+
 public class Responders implements Serializable {
 
     @Size(max = 45)

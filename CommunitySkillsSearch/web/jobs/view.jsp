@@ -67,30 +67,43 @@
                 <button type="submit" class="btn btn-primary">Send</button>
             </form>
         </div>
-
-        <hr>
-
+                
         <!-- Posted Comments -->
-
-        <!-- To do: Comment -->
-        <div class="media">
-            <a class="pull-left" href="#">
-                <img src="<%=ServletUtils.getUserAvatar(this, request, "")%>" class="avatar img-circle" alt="avatar" width="64" onerror="this.onerror=null;this.src='//placehold.it/64';this.className='avatar img-circle';">
-            </a>
-            <div class="media-body">
-                <h4 class="media-heading">Andy
-                    <small>August 25, 2016 at 9:30 PM</small>
-                </h4>
-                Good employer, highly recommended.
-            </div>
-        </div>
-
+        <%
+        if (responder != null && responder.getStatus() != null) {
+            if (responder.getStatus() > 3) { //getFeedback().isEmpty()) {   // display advertiser's feedback 
+        %>
+                <hr>
+                <div class="media">
+                    <a class="pull-left" href="#">
+                        <img src="<%=ServletUtils.getUserAvatar(this, request, ad.getUserId().getImg())%>" class="avatar img-circle" alt="avatar" width="64" onerror="this.onerror=null;this.src='//placehold.it/64';this.className='avatar img-circle';">
+                    </a>
+                    <div class="media-body">
+                        <h4 class="media-heading">Feedback from <a href="user?action=view&id=<%=ad.getUserId().getId()%>"><%=ad.getUserId().getName()%></a></h4>
+                        <%=responder.getFeedback()%>
+                    </div>
+                </div>
+        <%  }
+            if (responder.getStatus() > 4) { //getFeedback().isEmpty()) {   // display worker's feedback 
+        %>
+                <hr>
+                <div class="media">
+                    <a class="pull-left" href="#">
+                        <img src="<%=ServletUtils.getUserAvatar(this, request, responder.getUser().getImg())%>" class="avatar img-circle" alt="avatar" width="64" onerror="this.onerror=null;this.src='//placehold.it/64';this.className='avatar img-circle';">
+                    </a>
+                    <div class="media-body">
+                        <h4 class="media-heading">Feedback from <a href="user?action=view&id=<%=responder.getUser().getId()%>"><%=responder.getUser().getName()%></a></h4>
+                        <%=responder.getFeedbackWorker()%>
+                    </div>
+                </div>
+        <%  }
+        }%>
     </div>
 
     <!-- Job Sidebar Widgets Column -->
     <div class="col-md-4">
         <!-- Date/Time -->
-        <p><i class="fa fa-clock-o"></i> Closes on <%=ad.getExpiryDate()%></p>
+        <p><i class="fa fa-clock-o"></i> Expiry Date: <%=ad.getExpiryDate()%></p>
         <hr>
 
         <!-- Job Categories Well -->

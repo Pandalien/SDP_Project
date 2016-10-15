@@ -4,6 +4,7 @@
     Author     : andyc
 --%>
 
+<%@page import="entities.User"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="entities.Responders"%>
 <%@page import="utils.Contract"%>
@@ -11,6 +12,7 @@
 <%@page import="java.util.List"%>
 <%
     List<Adverts> ads = (List<Adverts>) request.getAttribute(Contract.ADVERTS);
+    User user = (User) request.getAttribute(Contract.CURRENT_USER);
     boolean isClosed;
 %>
 <div class="row">
@@ -30,7 +32,7 @@
             %>
             <tr>
                 <td><%=a.getId()%></td>
-                <td><a href='jobs?action=view&id=<%=a.getId()%>'><%=a.getTitle()%></a></td>
+                <td><a href='jobs?action=view&id=<%=a.getId()%>&userid=<%=user.getId()%>'><%=a.getTitle()%></a></td>
                 <td><%=isClosed ? "Closed" : "Open"%></td>
                 <%
                     List<Responders> res = new ArrayList<Responders>(a.getRespondersCollection());

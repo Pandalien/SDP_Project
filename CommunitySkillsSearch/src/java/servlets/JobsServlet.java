@@ -160,11 +160,18 @@ public class JobsServlet extends AbstractServlet {
                 request.setAttribute(Contract.VIEW_ADVERT, ad);
                 
                 User user = getCurrentUser(request);
+                request.setAttribute(Contract.CURRENT_USER, user);
+                
+                User worker = null;
+                try {
+                    int workerId = Integer.parseInt((String) request.getParameter("userid"));
+                    worker = userFacade.find(workerId);
+                } catch (Exception e) {}
+
                 //get responder info
-                if (user != null) {
-                    Responders responder = respondersFacade.find(new RespondersPK(user.getId(), ad.getId()));
+                if (worker != null) {
+                    Responders responder = respondersFacade.find(new RespondersPK(worker.getId(), ad.getId()));
                     request.setAttribute(Contract.ADVERT_RESPONDERS, responder);
-                    request.setAttribute(Contract.CURRENT_USER, user);
                 }
                 
                 getView(request, response, "jobs/view.jsp");
@@ -370,7 +377,7 @@ public class JobsServlet extends AbstractServlet {
                 }
             }
         }
-        
+        request.setAttribute(Contract.CURRENT_USER, user);
         request.setAttribute(Contract.ADVERTS, ads);
         getView(request, response, "jobs/applications.jsp");
     }
@@ -531,8 +538,8 @@ public class JobsServlet extends AbstractServlet {
             return;
         }
         int advertId = Integer.parseInt(request.getParameter("advertId"));
-        Responders responder = new Responders(worker.getId(), advertId);
-        
+        Responders responder = respondersFacade.findByUserAndAdvertId(worker.getId(), advertId);
+
         if (!(rater.getId().equals(worker.getId()))) {      // the advertiser is going to rate the worker
             // update Responder's status, rating and feedback.
             responder.setStatus(Contract.ResponderStatus.FEEDBACK.ordinal());

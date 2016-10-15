@@ -36,7 +36,7 @@
                 <%-- Rating column --%>
                 <td><%=r.getUser()!=null? r.getUser().getRating() : ""%></td>
                 <%-- Job column --%>
-                <td><a href='jobs?action=view&id=<%=r.getRespondersPK().getAdvertsId()%>'><%=r.getAdverts()!=null? r.getAdverts().getTitle() : "View Ad."%></a></td>
+                <td><a href='jobs?action=view&id=<%=r.getRespondersPK().getAdvertsId()%>&userid=<%=r.getRespondersPK().getUserId()%>'><%=r.getAdverts()!=null? r.getAdverts().getTitle() : "View Ad."%></a></td>
                 <%-- Status column --%>
                 <%
                     switch (Contract.ResponderStatus.values()[r.getStatus()]) {
