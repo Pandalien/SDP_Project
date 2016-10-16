@@ -54,7 +54,7 @@
                 <div class="form-group row">  
                     <div class="col-md-12">
                         <input type="submit" value="Submit" class="btn btn-primary">
-                        <input type="button" value="Cancel" class="btn btn-secondary">
+                        <a href="jobs?action=applicants" class="btn btn-secondary">Later</a>
                     </div>
                 </div>
             </form>

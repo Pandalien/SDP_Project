@@ -505,7 +505,8 @@ public class JobsServlet extends AbstractServlet {
         respondersFacade.edit(responder);
         
         alertSuccess(request, "The job: " + ad.getTitle() + " has been marked as done.");
-        applicants(request, response);
+        rate(request, response);
+        //applicants(request, response);
     }
     
     public void rate(HttpServletRequest request, HttpServletResponse response) {
