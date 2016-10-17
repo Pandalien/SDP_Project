@@ -54,7 +54,8 @@
                 <div class="form-group row">  
                     <div class="col-md-12">
                         <input type="submit" value="Submit" class="btn btn-primary">
-                        <a href="jobs?action=applicants" class="btn btn-secondary">Later</a>
+                        <span></span>
+                        <a href="jobs?action=applicants" class="btn btn-default">Later</a>
                     </div>
                 </div>
             </form>
