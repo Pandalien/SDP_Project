@@ -588,6 +588,7 @@ public class JobsServlet extends AbstractServlet {
         if (ad != null) {
             Responders responder = respondersFacade.findByUserAndAdvertId(data.user.getId(), ad.getId());
             responder.setStatus(Contract.ResponderStatus.ACCEPTED.ordinal());
+            respondersFacade.edit(responder);
             alertSuccess(request, "You have accepted the job offer for " + ad.getTitle());
             view(request, response);
             return;
@@ -616,9 +617,9 @@ public class JobsServlet extends AbstractServlet {
 
         if (ad != null) {
             Responders responder = new Responders(data.user.getId(), ad.getId());
-            respondersFacade.remove(responder);
-            
-            alertSuccess(request, "You have rejected the job offer. Your application for " + ad.getTitle() + " will be deleted");
+            responder.setStatus(Contract.ResponderStatus.DECLINED.ordinal());
+            respondersFacade.edit(responder);
+            alertSuccess(request, "You have rejected the job offer." + ad.getTitle());
             view(request, response);
             return;
         }
