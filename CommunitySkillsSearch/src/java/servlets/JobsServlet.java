@@ -584,12 +584,10 @@ public class JobsServlet extends AbstractServlet {
         if (data == null) {
             return;
         }
-        
-        User user = getCurrentUser(request);
         Adverts ad = advertsFacade.find(data.id);
-        Responders responder = respondersFacade.findByUserAndAdvertId(user.getId(), ad.getId());
-        responder.setStatus(Contract.ResponderStatus.ACCEPTED.ordinal());
         if (ad != null) {
+            Responders responder = respondersFacade.findByUserAndAdvertId(data.user.getId(), ad.getId());
+            responder.setStatus(Contract.ResponderStatus.ACCEPTED.ordinal());
             alertSuccess(request, "You have accepted the job offer for " + ad.getTitle());
             view(request, response);
             return;
