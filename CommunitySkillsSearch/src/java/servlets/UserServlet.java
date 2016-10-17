@@ -8,7 +8,6 @@ package servlets;
 import beans.RequestData;
 import entities.User;
 import entities.UserSkills;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
@@ -16,12 +15,10 @@ import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import sb.AdvertsFacade;
 import sb.UserSkillsFacade;
 import utils.Contract;
 import utils.EditAccount;
 import utils.Login;
-import utils.ServletUtils;
 import utils.StringUtils;
 
 @MultipartConfig(fileSizeThreshold = 1024 * 1024 * 1, // 1 MB 
@@ -32,9 +29,6 @@ public class UserServlet extends AbstractServlet {
 
     @EJB
     private UserSkillsFacade userSkillsFacade;
-
-    @EJB
-    private AdvertsFacade advertsFacade;
     
     @Override
     public void init() {

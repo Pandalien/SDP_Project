@@ -43,7 +43,13 @@
                     case SELECTED:
                         %>
                         <td>Selected</td>
+                        <%
+                        break;
+                    case ACCEPTED:
+                        %>
+                        <td>Accepted</td>
                         <td><a href='jobs?action=done&id=<%=r.getRespondersPK().getAdvertsId()%>&userid=<%=r.getRespondersPK().getUserId()%>'>Mark as done</a></td>
+                        <td></td>
                         <%
                         break;
                     case DECLINED:

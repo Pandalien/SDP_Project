@@ -36,6 +36,7 @@ public class Contract {
     public enum ResponderStatus{
         DEFAULT,
         SELECTED,
+        ACCEPTED,
         DECLINED,
         JOB_DONE,
         FEEDBACK,

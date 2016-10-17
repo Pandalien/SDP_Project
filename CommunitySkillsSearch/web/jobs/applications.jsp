@@ -48,6 +48,13 @@
                         <td><a href='jobs?action=accept&id=<%=a.getId()%>'>Accept</a> / <a href='jobs?action=reject&id=<%=a.getId()%>'>Reject</a></td>
                         <%
                         break;
+                    case ACCEPTED:
+                        %>
+                        <td>Declined</td>
+                        <td></td>
+                        <td></td>
+                        <%
+                        break;
                     case DECLINED:
                         %>
                         <td>Declined</td>
