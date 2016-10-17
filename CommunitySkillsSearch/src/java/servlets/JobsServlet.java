@@ -43,6 +43,7 @@ public class JobsServlet extends AbstractServlet {
     
     @EJB
     private AdvertsFacade advertsFacade;
+   
     
     public void create(HttpServletRequest request, HttpServletResponse response) {
         //login required to create an ad
@@ -587,9 +588,6 @@ public class JobsServlet extends AbstractServlet {
         Adverts ad = advertsFacade.find(data.id);
 
         if (ad != null) {
-            Responders responder = new Responders(data.user.getId(), ad.getId());
-            respondersFacade.remove(responder);
-            
             alertSuccess(request, "You have accepted the job offer for " + ad.getTitle());
             view(request, response);
             return;
