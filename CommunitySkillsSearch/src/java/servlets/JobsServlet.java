@@ -328,7 +328,7 @@ public class JobsServlet extends AbstractServlet {
         }
         
         //confirm with user first
-        showConfirmPage(request, response, "Do you want to cancel you application to this job?", "jobs?action=cancel", data.id);
+        showConfirmPage(request, response, "Do you want to cancel your application to this job?", "jobs?action=cancel", data.id);
     }
     
     public void cancelPost(HttpServletRequest request, HttpServletResponse response) {
