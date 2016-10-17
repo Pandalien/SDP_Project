@@ -4,6 +4,7 @@
     Author     : andyc
 --%>
 
+<%@page import="utils.Contract.ResponderStatus"%>
 <%@page import="utils.StringUtils"%>
 <%@page import="javax.servlet.Servlet"%>
 <%@page import="utils.ServletUtils"%>
@@ -71,7 +72,7 @@
         <!-- Posted Comments -->
         <%
         if (responder != null && responder.getStatus() != null) {
-            if (responder.getStatus() > 3) { //getFeedback().isEmpty()) {   // display advertiser's feedback 
+            if (Contract.ResponderStatus.values()[responder.getStatus()] == ResponderStatus.FEEDBACK) {     // display advertiser's feedback 
         %>
                 <hr>
                 <div class="media">
@@ -80,11 +81,21 @@
                     </a>
                     <div class="media-body">
                         <h4 class="media-heading">Feedback from <a href="user?action=view&id=<%=ad.getUserId().getId()%>"><%=ad.getUserId().getName()%></a></h4>
-                        <%=responder.getFeedback()%>
+                        Rating: <%
+                            switch (responder.getRating()){
+                                case 1: %><strong>GOOD</strong>
+                                <%break;
+                                case 0: %><strong>NEUTRAL</strong>
+                                <%break;
+                                case -1: %><strong>BAD</strong>
+                                <%break;
+                            }
+                        %>
+                        <br><%=responder.getFeedback()%>
                     </div>
                 </div>
         <%  }
-            if (responder.getStatus() > 4) { //getFeedback().isEmpty()) {   // display worker's feedback 
+            if (Contract.ResponderStatus.values()[responder.getStatus()] == ResponderStatus.FEEDBACK_WORKER) {      // display worker's feedback 
         %>
                 <hr>
                 <div class="media">
@@ -93,7 +104,17 @@
                     </a>
                     <div class="media-body">
                         <h4 class="media-heading">Feedback from <a href="user?action=view&id=<%=responder.getUser().getId()%>"><%=responder.getUser().getName()%></a></h4>
-                        <%=responder.getFeedbackWorker()%>
+                        Rating: <%
+                            switch (responder.getRating()){
+                                case 1: %><strong>GOOD</strong>
+                                <%break;
+                                case 0: %><strong>NEUTRAL</strong>
+                                <%break;
+                                case -1: %><strong>BAD</strong>
+                                <%break;
+                            }
+                        %>
+                        <br><%=responder.getFeedbackWorker()%>
                     </div>
                 </div>
         <%  }

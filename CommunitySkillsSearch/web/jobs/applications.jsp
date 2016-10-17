@@ -50,7 +50,7 @@
                         break;
                     case ACCEPTED:
                         %>
-                        <td>Declined</td>
+                        <td>Accepted</td>
                         <td></td>
                         <td></td>
                         <%

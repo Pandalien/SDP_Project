@@ -43,6 +43,7 @@
                     case SELECTED:
                         %>
                         <td>Selected</td>
+                        <td></td>
                         <%
                         break;
                     case ACCEPTED:
