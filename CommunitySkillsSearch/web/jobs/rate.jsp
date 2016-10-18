@@ -55,7 +55,7 @@
                     <div class="col-md-12">
                         <input type="submit" value="Submit" class="btn btn-primary">
                         <span></span>
-                        <a href="jobs?action=applicants" class="btn btn-default">Later</a>
+                        <a href="jobs?action=<%=rater.getId()!=worker.getId() ? "applicants" : "applications"%>" class="btn btn-default">Later</a>
                     </div>
                 </div>
             </form>

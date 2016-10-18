@@ -72,7 +72,7 @@
         <!-- Posted Comments -->
         <%
         if (responder != null && responder.getStatus() != null) {
-            if (Contract.ResponderStatus.values()[responder.getStatus()] == ResponderStatus.FEEDBACK) {     // display advertiser's feedback 
+            if (responder.getStatus() > 4) {     // display advertiser's feedback 
         %>
                 <hr>
                 <div class="media">
@@ -95,7 +95,7 @@
                     </div>
                 </div>
         <%  }
-            if (Contract.ResponderStatus.values()[responder.getStatus()] == ResponderStatus.FEEDBACK_WORKER) {      // display worker's feedback 
+            if (responder.getStatus() > 5) {      // display worker's feedback 
         %>
                 <hr>
                 <div class="media">
@@ -105,7 +105,7 @@
                     <div class="media-body">
                         <h4 class="media-heading">Feedback from <a href="user?action=view&id=<%=responder.getUser().getId()%>"><%=responder.getUser().getName()%></a></h4>
                         Rating: <%
-                            switch (responder.getRating()){
+                            switch (responder.getRatingWorker()){
                                 case 1: %><strong>GOOD</strong>
                                 <%break;
                                 case 0: %><strong>NEUTRAL</strong>

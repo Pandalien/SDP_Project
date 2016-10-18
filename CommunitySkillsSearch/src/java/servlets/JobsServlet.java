@@ -505,7 +505,7 @@ public class JobsServlet extends AbstractServlet {
         responder.setStatus(Contract.ResponderStatus.JOB_DONE.ordinal());
         respondersFacade.edit(responder);
         
-        alertSuccess(request, "The job: " + ad.getTitle() + " has been marked as done. " + responder.getUser().getName() + " would be appreciated to hear feedback from you!");
+//        alertSuccess(request, "The job: " + ad.getTitle() + " has been marked as done. " + responder.getUser().getName() + " would be appreciated to hear feedback from you!");
         rate(request, response);
     }
     
