@@ -20,6 +20,7 @@
 <div class="main">
     <div class="login_form">
         <form id="login_login" class="login" action="user?action=login" method="post">
+            <input type="hidden" name="redirect" value="${redirect}"/>
             <input type="text" name="username" placeholder="username"/>
             <input type="password" name="password" placeholder="password"/>
             <p id="forgotpw"><a href="reset?action=resetpwd">Forgot password?</a></p>

@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -220,6 +221,23 @@ public class AbstractServlet extends HttpServlet {
     }
     
     public void login(HttpServletRequest request, HttpServletResponse response) {
+        //save original query url to hidden text input (see login.jsp)
+        String redirect = request.getParameter("redirect");
+        if (StringUtils.isEmpty(redirect)) {
+            String action = request.getParameter("action");
+            if (!StringUtils.isEmpty(action) && !action.equals("login")) {
+                //create a new one if not exist
+                String url = URLEncoder.encode(request.getRequestURL() + "?" + request.getQueryString());
+                request.setAttribute("redirect", url);
+            }
+            
+        } else {
+            //use the old one
+            request.setAttribute("redirect", redirect);
+        }
+        
+        
+        
         setCollectionSuburbs(request);
         getView(request, response, "user/login.jsp");
     }

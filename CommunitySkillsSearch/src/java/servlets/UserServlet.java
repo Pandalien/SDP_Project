@@ -8,8 +8,12 @@ package servlets;
 import beans.RequestData;
 import entities.User;
 import entities.UserSkills;
+import java.io.IOException;
+import java.net.URLDecoder;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServletRequest;
@@ -224,23 +228,30 @@ public class UserServlet extends AbstractServlet {
     }   
     
     public void loginPost(HttpServletRequest request, HttpServletResponse response) {
-/*      
-        List<User> users = userFacade.findByName(request.getParameter("username"));
-        
-        if (users == null || users.isEmpty()) {
-            alertDanger(request, "The username you entered does not exist.");
-        }else{
-*/
-            User user = userFacade.findByUsernameAndPassword(request.getParameter("username"), request.getParameter("password"));
+        User user = userFacade.findByUsernameAndPassword(request.getParameter("username"), request.getParameter("password"));
 
-            if (user == null) {
-                alertDanger(request, "Your username or password is wrong, please try again.");
-            }else{
-                request.getSession().setAttribute(Contract.CURRENT_USER, user);
-            }
-//        }
+        if (user == null) {
+            alertDanger(request, "Your username or password is wrong, please try again.");
+            login(request, response);
+            return;
+        } 
         
-        login(request, response);
+        request.getSession().setAttribute(Contract.CURRENT_USER, user);
+        //redirect to previous page
+        String redirect = request.getParameter("redirect");
+        
+        if (!StringUtils.isEmpty(redirect)) {
+            try {
+                redirect = URLDecoder.decode(redirect);
+                response.sendRedirect(redirect);
+                return;
+            } catch (IOException ex) {
+                Logger.getLogger(UserServlet.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        //is log failed return to login again
+        getView(request, response, "user/login.jsp");
     }
     
     public void logout(HttpServletRequest request, HttpServletResponse response) {

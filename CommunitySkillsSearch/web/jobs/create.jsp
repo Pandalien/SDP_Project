@@ -1,4 +1,4 @@
-<%-- 
+<%--
     Document   : create
     Created on : Sep 17, 2016, 12:02:45 PM
     Author     : andy chen
@@ -21,13 +21,13 @@
     Integer cataId = 1;
     String xDate = "";
     List<Integer> reSkIds=null;
-    
+
     if (ad != null) {
         suburbId = ad.getSuburbId().getId();
         cataId = ad.getClassificationId().getId();
-        
+
         reSkIds = (List<Integer>) request.getAttribute(Contract.ADVERT_SKILL_IDS);
-        
+
         if (ad.getExpiryDate() != null) {
             xDate = new SimpleDateFormat("yyyy-MM-dd").format(ad.getExpiryDate());
         }
@@ -38,7 +38,7 @@
     <div class="form-group">
         <label class="col-md-3 control-label">Title</label>
         <div class="col-md-8">
-            <input name="title" value='<%= ad==null? "" : ad.getTitle()%>' class="form-control" type="text" value="" placeholer="title" required="true"/>
+            <input name="title" pattern=".{,45}" value='<%= ad==null? "" : ad.getTitle()%>' class="form-control" type="text" value="" placeholer="title" required="true"/>
         </div>
     </div>
     <div class="form-group">
@@ -48,7 +48,7 @@
                 <select name='classification' class="form-control" >
                     <%for (Classification cl : classifications) {%>
                     <option
-                        value='<%=cl.getId()%>' 
+                        value='<%=cl.getId()%>'
                         <%= cl.getId()==cataId? "selected='true'" : ""%>>
                         <%=cl.getName()%>
                     </option>
@@ -74,7 +74,7 @@
                 </select>
             </div>
         </div>
-    </div>            
+    </div>
     <div class="form-group">
         <label class="col-md-3 control-label">Location</label>
         <div class="col-md-8">
@@ -92,7 +92,7 @@
     <div class="form-group">
         <label class="col-md-3 control-label">Expiry Date</label>
         <div class="col-md-8">
-            <input name="expiry_date" type="date" class="form-control" 
+            <input name="expiry_date" type="date" class="form-control"
                    value='<%=xDate%>'
             />
         </div>
