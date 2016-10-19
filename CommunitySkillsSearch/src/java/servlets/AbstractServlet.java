@@ -10,6 +10,7 @@ import entities.Suburb;
 import entities.User;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URLEncoder;
@@ -250,7 +251,12 @@ public class AbstractServlet extends HttpServlet {
             String action = request.getParameter("action");
             if (!StringUtils.isEmpty(action) && !action.equals("login")) {
                 //create a new one if not exist
-                String url = URLEncoder.encode(request.getRequestURL() + "?" + request.getQueryString());
+                String url;
+                try {
+                    url = URLEncoder.encode(request.getRequestURL() + "?" + request.getQueryString(), "UTF-8");
+                } catch (UnsupportedEncodingException ex) {
+                    url = request.getContextPath() + "/home";
+                }
                 request.setAttribute("redirect", url);
             }
             

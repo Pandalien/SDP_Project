@@ -44,7 +44,7 @@ public class PhotoServlet extends AbstractServlet {
             alertSuccess(request, "Your photo has been deleted.");
         }
 
-        redirect(request, response, "/user?action=photo");
+        redirect(request, response, "/photo?action=upload");
     }
 
     public void upload(HttpServletRequest request, HttpServletResponse response) {

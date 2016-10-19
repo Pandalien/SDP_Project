@@ -248,7 +248,7 @@ public class UserServlet extends AbstractServlet {
         
         if (!StringUtils.isEmpty(redirect)) {
             try {
-                redirect = URLDecoder.decode(redirect);
+                redirect = URLDecoder.decode(redirect, "UTF-8");
                 response.sendRedirect(redirect);
                 return;
             } catch (IOException ex) {
