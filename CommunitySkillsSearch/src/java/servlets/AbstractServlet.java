@@ -104,10 +104,26 @@ public class AbstractServlet extends HttpServlet {
         }
     }
 
+    //get user object from seesion, if not found redirct to log in page, 
+    //the caller should stop the process if this method return null 
+    protected User getCurrentUserOrLogin(HttpServletRequest request, HttpServletResponse response) {
+        //get user object from seesion
+        User user = getCurrentUser(request);
+
+        //if not found redirct to log in page
+        if (user == null) {
+            alertInfo(request, "Please log on to continue.");
+            login(request, response);
+        }
+
+        return user;
+    }
+    
+    //get user object from seesion
     protected User getCurrentUser(HttpServletRequest request){
         return (User)request.getSession().getAttribute(Contract.CURRENT_USER);
     }
-    
+        
     protected void getView(HttpServletRequest request, HttpServletResponse response, String serverPage){
         String template = "/layout.jsp";
         request.setAttribute("content", serverPage);
@@ -253,10 +269,8 @@ public class AbstractServlet extends HttpServlet {
     }
     
     public RequestData getAuthenticatedData(HttpServletRequest request, HttpServletResponse response){
-        User user = getCurrentUser(request);
+        User user = getCurrentUserOrLogin(request, response);
         if (user == null) {
-            alertInfo(request, "Please log on to continue.");
-            login(request, response);
             return null;
         }
 

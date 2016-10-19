@@ -36,7 +36,11 @@ public class MessageServlet extends AbstractServlet {
         
         request.setAttribute("message_option", "viewRead");
         
-        User user = getCurrentUser(request);
+        User user = getCurrentUserOrLogin(request, response);
+        if (user == null) {
+            return;
+        }
+        
         List<Messages> messages = messagesFacade.findByReceiverIdAndRead(user, true);
         request.setAttribute(Contract.MESSAGES_RECEIVED, messages);
         
@@ -46,7 +50,11 @@ public class MessageServlet extends AbstractServlet {
     public void viewSent(HttpServletRequest request, HttpServletResponse response) {
         getMessage(request, response);
         
-        User user = getCurrentUser(request);
+        User user = getCurrentUserOrLogin(request, response);
+        if (user == null) {
+            return;
+        }
+        
         List<Messages> messages = messagesFacade.findBySenderId(user);
 
         request.setAttribute(Contract.MESSAGES_RECEIVED, messages);
@@ -69,9 +77,8 @@ public class MessageServlet extends AbstractServlet {
     }
  
     private Messages getMessage(HttpServletRequest request, HttpServletResponse response) {
-        User user = getCurrentUser(request);
+        User user = getCurrentUserOrLogin(request, response);
         if (user == null) {
-            alertInfo(request, "Please log on to continue.");
             return null;
         }
 

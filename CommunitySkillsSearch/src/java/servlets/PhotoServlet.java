@@ -20,14 +20,21 @@ import utils.StringUtils;
 public class PhotoServlet extends AbstractServlet {
     
     public void deleteAvatar(HttpServletRequest request, HttpServletResponse response) {
-        User user = getCurrentUser(request);
+        User user = getCurrentUserOrLogin(request, response);
+        if (user == null) {
+            return;
+        }
         //confirm with user first
 
         showConfirmPage(request, response, "Do you want to delete your photo?", "photo?action=deleteAvatar", user.getId());
     }
 
     public void deleteAvatarPost(HttpServletRequest request, HttpServletResponse response) {
-        User user = getCurrentUser(request);
+        User user = getCurrentUserOrLogin(request, response);
+        if (user == null) {
+            return;
+        }
+        
         if (StringUtils.isBlank(user.getImg())) {
             alertWarning(request, "You don't have a photo to delete");
         }else{
@@ -51,7 +58,10 @@ public class PhotoServlet extends AbstractServlet {
     }
 
     public void uploadPost(HttpServletRequest request, HttpServletResponse response) {
-        User user = getCurrentUser(request);
+        User user = getCurrentUserOrLogin(request, response);
+        if (user == null) {
+            return;
+        }
 
         //original photo
         String oldPhoto = user.getImg();
@@ -177,9 +187,8 @@ public class PhotoServlet extends AbstractServlet {
         req.setAttribute("current_path", "User");
         
         //features in this servlet require users to login
-        User user = getCurrentUser(req);
+        User user = getCurrentUserOrLogin(req, resp);
         if (user == null) {
-            login(req, resp);
             return;
         }
 

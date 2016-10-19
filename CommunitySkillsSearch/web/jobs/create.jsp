@@ -38,7 +38,7 @@
     <div class="form-group">
         <label class="col-md-3 control-label">Title</label>
         <div class="col-md-8">
-            <input name="title" pattern=".{,45}" value='<%= ad==null? "" : ad.getTitle()%>' class="form-control" type="text" value="" placeholer="title" required="true"/>
+            <input name="title" pattern=".{2,45}$" value='<%= ad==null? "" : ad.getTitle()%>' class="form-control" type="text" value="" placeholer="title" required="true"/>
         </div>
     </div>
     <div class="form-group">

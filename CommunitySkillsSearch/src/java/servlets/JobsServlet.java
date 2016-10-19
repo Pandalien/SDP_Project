@@ -28,6 +28,7 @@ import sb.AdvertsFacade;
 import sb.RequirementsFacade;
 import sb.RespondersFacade;
 import utils.Contract;
+import utils.ServletUtils;
 
 /**
  *
@@ -47,9 +48,8 @@ public class JobsServlet extends AbstractServlet {
     
     public void create(HttpServletRequest request, HttpServletResponse response) {
         //login required to create an ad
-        User user = getCurrentUser(request);
+        User user = getCurrentUserOrLogin(request, response);
         if (user == null) {
-            login(request, response);
             return;
         }
         
@@ -65,9 +65,8 @@ public class JobsServlet extends AbstractServlet {
         //login required to create an ad
         boolean isUpdate;
         
-        User user = getCurrentUser(request);
+        User user = getCurrentUserOrLogin(request, response);
         if(user == null){
-            login(request, response);
             return;
         }
         
@@ -153,32 +152,36 @@ public class JobsServlet extends AbstractServlet {
     }
     
     public void view(HttpServletRequest request, HttpServletResponse response) {
+        User user = getCurrentUserOrLogin(request, response);
+        if (user == null) {
+            return;
+        }
+        
         int id = getRequestId(request);
         if (id != -1) {
             Adverts ad = advertsFacade.find(id);
             
             if (ad != null) {
-                request.setAttribute(Contract.VIEW_ADVERT, ad);
-                
-                User user = getCurrentUser(request);
-                request.setAttribute(Contract.CURRENT_USER, user);
-                
-                User worker = null;
-                try {
-                    int workerId = Integer.parseInt((String) request.getParameter("userid"));
-                    worker = userFacade.find(workerId);
-                } catch (Exception e) {}
-
-                //get responder info
-                if (worker != null) {
-                    Responders responder = respondersFacade.find(new RespondersPK(worker.getId(), ad.getId()));
-                    request.setAttribute(Contract.ADVERT_RESPONDERS, responder);
+                List<Responders> responders = respondersFacade.findByAdvertsId(ad.getId());
+                for (Responders r : responders) {
+                    r.setUser(userFacade.find(r.getRespondersPK().getUserId()));
+                    r.setAdverts(advertsFacade.find(r.getRespondersPK().getAdvertsId()));
                 }
+                
+                ad.setRespondersCollection(responders);
+                
+                request.setAttribute(Contract.VIEW_ADVERT, ad);
+                request.setAttribute(Contract.CURRENT_USER, user);          
+
+                //get current user as a responder's info
+                Responders responder = respondersFacade.find(new RespondersPK(user.getId(), ad.getId()));
+                request.setAttribute(Contract.ADVERT_RESPONDERS, responder);
                 
                 getView(request, response, "jobs/view.jsp");
                 return;
             }
         }
+        
         alertWarning(request, "The job not found.");
         showGoBackPage(request, response);
     }
@@ -211,9 +214,8 @@ public class JobsServlet extends AbstractServlet {
     
     //user created adverts page
     public void openings(HttpServletRequest request, HttpServletResponse response) {
-        User user = getCurrentUser(request);
+        User user = getCurrentUserOrLogin(request, response);
         if (user == null) {
-            login(request, response);
             return;
         }
         
@@ -222,10 +224,14 @@ public class JobsServlet extends AbstractServlet {
             request.setAttribute(Contract.ADVERTS, ads);
 
             for (Adverts ad : ads) {
+                //update responder list
                 List<Responders> responders = respondersFacade.findByAdvertsId(ad.getId());
-                if (responders != null) {
-                    ad.setRespondersCollection(responders);
+                for (Responders r : responders) {
+                    r.setUser(userFacade.find(r.getRespondersPK().getUserId()));
+                    r.setAdverts(advertsFacade.find(r.getRespondersPK().getAdvertsId()));
                 }
+                
+                ad.setRespondersCollection(responders);
             }
         }
         
@@ -274,6 +280,10 @@ public class JobsServlet extends AbstractServlet {
             Adverts ad = advertsFacade.find(id);
 
             if (ad != null) {
+                //delete photo
+                ServletUtils.deleteUserPhoto(this, ad.getImg());
+                
+                //delete ad
                 advertsFacade.remove(ad);
 
                 openings(request, response);
@@ -312,8 +322,12 @@ public class JobsServlet extends AbstractServlet {
         //create database entry
         Responders responder = new Responders(data.user.getId(), ad.getId());
         responder.setFeedback("");
+        responder.setFeedbackWorker("");
         responder.setMessage("");
         responder.setTime(new Date());
+        responder.setStatus(Contract.ResponderStatus.DEFAULT.ordinal());
+        responder.setRating(0);
+        responder.setRatingWorker(0);
         respondersFacade.create(responder);
         
         //go to the ad page
@@ -340,7 +354,19 @@ public class JobsServlet extends AbstractServlet {
         Adverts ad = advertsFacade.find(data.id);
 
         if (ad != null) {
-            Responders responder = new Responders(data.user.getId(), ad.getId());
+            Responders responder = respondersFacade.find(new RespondersPK(data.user.getId(), ad.getId()));
+            if (responder == null) {
+                alertDanger(request, "The responder was not found.");
+                showGoBackPage(request, response);
+                return;
+            }
+            
+            if (responder.getStatus() != null && responder.getStatus() > Contract.ResponderStatus.SELECTED.ordinal()) {
+                alertDanger(request, "You cannot withdraw a application that you have accepted.");
+                showGoBackPage(request, response);
+                return;
+            }
+            
             respondersFacade.remove(responder);
             
             alertSuccess(request, "Your appliction has been removed from the job " + ad.getTitle());
@@ -353,9 +379,8 @@ public class JobsServlet extends AbstractServlet {
     }
     
     public void applications(HttpServletRequest request, HttpServletResponse response) {
-        User user = getCurrentUser(request);
+        User user = getCurrentUserOrLogin(request, response);
         if (user == null) {
-            login(request, response);
             return;
         }
         
@@ -385,9 +410,8 @@ public class JobsServlet extends AbstractServlet {
     
     //view received applictions
     public void applicants(HttpServletRequest request, HttpServletResponse response) {
-        User user = getCurrentUser(request);
+        User user = getCurrentUserOrLogin(request, response);
         if (user == null) {
-            login(request, response);
             return;
         }
 
@@ -437,6 +461,7 @@ public class JobsServlet extends AbstractServlet {
         Adverts ad = advertsFacade.find(data.id);
         if (ad == null) {
             alertDanger(request, "The job is not found.");
+            showGoBackPage(request, response);
             return;
         }
         
@@ -444,12 +469,20 @@ public class JobsServlet extends AbstractServlet {
         User worker = userFacade.find(workerId);
         if (worker == null) {
             alertDanger(request, "The worker is not found, please select another worker.");
+            showGoBackPage(request, response);
             return;
         }
 
         Responders responder = respondersFacade.find(new RespondersPK(workerId, data.id));
         if (responder == null) {
             alertDanger(request, "The worker is not found, or the application has been withdrawn.");
+            showGoBackPage(request, response);
+            return;
+        }
+        
+        if (responder.getStatus() != null && responder.getStatus() != Contract.ResponderStatus.DEFAULT.ordinal()) {
+            alertWarning(request, "The worker is has been selected already.");
+            showGoBackPage(request, response);
             return;
         }
         
@@ -524,7 +557,13 @@ public class JobsServlet extends AbstractServlet {
         if (worker == null) {
             return;
         }
-        User rater = getCurrentUser(request);
+        User rater = data.user;
+        
+        if (rater.getId() == worker.getId()) {
+            alertDanger(request, "You cannot rate yourself, please select a different worker.");
+            showGoBackPage(request, response);
+            return;
+        }
         
         request.setAttribute(Contract.ADVERTS, ad);
         request.setAttribute(Contract.CURRENT_USER, rater);
@@ -533,15 +572,45 @@ public class JobsServlet extends AbstractServlet {
     }
     
     public void ratePost(HttpServletRequest request, HttpServletResponse response) {
-        User rater = getCurrentUser(request);
-        User worker = userFacade.find(Integer.parseInt(request.getParameter("workerId")));
-        if (worker == null) {
+        //who is the rate has to be determined by the logged in user
+        //cannot depend on the values being passed in
+        User user = getCurrentUserOrLogin(request, response);
+        if (user == null) {
             return;
         }
+        
         int advertId = Integer.parseInt(request.getParameter("advertId"));
+        Adverts ad = advertsFacade.find(advertId);
+        if (ad == null) {
+            alertDanger(request, "The job is not found.");
+            return;
+        }
+        
+        User otherUser = userFacade.find(Integer.parseInt(request.getParameter("workerId")));
+        if (otherUser == null) {
+            alertDanger(request, "The worker doesn't exist.");
+            showGoBackPage(request, response);
+            return;
+        }
+        
+        if (Objects.equals(otherUser.getId(), user.getId())) {
+            alertDanger(request, "You cannot rate yourself, please select a different worker.");
+            showGoBackPage(request, response);
+            return;
+        }
+        
+        boolean isOnwer = Objects.equals(ad.getUserId().getId(), user.getId());
+        User worker = isOnwer? otherUser : user;
+        
+        
         Responders responder = respondersFacade.findByUserAndAdvertId(worker.getId(), advertId);
+        if(responder == null) {
+            alertDanger(request, "The responder doesn't exist.");
+            showGoBackPage(request, response);
+            return;
+        }
 
-        if (!(rater.getId().equals(worker.getId()))) {      // the advertiser is going to rate the worker
+        if (isOnwer) {      // the advertiser is going to rate the worker
             // update Responder's status, rating and feedback.
             responder.setStatus(Contract.ResponderStatus.FEEDBACK.ordinal());
             responder.setRating(Integer.parseInt(request.getParameter("rating")));
@@ -555,8 +624,7 @@ public class JobsServlet extends AbstractServlet {
             applicants(request, response);
         }
         else {    // the worker is going to rate the advertise back
-            Adverts advert = advertsFacade.find(advertId);
-            User advertiser = (User) advert.getUserId();
+            User advertiser = (User) ad.getUserId();
             responder.setStatus(Contract.ResponderStatus.FEEDBACK_WORKER.ordinal());
             responder.setRatingWorker(Integer.parseInt(request.getParameter("rating")));
             responder.setFeedbackWorker(request.getParameter("feedback"));

@@ -72,7 +72,7 @@
         <!-- Posted Comments -->
         <%
         if (responder != null && responder.getStatus() != null) {
-            if (responder.getStatus() > 4) {     // display advertiser's feedback 
+            if (responder.getStatus() > Contract.ResponderStatus.JOB_DONE.ordinal()) {     // display advertiser's feedback 
         %>
                 <hr>
                 <div class="media">
@@ -95,7 +95,7 @@
                     </div>
                 </div>
         <%  }
-            if (responder.getStatus() > 5) {      // display worker's feedback 
+            if (responder.getStatus() > Contract.ResponderStatus.FEEDBACK.ordinal()) {      // display worker's feedback 
         %>
                 <hr>
                 <div class="media">
@@ -156,8 +156,10 @@
                 <div class="col-lg-12">
                     <ul class="list-unstyled">
                         <li>
-                            <%if (isOpen) {%>
-                            <a href='jobs?action=<%=hasApplied ? "cancel" : "apply"%>&id=<%=ad.getId()%>' class="btn btn-outline-primary"><%=hasApplied ? "Cancel" : "Apply"%></a>
+                            <%if (isOpen && !hasApplied) {%>
+                            <a href='jobs?action=apply&id=<%=ad.getId()%>' class="btn btn-outline-primary">Apply</a>
+                            <%}else{%>
+                                <jsp:include page="/jobs/_workStatus.jsp"/>
                             <%}%>
                         </li>
                     </ul>

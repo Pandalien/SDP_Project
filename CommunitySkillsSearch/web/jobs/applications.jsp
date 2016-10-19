@@ -12,7 +12,6 @@
 <%@page import="java.util.List"%>
 <%
     List<Adverts> ads = (List<Adverts>) request.getAttribute(Contract.ADVERTS);
-    User user = (User) request.getAttribute(Contract.CURRENT_USER);
     boolean isClosed;
 %>
 <div class="row">
@@ -28,11 +27,11 @@
             <%
                 if (ads != null) {
                     for (Adverts a : ads) {
-                        isClosed = a.getClosed() == null || !a.getClosed();
+                        isClosed = a.getClosed() != null && a.getClosed();
             %>
             <tr>
                 <td><%=a.getId()%></td>
-                <td><a href='jobs?action=view&id=<%=a.getId()%>&userid=<%=user.getId()%>'><%=a.getTitle()%></a></td>
+                <td><a href='jobs?action=view&id=<%=a.getId()%>'><%=a.getTitle()%></a></td>
                 <td><%=isClosed ? "Closed" : "Open"%></td>
                 <%
                     List<Responders> res = new ArrayList<Responders>(a.getRespondersCollection());
@@ -73,7 +72,7 @@
                         %>
                         <td>Feedback received</td>
                         <td></td>
-                        <td><a href='jobs?action=rate&id=<%=res.get(0).getRespondersPK().getAdvertsId()%>&userid=<%=res.get(0).getRespondersPK().getUserId()%>'>Rate <%=a.getUserId()!=null? a.getUserId().getName() : "this advertiser"%></a></td>
+                        <td><a href='jobs?action=rate&id=<%=res.get(0).getRespondersPK().getAdvertsId()%>&userid=<%=a.getUserId().getId()%>'>Rate <%=a.getUserId()!=null? a.getUserId().getName() : "this advertiser"%></a></td>
                         <%
                         break;
                     case FEEDBACK_WORKER:

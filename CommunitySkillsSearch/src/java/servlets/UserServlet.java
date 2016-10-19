@@ -121,7 +121,11 @@ public class UserServlet extends AbstractServlet {
     }
     
     public void edit(HttpServletRequest request, HttpServletResponse response) {
-        User user = getCurrentUser(request);
+        User user = getCurrentUserOrLogin(request, response);
+        if (user == null) {
+            return;
+        }
+        
         List<UserSkills> userSkills = userSkillsFacade.findByUserId(user.getId());
         for(UserSkills us : userSkills){
             us.setSkills(skillsFacade.find(us.getUserSkillsPK().getSkillsId()));
@@ -134,7 +138,11 @@ public class UserServlet extends AbstractServlet {
     
     public void editPost(HttpServletRequest request, HttpServletResponse response) {
         // get the current user
-        User user = getCurrentUser(request);
+        User user = getCurrentUserOrLogin(request, response);
+        if (user == null) {
+            return;
+        }
+        
         // get the user input in email & phone field
         String email = request.getParameter("email");
         String phone = request.getParameter("phone");
@@ -182,50 +190,46 @@ public class UserServlet extends AbstractServlet {
     }
     
     public void changepwd(HttpServletRequest request, HttpServletResponse response) {
-      getView(request, response, "user/changepwd.jsp");
+        getView(request, response, "user/changepwd.jsp");
     }
     
     public void changepwdPost(HttpServletRequest request, HttpServletResponse response) {
-      User user = getCurrentUser(request);
-      
-      if (user == null) {
-        alertDanger(request, "Not logged in");
-      }
-      else {
+        
+        User user = getCurrentUserOrLogin(request, response);
+        if (user == null) {
+            return;
+        }
+
         String pass0 = request.getParameter("pass0"); // old
         String pass1 = request.getParameter("pass1"); // new
         String pass2 = request.getParameter("pass2"); // verify new   
-        
+
         // check current password to verify the user
         if (!user.getPassword().equals(pass0)) {
-          alertWarning(request, "Old password mismatch.");
-        }
-        else {
-          // check new password          
-          Login passwordChecker = new Login();
-          if (!passwordChecker.validatePassword(pass1)) {
-            alertDanger(request, "Please input a valid password. "
-                    + "Four characters minimum, must include an uppercase, lowercase, and numeric character. No spaces.");
-          }
-          else if (pass1 == null ? pass2 != null : !pass1.equals(pass2)) {
-            alertDanger(request, "The new passwords you input do not match.");
-          }
-          else {
-            // all checked out so change the password:
-            user.setPassword(pass2);
-            userFacade.edit(user);
-            alertSuccess(request, "Password changed. Please log in again to continue.");
-            
-            // require the user to log in again with the new password to continue:
-            logout(request, response);
-            return;
-          }
-        }
-      }
+            alertWarning(request, "Old password mismatch.");
+        } else {
+            // check new password          
+            Login passwordChecker = new Login();
+            if (!passwordChecker.validatePassword(pass1)) {
+                alertDanger(request, "Please input a valid password. "
+                        + "Four characters minimum, must include an uppercase, lowercase, and numeric character. No spaces.");
+            } else if (pass1 == null ? pass2 != null : !pass1.equals(pass2)) {
+                alertDanger(request, "The new passwords you input do not match.");
+            } else {
+                // all checked out so change the password:
+                user.setPassword(pass2);
+                userFacade.edit(user);
+                alertSuccess(request, "Password changed. Please log in again to continue.");
 
-      // default action is to show the same page again
-      changepwd(request, response);               
-    }   
+                // require the user to log in again with the new password to continue:
+                logout(request, response);
+                return;
+            }
+        }
+
+        // default action is to show the same page again
+        changepwd(request, response);
+    }
     
     public void loginPost(HttpServletRequest request, HttpServletResponse response) {
         User user = userFacade.findByUsernameAndPassword(request.getParameter("username"), request.getParameter("password"));
@@ -342,7 +346,11 @@ public class UserServlet extends AbstractServlet {
     }
     
     public void deletePost(HttpServletRequest request, HttpServletResponse response) {
-        User user = getCurrentUser(request);
+        User user = getCurrentUserOrLogin(request, response);
+        if (user == null) {
+            return;
+        }
+        
         userFacade.remove(user);
         
         sessionEnd(request);
