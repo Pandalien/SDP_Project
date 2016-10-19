@@ -121,7 +121,14 @@ public class AbstractServlet extends HttpServlet {
     
     //get user object from seesion
     protected User getCurrentUser(HttpServletRequest request){
-        return (User)request.getSession().getAttribute(Contract.CURRENT_USER);
+        User user = (User)request.getSession().getAttribute(Contract.CURRENT_USER);
+        
+        if (user != null) {
+            user = userFacade.find(user.getId());
+            request.getSession().setAttribute(Contract.CURRENT_USER, user);
+        }
+        
+        return user;
     }
         
     protected void getView(HttpServletRequest request, HttpServletResponse response, String serverPage){
@@ -297,5 +304,15 @@ public class AbstractServlet extends HttpServlet {
     protected void setCollectionClassifications(HttpServletRequest request){
         List<Classification> clz = classificationFacade.findAll();
         request.setAttribute(Contract.CLASSIFICATIONS, clz);
+    }
+    
+    //redirect browser to url
+    protected void redirect(HttpServletRequest request, HttpServletResponse response, String url){
+        try {
+            response.sendRedirect(request.getContextPath() + url);
+        } catch (Exception ex) {
+            alertDanger(request, "Page not found");
+            showGoBackPage(request, response);
+        }
     }
 }

@@ -150,7 +150,7 @@ public class MessageServlet extends AbstractServlet {
         
         request.setAttribute("message_option", "viewNew");
         alertSuccess(request, "Message sent.");
-        getView(request, response, "messages/_layout.jsp");
+        redirect(request, response, "/messages?action=viewNew");
     }
     
     @Override

@@ -144,7 +144,7 @@ public class ResetPasswordServlet extends AbstractServlet {
       }       
      
       // default action is to show the same page again      
-      resetpwd(request, response);
+      redirect(request, response, "/reset?action=resetpwd");
     }
     
     

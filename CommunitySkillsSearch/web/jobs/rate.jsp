@@ -25,7 +25,7 @@
             <br>
             <form action="jobs?action=rate" method="post">
                 <input type="hidden" name="workerId" value='<%= worker==null? "" : worker.getId()%>'/>
-                <input type="hidden" name="advertId" value='<%= ad==null? "" : ad.getId()%>'/>
+                <input type="hidden" name="id" value='<%= ad==null? "" : ad.getId()%>'/>
                 <div class="form-group row">
                     <div class="col-md-12">
                         <div class="well">

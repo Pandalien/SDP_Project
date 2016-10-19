@@ -23,6 +23,7 @@ import sb.UserSkillsFacade;
 import utils.Contract;
 import utils.EditAccount;
 import utils.Login;
+import utils.ServletUtils;
 import utils.StringUtils;
 
 @MultipartConfig(fileSizeThreshold = 1024 * 1024 * 1, // 1 MB 
@@ -114,7 +115,8 @@ public class UserServlet extends AbstractServlet {
             userFacade.create(user);
             sessionStart(request, user);
             alertSuccess(request, "Hello " + user.getName() + ", your account is created successfully!");
-            edit(request, response);
+            
+            redirect(request, response, "/user?action=edit");
         } catch (Exception e) {
             alertDanger(request, "Failed to create account:" + e);
         }
@@ -186,7 +188,7 @@ public class UserServlet extends AbstractServlet {
               alertDanger(request, "Please input a valid contact number. (eg. 1234567890,  (123)-456-7890, 123-456-7890 x0000)");
         }
         
-        edit(request, response);
+        redirect(request, response, "/user?action=edit");
     }
     
     public void changepwd(HttpServletRequest request, HttpServletResponse response) {
@@ -228,7 +230,7 @@ public class UserServlet extends AbstractServlet {
         }
 
         // default action is to show the same page again
-        changepwd(request, response);
+        redirect(request, response, "/user?action=changepwd");
     }
     
     public void loginPost(HttpServletRequest request, HttpServletResponse response) {
@@ -255,7 +257,7 @@ public class UserServlet extends AbstractServlet {
         }
         
         //is log failed return to login again
-        getView(request, response, "user/login.jsp");
+        redirect(request, response, "/user?action=login");
     }
     
     public void logout(HttpServletRequest request, HttpServletResponse response) {
@@ -351,10 +353,13 @@ public class UserServlet extends AbstractServlet {
             return;
         }
         
+        //delete user avatar
+        ServletUtils.deleteUserPhoto(this, user.getImg());
+        //delete user from database
         userFacade.remove(user);
         
         sessionEnd(request);
         alertSuccess(request, "Account Deleted :(");
-        getView(request, response, "index.jsp");
+        redirect(request, response, "/home?action=index");
     }
 }

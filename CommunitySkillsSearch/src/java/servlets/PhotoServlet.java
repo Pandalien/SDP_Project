@@ -44,13 +44,7 @@ public class PhotoServlet extends AbstractServlet {
             alertSuccess(request, "Your photo has been deleted.");
         }
 
-        try {
-            //return to edit page
-            getView(request, response, "user/photo.jsp");
-        } catch (Exception ex) {
-            alertDanger(request, "Page not found");
-            showGoBackPage(request, response);
-        }
+        redirect(request, response, "/user?action=photo");
     }
 
     public void upload(HttpServletRequest request, HttpServletResponse response) {
@@ -82,6 +76,7 @@ public class PhotoServlet extends AbstractServlet {
         }
 
         upload(request, response);
+        redirect(request, response, "/photo?action=upload");
     }
 
     public void deleteAdPhoto(HttpServletRequest request, HttpServletResponse response) {
@@ -116,13 +111,7 @@ public class PhotoServlet extends AbstractServlet {
             alertSuccess(request, "Your photo has been deleted.");
         }
 
-        try {
-            //return to view page
-            response.sendRedirect(request.getContextPath() + "/jobs?action=view&id=" + ad.getId());
-        } catch (Exception ex) {
-            alertDanger(request, "Page not found");
-            showGoBackPage(request, response);
-        }
+        redirect(request, response, "/jobs?action=view&id=" + ad.getId());
     }
     
     public void uploadAdPhotoPost(HttpServletRequest request, HttpServletResponse response) {
@@ -156,13 +145,7 @@ public class PhotoServlet extends AbstractServlet {
             alertDanger(request, "Not supported file format.");
         }
 
-        try {
-            //return to view page
-            response.sendRedirect(request.getContextPath() + "/jobs?action=view&id=" + ad.getId());
-        } catch (Exception ex) {
-            alertDanger(request, "Page not found");
-            showGoBackPage(request, response);
-        }
+        redirect(request, response, "/jobs?action=view&id=" + ad.getId());
     }
     
     @Override
