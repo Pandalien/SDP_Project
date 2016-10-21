@@ -1,7 +1,7 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Software Development Practice, Stream 50 Team 2
+ * Community Skills Search
+ * User servlet is responsible for handle request related to user features, i.e edit account, create account
  */
 package servlets;
 
@@ -39,12 +39,14 @@ public class UserServlet extends AbstractServlet {
     public void init() {
     }
     
+    //View: show all users
     public void browse(HttpServletRequest request, HttpServletResponse response) {
         List<User> users = userFacade.findAll();
         request.setAttribute(Contract.USERS, users);
         getView(request, response, "user/browse.jsp");
     }
     
+    //View: create a new user
     public void create(HttpServletRequest request, HttpServletResponse response) {
         //set a list of suburbs to request attributes
         setCollectionSuburbs(request);     
@@ -110,6 +112,7 @@ public class UserServlet extends AbstractServlet {
         user.setJoinedDate(new Date());
         user.setPhone("");
         user.setVisible(Boolean.TRUE);
+        user.setRating(0.0);
         
         try {
             userFacade.create(user);
@@ -122,6 +125,7 @@ public class UserServlet extends AbstractServlet {
         }
     }
     
+    //View: edit user account
     public void edit(HttpServletRequest request, HttpServletResponse response) {
         User user = getCurrentUserOrLogin(request, response);
         if (user == null) {
@@ -133,6 +137,8 @@ public class UserServlet extends AbstractServlet {
             us.setSkills(skillsFacade.find(us.getUserSkillsPK().getSkillsId()));
         }
         request.setAttribute("skillsList", userSkills);
+        
+        //get suburb and skill list
         setCollectionSuburbs(request);
         setCollectionSkills(request);
         getView(request, response, "user/edit.jsp");
@@ -191,6 +197,7 @@ public class UserServlet extends AbstractServlet {
         redirect(request, response, "/user?action=edit");
     }
     
+    //View: change password
     public void changepwd(HttpServletRequest request, HttpServletResponse response) {
         getView(request, response, "user/changepwd.jsp");
     }
@@ -233,6 +240,7 @@ public class UserServlet extends AbstractServlet {
         redirect(request, response, "/user?action=changepwd");
     }
     
+    //View: this is called when user try push the login button for login page
     public void loginPost(HttpServletRequest request, HttpServletResponse response) {
         User user = userFacade.findByUsernameAndPassword(request.getParameter("username"), request.getParameter("password"));
 
@@ -260,21 +268,25 @@ public class UserServlet extends AbstractServlet {
         redirect(request, response, "/user?action=login");
     }
     
+    //View: log out page
     public void logout(HttpServletRequest request, HttpServletResponse response) {
         sessionEnd(request);
         getView(request, response, "index.jsp");
     }
     
+    //end the current user session
     protected void sessionEnd(HttpServletRequest request) {
         HttpSession session = request.getSession();
         session.setAttribute(Contract.CURRENT_USER, null);
     }
 
+    //set the user to the current session
     protected void sessionStart(HttpServletRequest request, User user) {
         HttpSession session = request.getSession();
         session.setAttribute(Contract.CURRENT_USER, user);
     }
     
+    //used for development only
     protected void devLoginWrapper(HttpServletRequest request, HttpServletResponse response, User user) {
         if (user == null) {
             alertDanger(request, "Your username or password is wrong, please try again.");
@@ -287,26 +299,31 @@ public class UserServlet extends AbstractServlet {
         getView(request, response, "index.jsp");
     }
     
+    //used for development only
     public void developerLogin(HttpServletRequest request, HttpServletResponse response) {
         User user = userFacade.findByUsernameAndPassword("admin", "admin");
 
         devLoginWrapper(request, response, user);
     }
     
+    //used for development only
     public void mattLogin(HttpServletRequest request, HttpServletResponse response) {
         User user = userFacade.findByUsernameAndPassword("Matt", "Matt");
 
         devLoginWrapper(request, response, user);
     }
     
+    //used for development only
     public void andyLogin(HttpServletRequest request, HttpServletResponse response) {
         User user = userFacade.findByUsernameAndPassword("Andy", "Andy");
 
         devLoginWrapper(request, response, user);
     }
     
+    //doGet & doPost call this methond, then all the "view" mothod is called from here
     @Override
     protected void invokeMethod(HttpServletRequest req, HttpServletResponse resp, boolean doPost) {
+        //set breadscrum text
         req.setAttribute("current_path", "User");
         
         //features in this servlet require users to login
@@ -319,7 +336,7 @@ public class UserServlet extends AbstractServlet {
         super.invokeMethod(req, resp, doPost);
     }
     
-    //view a user's details, or themselve's profile
+    //View: view a user's details, or themselve's profile
     public void view(HttpServletRequest request, HttpServletResponse response) {
         RequestData data = getAuthenticatedData(request, response);
         if (data != null) {
@@ -342,9 +359,14 @@ public class UserServlet extends AbstractServlet {
         showGoBackPage(request, response);
     }
     
+    //View: delete user account
     public void delete(HttpServletRequest request, HttpServletResponse response) {
-        int id = getRequestId(request);
-        showConfirmPage(request, response, "Are you sure you want to delete your account?", "user?action=delete", id);
+        User user = getCurrentUserOrLogin(request, response);
+        if (user == null) {
+            return;
+        }
+        
+        showConfirmPage(request, response, "Are you sure you want to delete your account?", "user?action=delete", user.getId());
     }
     
     public void deletePost(HttpServletRequest request, HttpServletResponse response) {

@@ -10,18 +10,19 @@
 <%@page import="entities.User"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
-    User rater = (User) request.getAttribute(Contract.CURRENT_USER);    // the user who gives feeback
+    User user = (User) session.getAttribute(Contract.CURRENT_USER);     //current user
     User worker = (User) request.getAttribute(Contract.OTHER_USER);     // the user who worked for the job
     Adverts ad = (Adverts) request.getAttribute(Contract.ADVERTS);
+    boolean isAdOwner = ad != null && ad.getId() == user.getId();
 %>
+
 <div class="container fuelux">
     <div class="row">
         <div class="col-md-8 personal-info">
         <%
-            if (rater != null && worker != null) {
+            if (user != null && worker != null && ad != null) {
         %>
-            <%-- if raterID != workerID, the rater is the advertiser --%>
-            <h3>Rate for <%=rater.getId()!=worker.getId() ? worker.getName() : rater.getName()%>:</h3>
+            <h3>Rate for <%=isAdOwner? user.getName() : worker.getName()%>:</h3>
             <br>
             <form action="jobs?action=rate" method="post">
                 <input type="hidden" name="workerId" value='<%= worker==null? "" : worker.getId()%>'/>
@@ -55,7 +56,7 @@
                     <div class="col-md-12">
                         <input type="submit" value="Submit" class="btn btn-primary">
                         <span></span>
-                        <a href="jobs?action=<%=rater.getId()!=worker.getId() ? "applicants" : "applications"%>" class="btn btn-default">Later</a>
+                        <a href="jobs?action=<%=isAdOwner ? "applicants" : "applications"%>" class="btn btn-default">Later</a>
                     </div>
                 </div>
             </form>

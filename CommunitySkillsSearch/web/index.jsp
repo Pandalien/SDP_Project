@@ -112,7 +112,8 @@
 Who's here?
 <a href="search?action=searchFor&suburb=-1&keywords=&type=workers">Search Users</a>
 <br/>
-
+Web app version: 1.5
+<br/>
 <%if(ads != null && !ads.isEmpty()){%>
 <!-- Jobs Section -->
 <div class="row">

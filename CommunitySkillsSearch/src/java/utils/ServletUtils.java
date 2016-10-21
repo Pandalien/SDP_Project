@@ -1,7 +1,7 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Software Development Practice, Stream 50 Team 2
+ * Community Skills Search
+ * Tools for servlet for photo uploading and delete.
  */
 package utils;
 
@@ -18,6 +18,7 @@ import javax.servlet.http.Part;
  */
 
 public class ServletUtils {
+    
     //create a user avatar image path for html use, default avatar is returned is not found
     public static String getUserAvatar(final HttpServlet servlet, HttpServletRequest request, final String imgName){
         if (!StringUtils.isEmpty(imgName)) {

@@ -1,7 +1,6 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Software Development Practice, Stream 50 Team 2
+ * Community Skills Search
  */
 package servlets;
 
@@ -14,7 +13,6 @@ import entities.Responders;
 import entities.RespondersPK;
 import entities.Suburb;
 import entities.User;
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,7 +22,6 @@ import java.util.Objects;
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import sb.AdvertsFacade;
 import sb.RequirementsFacade;
 import sb.RespondersFacade;
 import utils.Contract;
@@ -42,10 +39,8 @@ public class JobsServlet extends AbstractServlet {
     @EJB
     private RequirementsFacade requirementsFacade;
     
-    @EJB
-    private AdvertsFacade advertsFacade;
    
-    
+    //View: create an ad
     public void create(HttpServletRequest request, HttpServletResponse response) {
         //login required to create an ad
         User user = getCurrentUserOrLogin(request, response);
@@ -147,6 +142,7 @@ public class JobsServlet extends AbstractServlet {
         redirect(request, response, "/jobs?action=view&id=" + ad.getId());
     }
     
+    //View: view a job listing
     public void view(HttpServletRequest request, HttpServletResponse response) {
         User user = getCurrentUserOrLogin(request, response);
         if (user == null) {
@@ -182,6 +178,7 @@ public class JobsServlet extends AbstractServlet {
         showGoBackPage(request, response);
     }
     
+    //View: edit an ad listing
     public void edit(HttpServletRequest request, HttpServletResponse response) {
         int id = getRequestId(request);
         if (id != -1) {
@@ -234,6 +231,7 @@ public class JobsServlet extends AbstractServlet {
         getView(request, response, "jobs/openings.jsp");
     }
     
+    //handles open and close
     private void vacancyWrapper(HttpServletRequest request, HttpServletResponse response, Boolean isClosed) {
         int id = getRequestId(request);
         if (id != -1) {
@@ -252,14 +250,17 @@ public class JobsServlet extends AbstractServlet {
         showGoBackPage(request, response);
     }
     
+    //View: close an ad
     public void close(HttpServletRequest request, HttpServletResponse response) {
         vacancyWrapper(request, response, Boolean.TRUE);
     }
     
+    //View: make an ad available
     public void open(HttpServletRequest request, HttpServletResponse response) {
         vacancyWrapper(request, response, Boolean.FALSE);
     }
     
+    //View: delete an ad
     public void delete(HttpServletRequest request, HttpServletResponse response) {
         RequestData data = getAuthenticatedData(request, response);
         if (data == null) {
@@ -291,6 +292,7 @@ public class JobsServlet extends AbstractServlet {
         showGoBackPage(request, response);
     }
     
+    ////View: user apply to an ad
     public void apply(HttpServletRequest request, HttpServletResponse response) {
         RequestData data = getAuthenticatedData(request, response);
         if (data == null) {
@@ -331,6 +333,7 @@ public class JobsServlet extends AbstractServlet {
         redirect(request, response, "/jobs?action=view&id=" + ad.getId());
     }
     
+    //View: withdraw an application
     public void cancel(HttpServletRequest request, HttpServletResponse response) {
         RequestData data = getAuthenticatedData(request, response);
         if (data == null) {
@@ -375,6 +378,7 @@ public class JobsServlet extends AbstractServlet {
         showGoBackPage(request, response);
     }
     
+    //View: show all appliations
     public void applications(HttpServletRequest request, HttpServletResponse response) {
         User user = getCurrentUserOrLogin(request, response);
         if (user == null) {
@@ -490,6 +494,7 @@ public class JobsServlet extends AbstractServlet {
         redirect(request, response, "/jobs?action=applicants");
     }
 
+    ////View: mark as done
     public void done(HttpServletRequest request, HttpServletResponse response) {
         RequestData data = getAuthenticatedData(request, response);
         if (data == null) {
@@ -548,6 +553,7 @@ public class JobsServlet extends AbstractServlet {
         redirect(request, response, "/jobs?action=rate&id=" + ad.getId() + "&userid="+workerId);
     }
     
+    //View: the rating page
     public void rate(HttpServletRequest request, HttpServletResponse response) {
         RequestData data = getAuthenticatedData(request, response);
         if (data == null) {
@@ -566,14 +572,13 @@ public class JobsServlet extends AbstractServlet {
         }
         User rater = data.user;
         
-        if (rater.getId() == worker.getId()) {
+        if (Objects.equals(rater.getId(), worker.getId())) {
             alertDanger(request, "You cannot rate yourself, please select a different worker.");
             showGoBackPage(request, response);
             return;
         }
         
         request.setAttribute(Contract.ADVERTS, ad);
-        request.setAttribute(Contract.CURRENT_USER, rater);
         request.setAttribute(Contract.OTHER_USER, worker);
         getView(request, response, "jobs/rate.jsp");
     }
@@ -629,14 +634,21 @@ public class JobsServlet extends AbstractServlet {
             userFacade.edit(worker);
             applicants(request, response);
         }
-        else {    // the worker is going to rate the advertise back
+        else {    // the worker is going to rate the advertiser back
             User advertiser = (User) ad.getUserId();
             responder.setStatus(Contract.ResponderStatus.FEEDBACK_WORKER.ordinal());
             responder.setRatingWorker(Integer.parseInt(request.getParameter("rating")));
             responder.setFeedbackWorker(request.getParameter("feedback"));
             respondersFacade.edit(responder);
 
-            Double newRating = advertiser.getRating() + Double.parseDouble(request.getParameter("rating"));
+            Double newRating = advertiser.getRating();
+            if (newRating == null) {
+                newRating = new Double(0.0);
+            }
+            
+            //caculate new rating value
+            newRating += Double.parseDouble(request.getParameter("rating"));
+            
             advertiser.setRating(newRating);
             userFacade.edit(advertiser);
             applications(request, response);
@@ -651,6 +663,7 @@ public class JobsServlet extends AbstractServlet {
         }
     }
     
+    //View: accepts a job offer
     public void accept(HttpServletRequest request, HttpServletResponse response) {
         RequestData data = getAuthenticatedData(request, response);
         if (data == null) {
@@ -681,6 +694,7 @@ public class JobsServlet extends AbstractServlet {
         showGoBackPage(request, response);
     }
     
+    //View: reject an offer
     public void reject(HttpServletRequest request, HttpServletResponse response) {
         RequestData data = getAuthenticatedData(request, response);
         if (data == null) {

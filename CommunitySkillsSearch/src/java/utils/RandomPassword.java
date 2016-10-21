@@ -1,4 +1,6 @@
 /*
+ * Software Development Practice, Stream 50 Team 2
+ * Community Skills Search
  * Generate a valid random password for this system.
  */
 package utils;

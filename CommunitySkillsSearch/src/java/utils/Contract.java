@@ -1,7 +1,7 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Software Development Practice, Stream 50 Team 2
+ * Community Skills Search
+ * Stores the constant string values used across the JSPs and Servlets
  */
 package utils;
 
@@ -33,6 +33,7 @@ public class Contract {
     
     final public static String ADVERT_VIEW_RESPONDER = "advert_view_responder";
     
+    //this status also being saved in database table: Responders
     public enum ResponderStatus{
         DEFAULT,
         SELECTED,

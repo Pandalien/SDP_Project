@@ -1,13 +1,11 @@
 /*
- * ResetPasswordServlet
- * If an input username and email address matches an existing account in the 
- * database, a new random password is generated and sent to the email address
- * on file. SMTP server properties are loaded from WEB-INF/smtp.properties. 
+ * Software Development Practice, Stream 50 Team 2
+ * Community Skills Search
+ * Used to reset password by email
  */
 package servlets;
 
 import entities.User;
-import java.io.FileInputStream;
 import java.util.Date;
 import java.util.Properties;
 import javax.servlet.http.HttpServletRequest;

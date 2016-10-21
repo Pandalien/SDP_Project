@@ -1,3 +1,9 @@
+/*
+ * Software Development Practice, Stream 50 Team 2
+ * Community Skills Search
+ * The home page servlet
+ */
+
 package servlets;
 
 import entities.Adverts;
@@ -10,16 +16,12 @@ import java.util.Objects;
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import sb.AdvertsFacade;
 import sb.RequirementsFacade;
 import sb.UserSkillsFacade;
 import utils.Contract;
 
 
 public class HomeServlet extends AbstractServlet {
-
-    @EJB
-    private AdvertsFacade advertsFacade;
 
     @EJB
     private RequirementsFacade requirementsFacade;

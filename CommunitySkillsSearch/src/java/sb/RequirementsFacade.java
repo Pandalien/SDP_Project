@@ -1,13 +1,11 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Software Development Practice, Stream 50 Team 2
+ * Community Skills Search
+ * EJB facade for Requirements
  */
 package sb;
 
-import entities.Adverts;
 import entities.Requirements;
-import entities.User;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;

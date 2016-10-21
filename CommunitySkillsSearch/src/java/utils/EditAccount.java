@@ -1,3 +1,8 @@
+/*
+ * Software Development Practice, Stream 50 Team 2
+ * Community Skills Search
+ * Account data validation
+ */
 
 package utils;
 

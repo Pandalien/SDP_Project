@@ -1,4 +1,8 @@
-
+/*
+ * Software Development Practice, Stream 50 Team 2
+ * Community Skills Search
+ * Servlet for handling photo upload
+ */
 package servlets;
 
 import beans.RequestData;
@@ -19,6 +23,7 @@ import utils.StringUtils;
         location = "/")
 public class PhotoServlet extends AbstractServlet {
     
+    //View: delete user's avatar, confirmation is required
     public void deleteAvatar(HttpServletRequest request, HttpServletResponse response) {
         User user = getCurrentUserOrLogin(request, response);
         if (user == null) {
@@ -47,6 +52,7 @@ public class PhotoServlet extends AbstractServlet {
         redirect(request, response, "/photo?action=upload");
     }
 
+    //View: page with upload & delete buttons
     public void upload(HttpServletRequest request, HttpServletResponse response) {
         getView(request, response, "user/photo.jsp");
     }
@@ -79,6 +85,7 @@ public class PhotoServlet extends AbstractServlet {
         redirect(request, response, "/photo?action=upload");
     }
 
+    //View: delete a photo for advert
     public void deleteAdPhoto(HttpServletRequest request, HttpServletResponse response) {
         RequestData data = getAuthenticatedData(request, response);
         if (data == null) {
@@ -155,7 +162,7 @@ public class PhotoServlet extends AbstractServlet {
         try {
             action = request.getParameter("action");
         } catch (Exception e) {
-            // File or request is too big!
+            // File being uploaded is too big!
             alertDanger(request, "File is too big (maximum 2 MB).");
             showGoBackPage(request, response);
             
@@ -175,6 +182,6 @@ public class PhotoServlet extends AbstractServlet {
             return;
         }
 
-        super.invokeMethod(req, resp, doPost); //To change body of generated methods, choose Tools | Templates.
+        super.invokeMethod(req, resp, doPost);
     }
 }

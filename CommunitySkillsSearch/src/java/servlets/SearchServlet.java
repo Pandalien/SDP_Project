@@ -1,19 +1,15 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Software Development Practice, Stream 50 Team 2
+ * Community Skills Search
+ * Servlet for testing
  */
 package servlets;
 
 import entities.Adverts;
 import entities.User;
-import entities.UserSkills;
 import java.util.*;
-import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import sb.AdvertsFacade;
-import sb.UserSkillsFacade;
 import utils.Contract;
 import utils.SearchParams;
 
@@ -23,13 +19,7 @@ import utils.SearchParams;
  */
 public class SearchServlet extends AbstractServlet {
 
-    @EJB
-    private AdvertsFacade advertsFacade;
-    
-    @EJB
-    private UserSkillsFacade userSkillsFacade;
-   
-    
+    //return page for search results
     public void searchFor(HttpServletRequest request, HttpServletResponse response) {
       
       String suburb_id_param = request.getParameter("suburb");

@@ -1,5 +1,7 @@
 /*
-This class is used verify the input from user
+ * Software Development Practice, Stream 50 Team 2
+ * Community Skills Search
+ * This class is used verify the input from user
  */
 package utils;
 
@@ -8,8 +10,6 @@ import entities.Responders;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import services.clients.AdvertsClient;
 
 /**

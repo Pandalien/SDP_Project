@@ -27,7 +27,7 @@
 %>
 <!-- Content Row -->
 <div class="row">
-    <div class="col-lg-12">
+    <div class="col-md-12">
         <h2 class="page-header">
             <span class="label label-default"><%=isOpen? "Open" : "Closed"%></span>
             <%=ad.getTitle()%>
@@ -36,7 +36,7 @@
         </h2>
     </div>
     <!-- Job Post Content Column -->
-    <div class="col-lg-8">
+    <div class="col-md-8">
 
         <!-- Job Post -->
 
@@ -57,6 +57,7 @@
 
         <!-- Job Comments -->
 
+        <%if(!isOwner){%>
         <!-- Comments Form -->
         <div class="well">
             <h4>Leave a Message to <%=ad.getUserId().getName()%></h4>
@@ -68,6 +69,7 @@
                 <button type="submit" class="btn btn-primary">Send</button>
             </form>
         </div>
+        <%}%>
                 
         <!-- Posted Comments -->
         <%
@@ -131,14 +133,14 @@
         <div class="well">
             <h4>Job Categories</h4>
             <div class="row">
-                <div class="col-lg-6">
+                <div class="col-md-6">
                     <ul class="list-unstyled">
                         <li><a href="search?action=searchFor&keywords=<%=ad.getTitle()%>"><%=ad.getClassificationId().getName()%></a>
                         </li>
                         
                     </ul>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-md-6">
                     <ul class="list-unstyled">
                         <li><a href="search?action=searchFor">More...</a>
                         </li>
@@ -153,7 +155,7 @@
         <div class="well">
             <h4>Application</h4>
             <div class="row">
-                <div class="col-lg-12">
+                <div class="col-md-12">
                     <ul class="list-unstyled">
                         <li>
                             <%if (isOpen && !hasApplied) {%>
@@ -172,7 +174,7 @@
         <div class="well">
             <h4>Edit Post</h4>
             <div class="row">
-                <div class="col-lg-12">
+                <div class="col-md-12">
                     <p>
                         <a href='jobs?action=<%=isOpen ? "close" : "open"%>&id=<%=ad.getId()%>' class="btn btn-default"><%=isOpen ? "Close" : "Open"%></a>
                         <a href='jobs?action=edit&id=<%=ad.getId()%>' class="btn btn-default">Edit</a>
@@ -185,7 +187,7 @@
             <h4>Edit Photo</h4>
             <div class="row">
                 
-                <div class="col-lg-12">
+                <div class="col-md-12">
                     <form class="form-horizontal" role="form" action="photo?action=uploadAdPhoto" method="post" enctype="multipart/form-data">
                         <input type="hidden" name="id" value='<%= ad==null? "" : ad.getId()%>'/>
                         <div class="form-group">

@@ -1,4 +1,8 @@
-
+/*
+ * Software Development Practice, Stream 50 Team 2
+ * Community Skills Search
+ * Unit test for eidit user account
+ */
 package tests;
 
 import entities.Suburb;

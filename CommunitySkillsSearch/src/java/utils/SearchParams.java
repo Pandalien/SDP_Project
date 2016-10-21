@@ -1,4 +1,6 @@
 /*
+ * Software Development Practice, Stream 50 Team 2
+ * Community Skills Search
  * SearchParams java bean for validating search parameters and holding them
  * as a bean for access by search.jsp.
  */

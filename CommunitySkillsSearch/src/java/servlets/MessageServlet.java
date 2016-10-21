@@ -1,20 +1,17 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Software Development Practice, Stream 50 Team 2
+ * Community Skills Search
  */
 package servlets;
 
-import beans.MessageType;
 import beans.RequestData;
 import entities.Messages;
 import entities.User;
 import java.util.Date;
 import java.util.List;
-import javax.ejb.EJB;
+import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import sb.MessagesFacade;
 import utils.Contract;
 import utils.StringUtils;
 
@@ -25,12 +22,11 @@ import utils.StringUtils;
  */
 public class MessageServlet extends AbstractServlet {
 
-    @EJB
-    private MessagesFacade messagesFacade;
     public void index(HttpServletRequest request, HttpServletResponse response) {
         viewNew(request, response);
     }
 
+    //View: get messages that have been read
     public void viewRead(HttpServletRequest request, HttpServletResponse response) {
         getMessage(request, response);
         
@@ -47,6 +43,7 @@ public class MessageServlet extends AbstractServlet {
         getView(request, response, "messages/_layout.jsp");
     }
 
+    //View: view messages that have been sent
     public void viewSent(HttpServletRequest request, HttpServletResponse response) {
         getMessage(request, response);
         
@@ -63,6 +60,7 @@ public class MessageServlet extends AbstractServlet {
         getView(request, response, "messages/_layout.jsp");
     }
     
+    //View: view new messages
     public void viewNew(HttpServletRequest request, HttpServletResponse response) {
         Messages msg = getMessage(request, response);
         if (msg != null) {
@@ -76,6 +74,7 @@ public class MessageServlet extends AbstractServlet {
         getView(request, response, "messages/_layout.jsp");
     }
  
+    //query messages from db
     private Messages getMessage(HttpServletRequest request, HttpServletResponse response) {
         User user = getCurrentUserOrLogin(request, response);
         if (user == null) {
@@ -101,6 +100,7 @@ public class MessageServlet extends AbstractServlet {
         return null;
     }
     
+    //View: create a message to send
     public void compose(HttpServletRequest request, HttpServletResponse response) {
         RequestData data = getAuthenticatedData(request, response);
         if (data == null) {
@@ -114,11 +114,18 @@ public class MessageServlet extends AbstractServlet {
             return;
         }
         
+        if (Objects.equals(receiver.getId(), data.user.getId())) {
+            alertWarning(request, "You cannot send messages to yourself.");
+            showGoBackPage(request, response);
+            return;
+        }
+        
         request.setAttribute(Contract.OTHER_USER, receiver);
         
         getView(request, response, "messages/compose.jsp");
     }
     
+    //View: send message
     public void composePost(HttpServletRequest request, HttpServletResponse response) {
         RequestData data = getAuthenticatedData(request, response);
         if (data == null) {
@@ -128,6 +135,12 @@ public class MessageServlet extends AbstractServlet {
         User receiver = userFacade.find(data.id);
         if (null == receiver) {
             alertDanger(request, "The user record was not found.");
+            showGoBackPage(request, response);
+            return;
+        }
+        
+        if (Objects.equals(receiver.getId(), data.user.getId())) {
+            alertWarning(request, "You cannot send messages to yourself.");
             showGoBackPage(request, response);
             return;
         }

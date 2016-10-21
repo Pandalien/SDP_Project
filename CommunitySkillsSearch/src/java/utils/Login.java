@@ -1,4 +1,8 @@
-
+/*
+ * Software Development Practice, Stream 50 Team 2
+ * Community Skills Search
+ * Use for user input data validation
+ */
 package utils;
 
 import java.util.regex.Matcher;

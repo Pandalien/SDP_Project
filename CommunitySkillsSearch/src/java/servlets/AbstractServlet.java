@@ -1,3 +1,9 @@
+/*
+ * Software Development Practice, Stream 50 Team 2
+ * Community Skills Search
+ * The basic Servlet, used to share the common funtions
+ */
+
 package servlets;
 
 import beans.MessageType;
@@ -25,7 +31,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import sb.AdvertsFacade;
 import sb.ClassificationFacade;
 import sb.MessagesFacade;
@@ -38,6 +43,7 @@ import utils.StringUtils;
 
 public class AbstractServlet extends HttpServlet {
 
+    //Enterprice beans for database query
     @EJB
     protected AdvertsFacade advertsFacade;
 
@@ -55,45 +61,7 @@ public class AbstractServlet extends HttpServlet {
     @EJB
     protected SkillsFacade skillsFacade;
     
-    protected String parametersGet(HttpServletRequest req){
-        StringBuilder sb = new StringBuilder();
-        boolean first;
-        Enumeration<String> parameterNames = req.getParameterNames();
-
-        while (parameterNames.hasMoreElements()) {
-
-            String paramName = parameterNames.nextElement();
-            sb.append(paramName).append("=");
-
-            String[] paramValues = req.getParameterValues(paramName);
-            first = true;
-            for (String paramValue : paramValues) {
-                sb.append(paramValue);
-                if (first) {
-                    first = false;
-                } else {
-                    sb.append(",");
-                }
-            }
-            sb.append("&");
-        }
-        
-        return sb.toString();
-    }
-    
-    protected void parametersLog(HttpServletRequest req, HttpServletResponse res){
-        Logger.getLogger(AbstractServlet.class.getName()).log(Level.INFO, parametersGet(req));
-    }
-
-    protected void parameterPrint(HttpServletRequest req, HttpServletResponse res) {
-        try (PrintWriter out = res.getWriter()) {
-            res.setContentType("text/plain");
-            out.write(parametersGet(req));
-        } catch (IOException ex) {
-            Logger.getLogger(AbstractServlet.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
+    //print text string as response
     protected void responsePrint(HttpServletResponse response, String text) {
         try {
             try (PrintWriter out = response.getWriter()) {
@@ -132,6 +100,8 @@ public class AbstractServlet extends HttpServlet {
         return user;
     }
         
+    //This in an important method. 
+    //Get a JSP content, and embedded it to the template page: layout.jsp
     protected void getView(HttpServletRequest request, HttpServletResponse response, String serverPage){
         String template = "/layout.jsp";
         request.setAttribute("content", serverPage);
@@ -143,6 +113,8 @@ public class AbstractServlet extends HttpServlet {
         }
     }
     
+    //used to get views
+    //reflection is used to call a public method in servlet
     protected void invokeMethod(HttpServletRequest req, HttpServletResponse resp, boolean doPost){
         //call a public method according to the action name, if empty, index() is invoked
         String action = req.getParameter("action");
@@ -174,11 +146,13 @@ public class AbstractServlet extends HttpServlet {
         }
     }
 
+    //show not found error
     protected void error404(HttpServletRequest req, HttpServletResponse resp){
         alertWarning(req, "The page does not exist.");
         showGoBackPage(req, resp);
     }
     
+    //show messages at the top of the returned HTML page
     public void alert(HttpServletRequest req, String msg, MessageType type, String link){
         //get old object
         List<ServerMessage> msgs = (List<ServerMessage>) req.getAttribute(Contract.MESSAGES_FROM_SERVER);
@@ -214,10 +188,12 @@ public class AbstractServlet extends HttpServlet {
         alert(req, msg, MessageType.DANGER);
     }
     
+    //show a page with goback button
     public void showGoBackPage(HttpServletRequest req, HttpServletResponse resp){
         getView(req, resp, "shared/goback.jsp");
     }
     
+    //show a page with confirm & goback button
     public void showConfirmPage(HttpServletRequest req, HttpServletResponse resp, String confirmMsg, String action, int id){
         //show confirm message
         alertInfo(req, confirmMsg);
@@ -229,6 +205,7 @@ public class AbstractServlet extends HttpServlet {
         getView(req, resp, "shared/confirm.jsp");
     }
     
+    //a basic message to print message to the returned HTML page
     protected void sendMessage(HttpServletRequest req, HttpServletResponse resp, String msg){
         req.setAttribute("server_message", msg);
         getView(req, resp, "shared/message.jsp");
@@ -244,6 +221,7 @@ public class AbstractServlet extends HttpServlet {
         invokeMethod(req, resp, false);
     }
     
+    //View: login page
     public void login(HttpServletRequest request, HttpServletResponse response) {
         //save original query url to hidden text input (see login.jsp)
         String redirect = request.getParameter("redirect");
@@ -271,6 +249,7 @@ public class AbstractServlet extends HttpServlet {
         getView(request, response, "user/login.jsp");
     }
     
+    //get id from query string
     public int getRequestId(HttpServletRequest request){
         String strId = request.getParameter("id");
         
@@ -281,6 +260,7 @@ public class AbstractServlet extends HttpServlet {
         return -1;
     }
     
+    //get id and the user object from request object
     public RequestData getAuthenticatedData(HttpServletRequest request, HttpServletResponse response){
         User user = getCurrentUserOrLogin(request, response);
         if (user == null) {
@@ -297,16 +277,19 @@ public class AbstractServlet extends HttpServlet {
         return new RequestData(user, id);
     }
     
+    //prepare a skill list
     protected void setCollectionSkills(HttpServletRequest request){
         List<Skills> skills = skillsFacade.findAll();
         request.setAttribute(Contract.SKILLS, skills);
     }
     
+    //prepare a suburb list
     protected void setCollectionSuburbs(HttpServletRequest request){
         List<Suburb> suburbs = suburbFacade.findAll();
         request.setAttribute(Contract.SUBURBS, suburbs);
     }
     
+    //prepare classification list
     protected void setCollectionClassifications(HttpServletRequest request){
         List<Classification> clz = classificationFacade.findAll();
         request.setAttribute(Contract.CLASSIFICATIONS, clz);

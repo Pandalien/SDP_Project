@@ -1,3 +1,8 @@
+/*
+ * Software Development Practice, Stream 50 Team 2
+ * Community Skills Search
+ * Unit test for edit advert
+ */
 package tests;
 
 import entities.Adverts;
