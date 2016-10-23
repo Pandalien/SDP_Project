@@ -64,7 +64,7 @@ public class SearchParamsTest {
   public void testParseType() {
     assertEquals(SearchParams.WORKER, SearchParams.parseType("workers"));
     assertEquals(SearchParams.JOB, SearchParams.parseType("jobs"));     
-    assertEquals(SearchParams.WORKER, SearchParams.parseType(null));
+    assertEquals(SearchParams.JOB, SearchParams.parseType(null));
   }
 
   @Test

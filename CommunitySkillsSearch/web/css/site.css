@@ -107,6 +107,29 @@ footer {
     margin: 50px 0;
 }
 
+
+.skillsTag {
+    border: 1px solid lightgray; 
+    padding: 10px; 
+    background-color: lightgray; 
+    border-radius: 1em 1em;  
+}
+
+.skillsCell {
+    height: 10em;
+}
+
+.vcenter {
+    display: inline-block;
+    vertical-align: middle;
+    float: none;
+}
+
+.vertical-align {
+  display: flex;
+  flex-direction: row;
+}
+
 /* Responsive Styles */
 
 @media(max-width:991px) {

@@ -1,15 +1,18 @@
 /*
  * Software Development Practice, Stream 50 Team 2
  * Community Skills Search
- * Servlet for testing
+ * Search function.
  */
 package servlets;
 
 import entities.Adverts;
 import entities.User;
+import entities.UserSkills;
 import java.util.*;
+import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import sb.UserSkillsFacade;
 import utils.Contract;
 import utils.SearchParams;
 
@@ -18,6 +21,9 @@ import utils.SearchParams;
  * @author AD
  */
 public class SearchServlet extends AbstractServlet {
+  
+    @EJB
+    private UserSkillsFacade userSkillsFacade;  
 
     //return page for search results
     public void searchFor(HttpServletRequest request, HttpServletResponse response) {
@@ -53,6 +59,17 @@ public class SearchServlet extends AbstractServlet {
         
         List<User> users = userFacade.findByVarious(search);     
         request.setAttribute(Contract.USERS, users);
+        
+        // make a hashtable of username->skills lists:
+        HashMap<String, List<UserSkills>> userSkillsMap = new HashMap();
+        for (User user: users) {
+//          List<UserSkills> userSkills = userSkillsFacade.findByUserId(user.getId());
+//          userSkillsMap.put(user.getName(), userSkills);
+          List<UserSkills> userSkills = userSkillsFacade.findByUserId(user.getId());
+          userSkillsMap.put(user.getName(), userSkills);
+        }
+        request.setAttribute("userSkillsMap", userSkillsMap);     
+        
       }
       
       request.setAttribute("search", search);

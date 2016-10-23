@@ -157,7 +157,7 @@ public class UserServlet extends AbstractServlet {
         // get the user choice in suburb field and set it to the user
         user.setSuburbId(suburbFacade.findById(Integer.parseInt(request.getParameter("suburb_id"))));
         // get the user choice in the visible checkbox and set it to the user
-        user.setVisible((request.getParameter("visible") == null ? false : true));
+        user.setVisible(request.getParameter("visible") == null ? false : true);
         // get the user input in introduction textarea and set it to the user
         user.setIntroduction(request.getParameter("intro"));
         // deletes all existing skills in database for this user
