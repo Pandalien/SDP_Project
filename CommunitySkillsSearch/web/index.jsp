@@ -29,7 +29,7 @@
         <div class="item active">
             <div class="fill" style="background-image:url('res/images/jobsearch.jpg');"></div>
             <div class="carousel-caption">
-                <h2>Work in community</h2>
+                <h2>Work in the community</h2>
             </div>
         </div>
         <div class="item">
@@ -75,7 +75,8 @@
                     <li>Support youth (mentoring and after-school programs)</li>
                     <li>Beautify the community (beach and park cleanups)</li>
                 </ul>
-                <a href="search?action=searchFor&keywords=" class="btn btn-default">Search work</a>
+                <a href="search?action=searchFor&keywords=&type=workers" class="btn btn-primary">Find Workers</a>
+                <a href="search?action=searchFor&keywords=&type=jobs" class="btn btn-primary">Find Jobs</a>                
             </div>
         </div>
     </div>
@@ -105,14 +106,8 @@
 </div>
 <!-- /.row -->
 
-<h2><a href="user?action=developerLogin">Quick login as admin</a></h2>
-<h2><a href="user?action=mattLogin">Quick login as Matt</a></h2>
-<h2><a href="user?action=andyLogin">Quick login as andy</a></h2>
 <br/>
-Who's here?
-<a href="search?action=searchFor&suburb=-1&keywords=&type=workers">Search Users</a>
-<br/>
-Web app version: 1.5
+Web app version: 1.6
 <br/>
 <%if(ads != null && !ads.isEmpty()){%>
 <!-- Jobs Section -->

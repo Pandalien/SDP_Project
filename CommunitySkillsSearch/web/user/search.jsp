@@ -110,18 +110,18 @@
       <p><a class="btn btn-primary" href="user?action=view&id=<%=worker.getId()%>">View Worker</a></p>
       <p><%=StringUtils.shortenString(worker.getIntroduction(), 40)%></p> 
     </div>
-    <div class="col-md-8">
-      <div class="skillsCell">
+    <div class="col-md-2">
+ 
     <%
       List<UserSkills> usList = userSkillsMap.get(worker.getName());
       for (UserSkills us: usList) {
         Skills s = us.getSkills();
         %>
-        <span class="skillsTag"><%=s.getName()%></span>&nbsp;
+        <h4><span class="label label-info"><%=s.getName()%></span></h4>
         <%
       }
     %>
-      </div>
+
 
     </div>
   </div>
