@@ -76,7 +76,7 @@
             <footer>
                 <div class="row">
                     <div class="col-lg-12">
-                        <p>Copyright &copy; Community Skills Search 2016 <small>Web app version: 1.8</small></p>
+                        <p>Copyright &copy; Community Skills Search 2016 <small>Web app version: 1.9</small></p>
                     </div>
                 </div>
             </footer>
