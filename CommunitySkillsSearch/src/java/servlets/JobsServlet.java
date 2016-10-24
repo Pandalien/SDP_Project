@@ -188,11 +188,7 @@ public class JobsServlet extends AbstractServlet {
                 ad.setSkillsCollection(skills);
                 
                 request.setAttribute(Contract.VIEW_ADVERT, ad);
-                request.setAttribute(Contract.CURRENT_USER, user);          
-
-                //get current user as a responder's info
-                Responders responder = respondersFacade.find(new RespondersPK(user.getId(), ad.getId()));
-                request.setAttribute(Contract.ADVERT_RESPONDERS, responder);
+                request.setAttribute(Contract.CURRENT_USER, user);
                 
                 getView(request, response, "jobs/view.jsp");
                 return;

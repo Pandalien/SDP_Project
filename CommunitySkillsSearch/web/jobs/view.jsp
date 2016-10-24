@@ -4,6 +4,7 @@
     Author     : andyc
 --%>
 
+<%@page import="java.util.Iterator"%>
 <%@page import="entities.Skills"%>
 <%@page import="entities.Requirements"%>
 <%@page import="utils.Contract.ResponderStatus"%>
@@ -17,13 +18,19 @@
 <%@page import="entities.Adverts"%>
 <%
     Adverts ad = (Adverts) request.getAttribute(Contract.VIEW_ADVERT);
-    Responders responder = (Responders) request.getAttribute(Contract.ADVERT_RESPONDERS);
+    Collection<Responders> respondersList = ad.getRespondersCollection();
+    Responders responder = null;
+    if (respondersList != null && !respondersList.isEmpty()) {
+        Iterator<Responders> it = respondersList.iterator();
+        responder = it.next();
+    }
+       
     User currentUser = (User) session.getAttribute(Contract.CURRENT_USER);
     
     boolean isOpen = ad.getClosed()==null||!ad.getClosed();
     boolean hasApplied = responder!=null;
     
-    boolean isOwner = currentUser != null && ad.getUserId().getId() == currentUser.getId();
+    boolean isOwner = currentUser != null && (ad.getUserId().getId() == currentUser.getId());
     
     String photo = ServletUtils.getUserPhoto(this, request, ad.getImg());
 %>
