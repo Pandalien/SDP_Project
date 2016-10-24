@@ -48,7 +48,7 @@ public class Skills implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
-    @Size(max = 45)
+    @Size(max = 100)
     @Column(name = "name")
     private String name;
     @Size(max = 200)

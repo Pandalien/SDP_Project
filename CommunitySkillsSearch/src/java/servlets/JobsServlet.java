@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import sb.RequirementsFacade;
 import sb.RespondersFacade;
+import utils.AdvertCtrl;
 import utils.Contract;
 import utils.ServletUtils;
 
@@ -82,8 +83,17 @@ public class JobsServlet extends AbstractServlet {
             }
         }
         
+        AdvertCtrl adCtrl = new AdvertCtrl();
+        
         ad.setTitle(request.getParameter("title"));
-        ad.setContent(request.getParameter("content"));
+        String content = request.getParameter("content");
+        if (!adCtrl.verifyContent(content)) {
+            alertWarning(request, "Your content is too long. (1000 characters maximum)");
+            showGoBackPage(request, response);
+            return;
+        }
+        
+        ad.setContent(content);
         ad.setUserId(user);
         ad.setClassificationId(new Classification(Integer.parseInt(request.getParameter("classification"))));
         ad.setSuburbId(new Suburb(Integer.parseInt(request.getParameter("suburb"))));
@@ -154,6 +164,7 @@ public class JobsServlet extends AbstractServlet {
             Adverts ad = advertsFacade.find(id);
             
             if (ad != null) {
+                //update responders
                 List<Responders> responders = respondersFacade.findByAdvertsId(ad.getId());
                 for (Responders r : responders) {
                     r.setUser(userFacade.find(r.getRespondersPK().getUserId()));
@@ -161,6 +172,10 @@ public class JobsServlet extends AbstractServlet {
                 }
                 
                 ad.setRespondersCollection(responders);
+                
+                //update skills
+                List<Requirements> reqs = requirementsFacade.findByAdvertsId(ad.getId());
+                ad.setRequirementsCollection(reqs);
                 
                 request.setAttribute(Contract.VIEW_ADVERT, ad);
                 request.setAttribute(Contract.CURRENT_USER, user);          

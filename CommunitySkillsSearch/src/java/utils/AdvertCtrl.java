@@ -64,7 +64,7 @@ public class AdvertCtrl {
             return false;
         }
         
-        if (content.length() >500) {
+        if (content.length() >2999) {
             return false;
         }
         

@@ -107,8 +107,6 @@
 <!-- /.row -->
 
 <br/>
-Web app version: 1.6
-<br/>
 <%if(ads != null && !ads.isEmpty()){%>
 <!-- Jobs Section -->
 <div class="row">

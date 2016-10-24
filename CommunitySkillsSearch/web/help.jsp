@@ -9,12 +9,14 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h4 class="panel-title">
-                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true">Lorem ipsum dolor sit amet, consectetur adipiscing elit?</a>
+                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true">
+                        About Community Skills Search
+                    </a>
                 </h4>
             </div>
             <div id="collapseOne" class="panel-collapse collapse in" aria-expanded="true">
                 <div class="panel-body">
-                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                    A web application where people can sign up and list their skills and location, and potential clients or employers can search for people with those skills or place an advertisement for a job.
                 </div>
             </div>
         </div>
@@ -22,16 +24,41 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h4 class="panel-title">
-                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false">Curabitur eget leo at velit imperdiet varius. In eu ipsum vitae velit congue iaculis vitae at risus?</a>
+                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false">
+                    FEATURES</a>
                 </h4>
             </div>
             <div id="collapseTwo" class="panel-collapse collapse" aria-expanded="false">
                 <div class="panel-body">
-                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                    <ul>
+                        <li>Username, password, email & phone number validation</li>
+                        <li>User can be the advertiser who hires worker with specified skills</li>
+                        <li>User can be the worker who looks for job in specific area of skills</li>
+                        <li>Both types of users can search for matching job adverts or workers</li>
+                        <li>Feedback and rating system</li>
+                        <li>Instant message communication</li>
+                    </ul>
                 </div>
             </div>
         </div>
-
+        <!-- /.panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false">
+                    TEAM DETAILS AND ROLES</a>
+                </h4>
+            </div>
+            <div id="collapseThree" class="panel-collapse collapse" aria-expanded="false">
+                <div class="panel-body">
+                    <p>Daniel: Scrum Master</p>
+                    <p>Matt: Developer / UI Designer</p>
+                    <p>Andrew: Product Owner</p>
+                    <p>Andy: Developer / DB Designer</p>
+                </div>
+            </div>
+        </div>
+        
     </div>
     <!-- /.panel-group -->
 </div>

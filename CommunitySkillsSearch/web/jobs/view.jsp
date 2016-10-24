@@ -4,6 +4,8 @@
     Author     : andyc
 --%>
 
+<%@page import="entities.Skills"%>
+<%@page import="entities.Requirements"%>
 <%@page import="utils.Contract.ResponderStatus"%>
 <%@page import="utils.StringUtils"%>
 <%@page import="javax.servlet.Servlet"%>
@@ -51,6 +53,24 @@
 
         <!-- Post Content -->
         <p class="lead">Looking for you ideal work?</p>
+        <p>
+            <%Collection<Skills> reqs = ad.getSkillsCollection();
+            if (reqs != null) {
+            %>
+            Key Skills 
+            <%
+                for(Skills r : reqs){
+                    String skill = r.getName();
+                    if (skill != null) {
+            %>
+                        <span class="label label-info"><%=skill%></span>
+            <%
+                    }
+                }
+            }
+            %>
+            <%%>
+        </p>
         <P><%=ad.getContent()%></P>
 
         <hr>

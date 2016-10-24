@@ -86,7 +86,7 @@ public class Adverts implements Serializable {
     private String title;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 500)
+    @Size(min = 1, max = 3000)
     @Column(name = "content")
     private String content;
     @Column(name = "closed")
