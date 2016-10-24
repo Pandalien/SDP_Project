@@ -11,6 +11,7 @@ import entities.Requirements;
 import entities.RequirementsPK;
 import entities.Responders;
 import entities.RespondersPK;
+import entities.Skills;
 import entities.Suburb;
 import entities.User;
 import java.text.ParseException;
@@ -176,6 +177,15 @@ public class JobsServlet extends AbstractServlet {
                 //update skills
                 List<Requirements> reqs = requirementsFacade.findByAdvertsId(ad.getId());
                 ad.setRequirementsCollection(reqs);
+                
+                List<Skills> skills = new ArrayList<>();
+                for(Requirements r : reqs){
+                    Skills sk = skillsFacade.find(r.getRequirementsPK().getSkillsId());
+                    if (sk != null) {
+                        skills.add(sk);
+                    }
+                }
+                ad.setSkillsCollection(skills);
                 
                 request.setAttribute(Contract.VIEW_ADVERT, ad);
                 request.setAttribute(Contract.CURRENT_USER, user);          
