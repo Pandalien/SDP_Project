@@ -41,7 +41,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 public class Responders implements Serializable {
 
-    @Size(max = 45)
+    @Size(max = 200)
     @Column(name = "feedback_worker")
     private String feedbackWorker;
     @Column(name = "rating_worker")
@@ -56,7 +56,7 @@ public class Responders implements Serializable {
     @Column(name = "time")
     @Temporal(TemporalType.TIMESTAMP)
     private Date time;
-    @Size(max = 45)
+    @Size(max = 200)
     @Column(name = "feedback")
     private String feedback;
     @Column(name = "rating")

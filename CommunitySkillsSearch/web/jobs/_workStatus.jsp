@@ -5,13 +5,22 @@
     Used to display status for work
 --%>
 
+<%@page import="java.util.Iterator"%>
+<%@page import="java.util.Collection"%>
 <%@page import="entities.Adverts"%>
 <%@page import="utils.Contract"%>
 <%@page import="entities.Responders"%>
 <%
     Adverts ad = (Adverts) request.getAttribute(Contract.VIEW_ADVERT);
-    Responders responder = (Responders) request.getAttribute(Contract.ADVERT_RESPONDERS);
+    //Responders responder = (Responders) request.getAttribute(Contract.ADVERT_RESPONDERS);
+    Collection<Responders> respondersList = ad.getRespondersCollection();
+        Responders responder = null;
+        if (respondersList != null && !respondersList.isEmpty()) {
+            Iterator<Responders> it = respondersList.iterator();
+            responder = it.next();
+        }
 %>
+<%if(responder != null){%>
 <%
     Integer status = responder.getStatus();
     if (status == null) {
@@ -60,3 +69,5 @@ Submitted
 
 
 
+
+<%}%>
